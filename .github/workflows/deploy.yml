@@ -75,3 +75,14 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_TAG }} # Example: username/project:latest
           context: .
 
+  deploy:
+    name: deploy-to-render
+    runs-on: ubuntu-latest
+    needs: push-to-docker-hub
+    environment:
+      name: PracticeHub # Capstone Project name
+      url: https://practicehub.onrender.com/ # Link to deployment
+    steps:
+      - name: Trigger Render.com Deployment
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY }} #muss mit der url des Render Deployments übereinstimmen
