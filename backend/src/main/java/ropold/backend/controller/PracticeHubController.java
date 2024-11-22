@@ -30,7 +30,7 @@ public class PracticeHubController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public RoomModel saveRoom(@RequestBody RoomModelDto roomModelDto) {
+    public RoomModel postRoom(@RequestBody RoomModelDto roomModelDto) {
         return practiceHubService.addRoom(
                 new RoomModel(
                         null,
@@ -41,5 +41,24 @@ public class PracticeHubController {
                         roomModelDto.wishlistStatus()
                 )
         );
+    }
+
+    @PutMapping("/{id}")
+    public RoomModel putRoom(@PathVariable String id, @RequestBody RoomModelDto roomModelDto) {
+        return practiceHubService.updateRoomWithPut(id,
+                new RoomModel(
+                        id,
+                        roomModelDto.name(),
+                        roomModelDto.address(),
+                        roomModelDto.category(),
+                        roomModelDto.description(),
+                        roomModelDto.wishlistStatus()
+                )
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteRoom(@PathVariable String id) {
+        practiceHubService.deleteRoom(id);
     }
 }
