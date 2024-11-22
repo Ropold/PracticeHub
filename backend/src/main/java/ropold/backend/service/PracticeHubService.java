@@ -2,6 +2,7 @@ package ropold.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ropold.backend.exception.RoomNotFoundException;
 import ropold.backend.model.RoomModel;
 import ropold.backend.repository.PracticeHubRepository;
 
@@ -20,7 +21,9 @@ public class PracticeHubService {
     }
 
     public RoomModel getRoomById(String id) {
-        return practiceHubRepository.findById(id).orElseThrow(()-> new NoSuchElementException("No Room found with id: " + id));
+        return practiceHubRepository
+                .findById(id)
+                .orElseThrow(()-> new RoomNotFoundException("No Room found with id: " + id));
     }
 
     public RoomModel addRoom(RoomModel roomModel) {
