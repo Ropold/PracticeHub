@@ -7,7 +7,6 @@ import ropold.backend.model.RoomModel;
 import ropold.backend.repository.PracticeHubRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +35,28 @@ public class PracticeHubService {
                 roomModel.wishlistStatus()
         );
         return practiceHubRepository.save(newRoomModel);
+    }
+
+    public RoomModel updateRoomWithPut(String id, RoomModel roomModel) {
+        if(practiceHubRepository.existsById(id)) {
+            RoomModel updatedRoomModel = new RoomModel(
+                    id,
+                    roomModel.name(),
+                    roomModel.address(),
+                    roomModel.category(),
+                    roomModel.description(),
+                    roomModel.wishlistStatus()
+            );
+            return practiceHubRepository.save(updatedRoomModel);
+        } else {
+            throw new RoomNotFoundException("No Room found to update with id: " + id);
+        }
+    }
+
+    public void deleteRoom(String id) {
+        if (!practiceHubRepository.existsById(id)) {
+            throw new RoomNotFoundException("No Room found to delete with id: " + id);
+        }
+        practiceHubRepository.deleteById(id);
     }
 }
