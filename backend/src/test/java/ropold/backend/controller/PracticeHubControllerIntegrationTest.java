@@ -56,7 +56,7 @@ class PracticeHubControllerIntegrationTest {
                             "address": "TestCity",
                             "category": "testCategory",
                             "description": "test description",
-                            "status": "ON_WISHLIST"
+                            "wishlistStatus": "ON_WISHLIST"
                                                                                          }]
                         """
                 ));
@@ -78,7 +78,7 @@ class PracticeHubControllerIntegrationTest {
                             "address": "TestCity",
                             "category": "testCategory",
                             "description": "test description",
-                            "status": "ON_WISHLIST"
+                            "wishlistStatus": "ON_WISHLIST"
                                                                                          }
                         """
                 ));
@@ -98,7 +98,7 @@ class PracticeHubControllerIntegrationTest {
                             "address": "TestCity",
                             "category": "testCategory",
                             "description": "test description",
-                            "status": "ON_WISHLIST"
+                            "wishlistStatus": "ON_WISHLIST"
                          }
                         """)
         ).andExpect(status().isCreated());
