@@ -57,6 +57,7 @@ public class PracticeHubController {
         );
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteRoom(@PathVariable String id) {
         practiceHubService.deleteRoom(id);

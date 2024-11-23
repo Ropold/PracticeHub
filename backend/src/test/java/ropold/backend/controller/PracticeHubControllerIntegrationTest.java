@@ -33,8 +33,9 @@ class PracticeHubControllerIntegrationTest {
     void setup() {
         practiceHubRepository.deleteAll();
 
-        roomModel = new RoomModel("1", "TestRoom", "TestCity", "testCategory",
-                "test description", WishlistStatus.ON_WISHLIST);
+        roomModel = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln",
+                "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                WishlistStatus.ON_WISHLIST);
 
         practiceHubRepository.save(roomModel);
     }
@@ -52,10 +53,10 @@ class PracticeHubControllerIntegrationTest {
                                                                                        [ 
                                                                                          {
                             "id": "1",
-                            "name": "TestRoom",
-                            "address": "TestCity",
-                            "category": "testCategory",
-                            "description": "test description",
+                            "name": "Gürzenich Saal",
+                            "address": "Neumarkt 1, 50667 Köln",
+                            "category": "Orchester-Saal",
+                            "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                             "wishlistStatus": "ON_WISHLIST"
                                                                                          }]
                         """
@@ -74,10 +75,10 @@ class PracticeHubControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.content().json("""
                                                                                          {
                             "id": "1",
-                            "name": "TestRoom",
-                            "address": "TestCity",
-                            "category": "testCategory",
-                            "description": "test description",
+                            "name": "Gürzenich Saal",
+                            "address": "Neumarkt 1, 50667 Köln",
+                            "category": "Orchester-Saal",
+                            "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                             "wishlistStatus": "ON_WISHLIST"
                                                                                          }
                         """
@@ -94,10 +95,10 @@ class PracticeHubControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                          {
-                            "name": "TestRoom",
-                            "address": "TestCity",
-                            "category": "testCategory",
-                            "description": "test description",
+                            "name": "Gürzenich Saal",
+                            "address": "Neumarkt 1, 50667 Köln",
+                            "category": "Orchester-Saal",
+                            "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                             "wishlistStatus": "ON_WISHLIST"
                          }
                         """)
@@ -113,11 +114,68 @@ class PracticeHubControllerIntegrationTest {
                 .ignoringFields("id")
                 .isEqualTo(new RoomModel(
                         null,
-                        "TestRoom",
-                        "TestCity",
-                        "testCategory",
-                        "test description",
+                        "Gürzenich Saal",
+                        "Neumarkt 1, 50667 Köln",
+                        "Orchester-Saal",
+                        "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                         WishlistStatus.ON_WISHLIST
                 ));
+    }
+
+    @Test
+    void updateRoomWithPut_shouldUpdateWishlistStatus() throws Exception {
+        // GIVEN
+        RoomModel existingRoom = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln",
+                "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                WishlistStatus.NOT_ON_WISHLIST);
+        practiceHubRepository.save(existingRoom);
+
+        // WHEN
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/practice-hub/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                     {
+                        "id": "1",
+                        "name": "Gürzenich Saal",
+                        "address": "Neumarkt 1, 50667 Köln",
+                        "category": "Orchester-Saal",
+                        "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                        "wishlistStatus": "ON_WISHLIST"
+                     }
+                     """)
+                )
+                // THEN
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("""
+                                                             {
+                                                                "id": "1",
+                                                                "name": "Gürzenich Saal",
+                                                                "address": "Neumarkt 1, 50667 Köln",
+                                                                "category": "Orchester-Saal",
+                                                                "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                                                                "wishlistStatus": "ON_WISHLIST"
+                                                             }
+                                                             """));
+
+        // Verify in repository
+        RoomModel updatedRoom = practiceHubRepository.findById("1").orElseThrow();
+        Assertions.assertEquals(WishlistStatus.ON_WISHLIST, updatedRoom.wishlistStatus());
+    }
+
+    @Test
+    void deleteRoom_shouldRemoveRoomFromRepository() throws Exception {
+        // GIVEN
+        RoomModel roomToDelete = new RoomModel("2", "Beethoven-Saal", "Beethovenstraße 1, 53115 Bonn",
+                "Konzerthalle", "Ein moderner Saal für klassische Musik und Veranstaltungen.",
+                WishlistStatus.ON_WISHLIST);
+        practiceHubRepository.save(roomToDelete);
+
+        // WHEN
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/practice-hub/2"))
+                // THEN
+                .andExpect(status().isNoContent());
+
+        // Verify repository is empty
+        Assertions.assertFalse(practiceHubRepository.existsById("2"));
     }
 }
