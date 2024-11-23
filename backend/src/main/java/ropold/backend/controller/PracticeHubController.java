@@ -3,6 +3,8 @@ package ropold.backend.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ropold.backend.exception.RoomErrorObject;
+import ropold.backend.exception.RoomNotFoundException;
 import ropold.backend.model.RoomModel;
 import ropold.backend.model.RoomModelDto;
 import ropold.backend.service.PracticeHubService;
@@ -39,5 +41,25 @@ public class PracticeHubController {
                         roomModelDto.wishlistStatus()
                 )
         );
+    }
+
+    @PutMapping("/{id}")
+    public RoomModel putRoom(@PathVariable String id, @RequestBody RoomModelDto roomModelDto) {
+        return practiceHubService.updateRoomWithPut(id,
+                new RoomModel(
+                        id,
+                        roomModelDto.name(),
+                        roomModelDto.address(),
+                        roomModelDto.category(),
+                        roomModelDto.description(),
+                        roomModelDto.wishlistStatus()
+                )
+        );
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void deleteRoom(@PathVariable String id) {
+        practiceHubService.deleteRoom(id);
     }
 }

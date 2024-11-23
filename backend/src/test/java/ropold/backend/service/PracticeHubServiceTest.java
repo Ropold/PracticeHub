@@ -67,4 +67,54 @@ class PracticeHubServiceTest {
         assertEquals(roomModel3.description(), expected.description());
         assertEquals(roomModel3.wishlistStatus(), expected.wishlistStatus());
     }
+
+    @Test
+    void updateRoomWithPut() {
+        // Given
+        RoomModel existingRoom = new RoomModel(
+                "1",
+                "Gürzenich Saal",
+                "Neumarkt 1, 50667 Köln",
+                "Orchester-Saal",
+                "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                WishlistStatus.NOT_ON_WISHLIST
+        );
+
+        RoomModel updatedRoom = new RoomModel(
+                "1",
+                existingRoom.name(),
+                existingRoom.address(),
+                existingRoom.category(),
+                existingRoom.description(),
+                WishlistStatus.ON_WISHLIST
+        );
+
+        when(practiceHubRepository.existsById("1")).thenReturn(true);
+        when(practiceHubRepository.save(any(RoomModel.class))).thenReturn(updatedRoom);
+
+        // When
+        RoomModel expected = practiceHubService.updateRoomWithPut("1", updatedRoom);
+
+        // Then
+        assertEquals(updatedRoom, expected);
+        verify(practiceHubRepository, times(1)).existsById("1");
+        verify(practiceHubRepository, times(1)).save(updatedRoom);
+    }
+
+    @Test
+    void deleteRoom() {
+        // Given
+        String roomId = "1";
+        when(practiceHubRepository.existsById(roomId)).thenReturn(true);
+
+        // When
+        practiceHubService.deleteRoom(roomId);
+
+        // Then
+        verify(practiceHubRepository, times(1)).deleteById(roomId);
+        verify(practiceHubRepository, times(1)).existsById(roomId);
+        verifyNoMoreInteractions(practiceHubRepository);
+    }
+
+
 }
