@@ -1,4 +1,4 @@
-
+import "./styles/AddRoom.css"
 
 export default function AddRoom(){
     return(
