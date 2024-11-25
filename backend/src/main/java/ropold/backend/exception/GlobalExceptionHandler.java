@@ -10,14 +10,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RoomNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public RoomErrorObject handleRoomNotFoundException(RoomNotFoundException e) {
-        return new RoomErrorObject(e.getMessage());
+    public RoomError handleRoomNotFoundException(RoomNotFoundException e) {
+        return new RoomError(e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public RoomErrorObject handleRuntimeException(RuntimeException e) {
-        return new RoomErrorObject(e.getMessage());
+    public RoomError handleRuntimeException(RuntimeException e) {
+        return new RoomError(e.getMessage());
     }
 
 }
