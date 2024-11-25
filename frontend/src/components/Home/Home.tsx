@@ -33,8 +33,6 @@ export default function Home(props: Readonly<HomeProps>) {
                     return room.address.toLowerCase().includes(lowerQuery);
                 case "category":
                     return room.category.toLowerCase().includes(lowerQuery);
-                default:
-                    throw new Error(`Unhandled filterType: ${filterType}`);
             }
         });
         setFilteredRooms(filtered);
@@ -53,8 +51,12 @@ export default function Home(props: Readonly<HomeProps>) {
             </div>
 
             {filteredRooms.map((r) => (
-                <RoomCard room={} />
+                <RoomCard
+                key={r.id}
+                room={r}
+                />
             ))}
         </>
     );
 }
+
