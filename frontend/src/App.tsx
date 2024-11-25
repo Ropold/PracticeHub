@@ -17,7 +17,7 @@ function App() {
     const [rooms, setRooms] = useState<RoomModel[]>([])
 
     const getAllRooms = () => {
-        axios.get("/api/restaurant").then(
+        axios.get("/api/practice-hub").then(
             (response) => {
                 setRooms(response.data)
             }
@@ -26,12 +26,13 @@ function App() {
         })
     }
     useEffect(getAllRooms, [])
+    console.log("Rooms in state:", rooms);
 
   return (
         <Router>
             <NavBar/>
             <Routes>
-                <Route path="/" element={<Home  />} />
+                <Route path="/" element={<Home rooms={rooms} />} />
                 <Route path="/room/:id" element={<Details />} />
                 <Route path="/wishlist" element={<WishList />} />
                 <Route path="/addroom" element={<AddRoom />} />
@@ -42,3 +43,4 @@ function App() {
 }
 
 export default App
+
