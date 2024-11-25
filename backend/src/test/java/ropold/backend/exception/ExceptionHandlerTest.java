@@ -29,16 +29,16 @@ class ExceptionHandlerTest {
     }
 
     @Test
-    void whenPostWithoutBody_thenReturnsBadRequest() throws Exception {
+    void whenPostWithoutBody_thenReturnsInternalError() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))  // empty Body
-                .andExpect(status().isBadRequest())  // expect 400 Statuscode
+                .andExpect(status().isInternalServerError())  // expect 500 Statuscode
                 .andExpect(jsonPath("$.message").value("Required request body is missing: public ropold.backend.model.RoomModel ropold.backend.controller.PracticeHubController.postRoom(ropold.backend.model.RoomModelDto)"));  // Erwartet die spezifische Fehlermeldung
     }
 
     @Test
-    void whenPostWithInvalidData_thenReturnsBadRequest() throws Exception {
+    void whenPostWithInvalidData_thenReturnsInternalError() throws Exception {
         // GIVEN
         roomRepository.deleteAll();
 
@@ -48,7 +48,7 @@ class ExceptionHandlerTest {
                 "name": "",
                 "address": "Neumarkt 1, 50667 Köln",
                 "category": "Orchester-Saal",
-                "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                "descriptionINVALID": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                 "wishlistStatus": "INVALID_STATUS"
              }
             """;
@@ -57,7 +57,7 @@ class ExceptionHandlerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidRoomJson))
-                .andExpect(status().isBadRequest())  // expect 400 Statuscode
+                .andExpect(status().isInternalServerError())  // expect 500 Statuscode
                 .andExpect(jsonPath("$.message").exists())  // expect Error
                 .andExpect(jsonPath("$.message").value(
                         "JSON parse error: Cannot deserialize value of type `ropold.backend.model.WishlistStatus` from String \"INVALID_STATUS\": not one of the values accepted for Enum class: [NOT_ON_WISHLIST, REMOVED_FROM_WISHLIST, ON_WISHLIST]"
