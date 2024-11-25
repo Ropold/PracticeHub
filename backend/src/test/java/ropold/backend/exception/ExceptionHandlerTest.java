@@ -1,6 +1,5 @@
 package ropold.backend.exception;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -8,33 +7,29 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ropold.backend.repository.PracticeHubRepository;
+import ropold.backend.repository.RoomRepository;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ExceptionHandlerTest {
+class ExceptionHandlerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    PracticeHubRepository practiceHubRepository;
-
-    @BeforeEach
-    void setup() {
-    }
+    RoomRepository roomRepository;
 
     @Test
-    public void whenRoomNotFoundException_thenReturnsNotFound() throws Exception {
+    void whenRoomNotFoundException_thenReturnsNotFound() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/practice-hub/{id}", "non-existing-id"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("No Room found with id: non-existing-id"));
     }
 
     @Test
-    public void whenPostWithoutBody_thenReturnsBadRequest() throws Exception {
+    void whenPostWithoutBody_thenReturnsBadRequest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))  // empty Body
@@ -45,7 +40,7 @@ public class ExceptionHandlerTest {
     @Test
     void whenPostWithInvalidData_thenReturnsBadRequest() throws Exception {
         // GIVEN
-        practiceHubRepository.deleteAll();
+        roomRepository.deleteAll();
 
         // Invalid Data
         String invalidRoomJson = """

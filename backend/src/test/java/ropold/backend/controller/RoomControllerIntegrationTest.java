@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ropold.backend.model.RoomModel;
 import ropold.backend.model.WishlistStatus;
-import ropold.backend.repository.PracticeHubRepository;
+import ropold.backend.repository.RoomRepository;
 
 import java.util.List;
 
@@ -20,24 +20,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class PracticeHubControllerIntegrationTest {
+class RoomControllerIntegrationTest {
     static RoomModel roomModel;
 
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
-    PracticeHubRepository practiceHubRepository;
+    RoomRepository roomRepository;
 
     @BeforeEach
     void setup() {
-        practiceHubRepository.deleteAll();
+        roomRepository.deleteAll();
 
         roomModel = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln",
                 "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                 WishlistStatus.ON_WISHLIST);
 
-        practiceHubRepository.save(roomModel);
+        roomRepository.save(roomModel);
     }
 
     @Test
@@ -50,7 +50,7 @@ class PracticeHubControllerIntegrationTest {
                 // THEN
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
-                                                                                       [ 
+                                                                                       [
                                                                                          {
                             "id": "1",
                             "name": "Gürzenich Saal",
@@ -88,7 +88,7 @@ class PracticeHubControllerIntegrationTest {
     @Test
     void postRoom_shouldReturnSavedRoom() throws Exception {
         // GIVEN
-        practiceHubRepository.deleteAll();
+        roomRepository.deleteAll();
 
         // WHEN
         mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub")
@@ -105,10 +105,10 @@ class PracticeHubControllerIntegrationTest {
         ).andExpect(status().isCreated());
 
         // THEN
-        List<RoomModel> allRooms = practiceHubRepository.findAll();
+        List<RoomModel> allRooms = roomRepository.findAll();
         Assertions.assertEquals(1, allRooms.size());
 
-        RoomModel savedRoom = allRooms.get(0);
+        RoomModel savedRoom = allRooms.getFirst();
         org.assertj.core.api.Assertions.assertThat(savedRoom)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
@@ -128,7 +128,7 @@ class PracticeHubControllerIntegrationTest {
         RoomModel existingRoom = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln",
                 "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                 WishlistStatus.NOT_ON_WISHLIST);
-        practiceHubRepository.save(existingRoom);
+        roomRepository.save(existingRoom);
 
         // WHEN
         mockMvc.perform(MockMvcRequestBuilders.put("/api/practice-hub/1")
@@ -158,7 +158,7 @@ class PracticeHubControllerIntegrationTest {
                                                              """));
 
         // Verify in repository
-        RoomModel updatedRoom = practiceHubRepository.findById("1").orElseThrow();
+        RoomModel updatedRoom = roomRepository.findById("1").orElseThrow();
         Assertions.assertEquals(WishlistStatus.ON_WISHLIST, updatedRoom.wishlistStatus());
     }
 
@@ -168,7 +168,7 @@ class PracticeHubControllerIntegrationTest {
         RoomModel roomToDelete = new RoomModel("2", "Beethoven-Saal", "Beethovenstraße 1, 53115 Bonn",
                 "Konzerthalle", "Ein moderner Saal für klassische Musik und Veranstaltungen.",
                 WishlistStatus.ON_WISHLIST);
-        practiceHubRepository.save(roomToDelete);
+        roomRepository.save(roomToDelete);
 
         // WHEN
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/practice-hub/2"))
@@ -176,6 +176,6 @@ class PracticeHubControllerIntegrationTest {
                 .andExpect(status().isNoContent());
 
         // Verify repository is empty
-        Assertions.assertFalse(practiceHubRepository.existsById("2"));
+        Assertions.assertFalse(roomRepository.existsById("2"));
     }
 }
