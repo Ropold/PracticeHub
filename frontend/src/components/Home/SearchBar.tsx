@@ -9,12 +9,7 @@ type SearchBarProps = {
     setFilteredRooms: (rooms: RoomModel[]) => void;
 };
 
-const SearchBar: React.FC<SearchBarProps> = ({
-                                                 value,
-                                                 onChange,
-                                                 rooms,
-                                                 setFilteredRooms,
-                                             }) => {
+const SearchBar: React.FC<SearchBarProps> = ({value, onChange, rooms, setFilteredRooms}) => {
     const [filterType, setFilterType] = useState<"name" | "address" | "category" | "all">("name");
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -41,8 +36,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
                     return room.address.toLowerCase().includes(lowerQuery);
                 case "category":
                     return room.category.toLowerCase().includes(lowerQuery);
-                default:
-                    return true;
             }
         });
 
@@ -58,30 +51,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 onChange={handleInputChange}
             />
             <div className="filter-buttons">
-                <button
-                    onClick={() => setFilterType("name")}
-                    className={filterType === "name" ? "active" : ""}
-                >
-                    Name
-                </button>
-                <button
-                    onClick={() => setFilterType("address")}
-                    className={filterType === "address" ? "active" : ""}
-                >
-                    Address
-                </button>
-                <button
-                    onClick={() => setFilterType("category")}
-                    className={filterType === "category" ? "active" : ""}
-                >
-                    Category
-                </button>
-                <button
-                    onClick={() => setFilterType("all")}
-                    className={filterType === "all" ? "active" : ""}
-                >
-                    All
-                </button>
+                <button onClick={() => setFilterType("name")}
+                        className={filterType === "name" ? "active" : ""}>Name</button>
+                <button onClick={() => setFilterType("address")}
+                        className={filterType === "address" ? "active" : ""}>Address</button>
+                <button onClick={() => setFilterType("category")}
+                        className={filterType === "category" ? "active" : ""}>Category</button>
+                <button onClick={() => setFilterType("all")}
+                        className={filterType === "all" ? "active" : ""}>All</button>
             </div>
         </div>
     );
