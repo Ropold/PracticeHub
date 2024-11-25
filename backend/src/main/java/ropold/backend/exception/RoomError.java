@@ -1,6 +1,6 @@
 package ropold.backend.exception;
 
-public record RoomErrorObject(
+public record RoomError(
         String message
 ) {
 }
