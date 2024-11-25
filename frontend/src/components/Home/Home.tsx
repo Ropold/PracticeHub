@@ -1,62 +1,40 @@
 import "../styles/Home.css";
 import { RoomModel } from "../model/RoomModel.ts";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import SearchBar from "./SearchBar.tsx";
 import RoomCard from "../RoomCard.tsx";
+import axios from "axios";
 
-type HomeProps = {
-    rooms: RoomModel[];
-};
 
-export default function Home(props: Readonly<HomeProps>) {
+export default function Home() {
+    const [rooms, setRooms] = useState<RoomModel[]>([])
     const [searchQuery, setSearchQuery] = useState<string>("");
-    const [filterType, setFilterType] = useState<"name" | "address" | "category" | "all">("name");
-    const [filteredRooms, setFilteredRooms] = useState<RoomModel[]>(props.rooms);
+    const [filteredRooms, setFilteredRooms] = useState<RoomModel[]>([]);
 
-    useEffect(() => {
-        const filtered: RoomModel[] = props.rooms.filter((room) => {
-            const lowerQuery = searchQuery.toLowerCase();
 
-            if (filterType === "all") {
-                return (
-                    room.name.toLowerCase().includes(lowerQuery) ||
-                    room.address.toLowerCase().includes(lowerQuery) ||
-                    room.category.toLowerCase().includes(lowerQuery) ||
-                    room.description.toLowerCase().includes(lowerQuery)
-                );
+    const getAllRooms = () => {
+        axios.get("/api/practice-hub").then(
+            (response) => {
+                setRooms(response.data)
             }
-
-            switch (filterType) {
-                case "name":
-                    return room.name.toLowerCase().includes(lowerQuery);
-                case "address":
-                    return room.address.toLowerCase().includes(lowerQuery);
-                case "category":
-                    return room.category.toLowerCase().includes(lowerQuery);
-            }
-        });
-        setFilteredRooms(filtered);
-    }, [searchQuery, filterType, props.rooms]);
+        ).catch((error) => {
+            console.error(error)
+        })
+    }
+    useEffect(getAllRooms, [])
 
     return (
         <>
             <h1>PracticeHub</h1>
-            <h2>Home</h2>
-            <SearchBar onSearch={(query) => setSearchQuery(query)} />
-            <div>
-                <button onClick={() => setFilterType("name")}>Name</button>
-                <button onClick={() => setFilterType("address")}>Address</button>
-                <button onClick={() => setFilterType("category")}>Category</button>
-                <button onClick={() => setFilterType("all")}>All</button>
-            </div>
-
+            <SearchBar
+                value={searchQuery}
+                onChange={setSearchQuery}
+                rooms={rooms}
+                setFilteredRooms={setFilteredRooms}
+            />
             {filteredRooms.map((r) => (
-                <RoomCard
-                key={r.id}
-                room={r}
-                />
+                <RoomCard key={r.id} room={r} />
             ))}
         </>
     );
 }
-
