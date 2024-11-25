@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public RoomErrorObject handleRuntimeException(RuntimeException e) {
         return new RoomErrorObject(e.getMessage());
     }

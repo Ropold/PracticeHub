@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ropold.backend.model.RoomModel;
 
 @Repository
-public interface PracticeHubRepository extends MongoRepository<RoomModel, String> {
+public interface RoomRepository extends MongoRepository<RoomModel, String> {
 }
