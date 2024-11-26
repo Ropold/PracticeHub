@@ -11,7 +11,6 @@ export default function Home() {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredRooms, setFilteredRooms] = useState<RoomModel[]>([]);
 
-
     const getAllRooms = () => {
         axios.get("/api/practice-hub").then(
             (response) => {
