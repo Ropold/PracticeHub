@@ -58,7 +58,7 @@ const SearchBar: React.FC<SearchBarProps> = ({value, onChange, rooms, setFiltere
                 <button onClick={() => setFilterType("category")}
                         className={filterType === "category" ? "active" : ""}>Category</button>
                 <button onClick={() => setFilterType("all")}
-                        className={filterType === "all" ? "active" : ""}>All</button>
+                        className={filterType === "all" ? "active" : ""}>No Filter</button>
             </div>
         </div>
     );
