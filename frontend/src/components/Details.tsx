@@ -6,7 +6,7 @@ import axios from "axios";
 
 const defaultRoom: RoomModel = {
     id: "",
-    name: "",
+    name: "Loading....",
     address: "",
     category: "",
     description: "",
