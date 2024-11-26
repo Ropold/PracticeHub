@@ -22,6 +22,23 @@ export default function Home() {
     }
     useEffect(getAllRooms, [])
 
+    const handleToggleWishlist = (roomId: string) => {
+        const room = rooms.find((r) => r.id === roomId)
+        if (!room) return
+
+        const updatedStatus = room.wishlistStatus === "ON_WISHLIST" ? "NOT_ON_WISHLIST" : "ON_WISHLIST"
+
+        const updatedRoom = {...room, wishlistStatus: updatedStatus}
+
+        axios.put(`/api/practice-hub/${roomId}`, updatedRoom).then(
+            (response) => {
+                setRooms((prevRooms) => prevRooms.map((r) => (r.id === roomId ? response.data : r))
+                )
+            }
+        ).catch((error) => console.error("Error updating wishlist status:", error))
+    }
+
+
     return (
         <>
             <h1>PracticeHub</h1>
@@ -32,7 +49,11 @@ export default function Home() {
                 setFilteredRooms={setFilteredRooms}
             />
             {filteredRooms.map((r) => (
-                <RoomCard key={r.id} room={r} />
+                <RoomCard
+                    key={r.id}
+                    room={r}
+                    onToggleWishlist={handleToggleWishlist}
+                />
             ))}
         </>
     );

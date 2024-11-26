@@ -11,7 +11,7 @@ export default function Wishlist() {
         axios
             .get("/api/practice-hub")
             .then((response) => {
-                const rooms:RoomModel[] = response.data;
+                const rooms = response.data;
                 setRooms(rooms);
                 const roomsOnWishlist = rooms.filter(
                     (room:RoomModel) => room.wishlistStatus === "ON_WISHLIST"
@@ -22,6 +22,16 @@ export default function Wishlist() {
                 console.error(error);
             });
     }, []);
+
+    // axios
+    //     .get<RoomModel[]>("/api/practice-hub") // Typ hinzugefügt
+    //     .then(({ data }) => {
+    //         setRooms(data); // Direktes Setzen der Räume
+    //         setWishlistRooms(data.filter((room) => room.wishlistStatus === "ON_WISHLIST"));
+    //     })
+    //     .catch((error) => {
+    //         console.error("API Error:", error);
+    //     });
 
     return (
         <div>
