@@ -1,7 +1,7 @@
 import "./styles/Details.css";
 import { RoomModel } from "./model/RoomModel.ts";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 
 const defaultRoom: RoomModel = {
@@ -59,10 +59,28 @@ export default function Details() {
             .then((response) => {
                 setRoom(response.data);
                 setEditRoomId(null);
+
             })
             .catch((error) => console.error("Error saving room edits:", error));
     }
 
+    const navigate = useNavigate();
+
+    const handleDelete = (id: string) => {
+        const isConfirmed = window.confirm("Are you sure you want to delete this room?");
+
+        if (isConfirmed) {
+            axios
+                .delete(`/api/practice-hub/${id}`)
+                .then(() => {
+                    setRoom(defaultRoom);
+                    navigate("/");
+                })
+                .catch((error) => {
+                    console.error("Error deleting room:", error);
+                });
+        }
+    };
 
     return (
         <div className="details-container">
@@ -90,7 +108,7 @@ export default function Details() {
                     <p><strong>Description: </strong> {room.description}</p>
                     <div className="button-group">
                         <button onClick={handleEditToggle}>Edit</button>
-                        <button>Delete</button>
+                        <button onClick={() => handleDelete(room.id)}>Delete</button>
                     </div>
                 </div>
             )}
