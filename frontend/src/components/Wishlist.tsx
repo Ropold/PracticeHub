@@ -21,9 +21,7 @@ export default function Wishlist() {
 
     const handleStatusChange = (updatedRoom: RoomModel) => {
         setWishlistRooms((prevWishlistRooms) =>
-            updatedRoom.wishlistStatus === "ON_WISHLIST"
-                ? [...prevWishlistRooms, updatedRoom]
-                : prevWishlistRooms.filter((room) => room.id !== updatedRoom.id)
+            prevWishlistRooms.filter((room) => room.id !== updatedRoom.id)
         );
     };
 
