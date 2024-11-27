@@ -5,11 +5,11 @@ import WishList from "./components/Wishlist.tsx";
 import NavBar from "./components/NavBar.tsx";
 import Footer from "./components/Footer.tsx";
 import AddRoom from "./components/AddRoom.tsx";
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 export default function App() {
   return (
-        <Router>
+        <BrowserRouter>
             <NavBar/>
             <Routes>
                 <Route path="/" element={<Home />} />
@@ -18,6 +18,6 @@ export default function App() {
                 <Route path="/addroom" element={<AddRoom />} />
             </Routes>
             <Footer/>
-        </Router>
+        </BrowserRouter>
   )
 }
