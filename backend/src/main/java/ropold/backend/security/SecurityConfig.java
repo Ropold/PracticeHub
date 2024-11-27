@@ -1,9 +1,9 @@
 package ropold.backend.security;
 
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,13 +20,16 @@ public class SecurityConfig {
     private String appUrl;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable) // do not disable CSRF in realworld projects
 
                 .authorizeHttpRequests(a -> a
-                        .requestMatchers(HttpMethod.DELETE, "/api/restaurant/*").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api").authenticated()
+//                        .requestMatchers(HttpMethod.POST, "/api/practice-hub").authenticated()
+//                        .requestMatchers(HttpMethod.PUT, "/api/practice-hub").authenticated()
+//                        .requestMatchers(HttpMethod.DELETE, "/api/practice-hub/*").authenticated()
+//                        .requestMatchers(HttpMethod.GET, "/api/practice-hub").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/practice-hub/*").permitAll()
                         .requestMatchers("/api/user/me").authenticated()
                         .requestMatchers("/api/secured").authenticated()
                         .anyRequest().permitAll()
