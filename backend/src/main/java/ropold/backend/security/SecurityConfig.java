@@ -30,10 +30,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/practice-hub/*").permitAll()
                         .requestMatchers("/api/practice-hub").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/practice-hub/*").authenticated()
-                        .requestMatchers("/api/user/me").authenticated()
+                        .requestMatchers("/api/users/me").permitAll()
                         .requestMatchers("/api/secured").authenticated()
                         .anyRequest().permitAll()
                 )
+                .logout(l -> l.logoutUrl("/api/users/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> response.setStatus(200)))
 
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .exceptionHandling(e -> e
