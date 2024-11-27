@@ -1,16 +1,16 @@
 import "./styles/NavBar.css"
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
-import {useEffect, useState} from "react";
 
 
-export default function NavBar() {
-    const [user, setUser] = useState<string>("anonymousUser");
+type NavbarProps = {
+    user: string;
+    getUser: () => void;
+}
+
+export default function NavBar(props: NavbarProps) {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        getUser()
-    }, [])
 
     function loginWithGithub() {
         const host = window.location.host === 'localhost:5173' ? 'http://localhost:8080' : window.location.origin
@@ -22,7 +22,7 @@ export default function NavBar() {
         axios
             .post("/api/users/logout")
             .then(() => {
-                getUser();
+                props.getUser();
                 navigate("/");
             })
             .catch((error) => {
@@ -30,22 +30,11 @@ export default function NavBar() {
             });
     }
 
-    function getUser() {
-        axios.get("/api/users/me")
-            .then((response) => {
-                console.log(response.data)
-                setUser(response.data)
-            })
-            .catch((error) => {
-                console.error(error);
-                setUser("anonymousUser");
-            });
-    }
 
     return (
         <nav className="navbar">
             <button onClick={() => navigate("/")}>Home</button>
-            {user !== "anonymousUser" ? (
+            {props.user !== "anonymousUser" ? (
                 <>
                     <button onClick={() => navigate("/wishlist")}>Wishlist</button>
                     <button onClick={() => navigate("/addroom")}>Add Room</button>
