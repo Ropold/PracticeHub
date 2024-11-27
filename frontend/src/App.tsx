@@ -36,17 +36,11 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/room/:id" element={<Details />} />
-
-
-
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/wishlist" element={<WishList />} />
-                     <Route path="/addroom" element={<AddRoom />} />
-                     <Route path={"/profile"} element={<Profile />} />
-                 </Route>
-
-
-
+                    <Route path="/addroom" element={<AddRoom />} />
+                    <Route path={"/profile"} element={<Profile />} />
+                </Route>
             </Routes>
             <Footer/>
         </BrowserRouter>
