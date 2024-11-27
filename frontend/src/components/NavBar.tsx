@@ -5,25 +5,28 @@ import {useEffect, useState} from "react";
 
 
 export default function NavBar() {
-    const[user, setUser] = useState<string>();
+    const [user, setUser] = useState<string>("anonymousUser");
     const navigate = useNavigate();
 
     useEffect(() => {
         getUser()
-    },[])
+    }, [])
 
     function loginWithGithub() {
-        const host = window.location.host === 'localhost:5173' ? 'http://localhost:8080': window.location.origin
+        const host = window.location.host === 'localhost:5173' ? 'http://localhost:8080' : window.location.origin
 
         window.open(host + '/oauth2/authorization/github', '_self')
     }
 
     function logoutFromGithub() {
-        axios.post("/api/users/logout")
-            .then(response => getUser())
-
+        axios
+            .post("/api/users/logout")
+            .then(() => {
+                getUser();
+                navigate("/");
+            })
             .catch((error) => {
-                console.error(error);
+                console.error("Logout failed:", error);
             });
     }
 
@@ -35,18 +38,23 @@ export default function NavBar() {
             })
             .catch((error) => {
                 console.error(error);
+                setUser("anonymousUser");
             });
     }
 
-    return(
-        <>
+    return (
+        <nav className="navbar">
             <button onClick={() => navigate("/")}>Home</button>
-            <button onClick={() => navigate("/wishlist")}>Wishlist</button>
-            <button onClick={() => navigate("/addroom")}>Add Room</button>
-            <button onClick={loginWithGithub}>login with github</button>
-            <button onClick={logoutFromGithub}>logout</button>
-            <button onClick={getUser}>Me</button>
-            <button>Profile</button>
-        </>
-    )
+            {user !== "anonymousUser" ? (
+                <>
+                    <button onClick={() => navigate("/wishlist")}>Wishlist</button>
+                    <button onClick={() => navigate("/addroom")}>Add Room</button>
+                    <button onClick={() => navigate("/profile")}>Profile</button>
+                    <button onClick={logoutFromGithub}>Logout</button>
+                </>
+            ) : (
+                <button onClick={loginWithGithub}>Login with GitHub</button>
+            )}
+        </nav>
+    );
 }
