@@ -32,17 +32,19 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
     };
 
     return (
-        <>
-            <div className="room-card" onClick={handleCardClick}>
+        <div className="room-card" onClick={handleCardClick} style={{cursor: "pointer"}}>
+            <div className="room-card-content">
                 <h2>{props.room.name}</h2>
                 <p><strong>Address: </strong>{props.room.address}</p>
                 <p><strong>Category: </strong>{props.room.category}</p>
-                <p><strong>Description: </strong>{props.room.description}</p>
             </div>
-
-            <button id="button-wishlist" onClick={handleToggleWishlist}
-                    style={{color: props.room.wishlistStatus === "ON_WISHLIST" ? "red" : "black"}}
+            <button
+                id="button-wishlist"
+                onClick={(event) => {
+                    event.stopPropagation(); // Verhindert die Weitergabe des Klicks an die Karte
+                    handleToggleWishlist();}}
+                className={props.room.wishlistStatus === "ON_WISHLIST" ? "wishlist-on" : "wishlist-off"}
             >♥</button>
-        </>
+        </div>
     );
 }
