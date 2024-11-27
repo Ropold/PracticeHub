@@ -8,10 +8,10 @@ export default function NavBar() {
 
     return(
         <>
-            <button>login with github</button>
             <button onClick={() => navigate("/")}>Home</button>
             <button onClick={() => navigate("/wishlist")}>Wishlist</button>
             <button onClick={() => navigate("/addroom")}>Add Room</button>
+            <button>login with github</button>
             <button>logout</button>
         </>
     )
