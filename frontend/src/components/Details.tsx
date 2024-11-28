@@ -4,6 +4,7 @@ import { RoomModel } from "./model/RoomModel.ts";
 import { useEffect, useState } from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
+import handleToggleWishlist from "../utils/handleToggleWishlist.ts";
 
 
 type DetailsProps = {
@@ -88,19 +89,6 @@ export default function Details(props: Readonly<DetailsProps>) {
         }
     };
 
-    const handleToggleWishlist = () => {
-        const updatedStatus =
-            room.wishlistStatus === "ON_WISHLIST" ? "NOT_ON_WISHLIST" : "ON_WISHLIST";
-
-        const updatedRoom = { ...room, wishlistStatus: updatedStatus };
-
-        axios
-            .put(`/api/practice-hub/${room.id}`, updatedRoom)
-            .then((response) => {
-                setRoom(response.data); // Update room state with new data
-            })
-            .catch((error) => console.error("Error updating wishlist status:", error));
-    };
 
     return (
         <div className="details-container">
@@ -130,7 +118,7 @@ export default function Details(props: Readonly<DetailsProps>) {
                     {props.user !== "anonymousUser" && (
                         <div>
                             <div className="button-group">
-                                <button onClick={handleToggleWishlist}
+                                <button onClick={()=>handleToggleWishlist(room, setRoom)}
                                         className={room.wishlistStatus === "ON_WISHLIST" ? "wishlist-on" : "wishlist-off"}
                                 >♥
                                 </button>
