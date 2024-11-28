@@ -45,7 +45,7 @@ export default function AddRoom(){
                             onChange={(e) => setStatus(e.target.value as "ON_WISHLIST" | "NOT_ON_WISHLIST")}>
                             <option value="ON_WISHLIST">On Wishlist</option>
                             <option value="NOT_ON_WISHLIST">Not on Wishlist</option></select></label>
-                    <div className="button-group"><button type="submit">Add Room</button></div>
+                    <div className="button-group"><button id="button-edit-add" type="submit">Add Room</button></div>
                 </form>
             </div>
         </div>

@@ -3,6 +3,11 @@ import { RoomModel } from "./model/RoomModel.ts";
 import { useEffect, useState } from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
+import "./styles/RoomCard.css"
+
+type DetailsProps = {
+    user: string;
+}
 
 const defaultRoom: RoomModel = {
     id: "",
@@ -13,7 +18,7 @@ const defaultRoom: RoomModel = {
     wishlistStatus: "NOT_ON_WISHLIST",
 };
 
-export default function Details() {
+export default function Details(props: Readonly<DetailsProps>) {
     const [room, setRoom] = useState<RoomModel>(defaultRoom);
     const [editRoomId, setEditRoomId] = useState<string | null>(null);
     const [editData, setEditData] = useState<RoomModel>(defaultRoom);
@@ -106,10 +111,15 @@ export default function Details() {
                     <p><strong>Address: </strong> {room.address}</p>
                     <p><strong>Category: </strong> {room.category}</p>
                     <p><strong>Description: </strong> {room.description}</p>
-                    <div className="button-group">
-                        <button onClick={handleEditToggle}>Edit</button>
-                        <button onClick={() => handleDelete(room.id)}>Delete</button>
-                    </div>
+
+                    {props.user !== "anonymousUser" && (
+                        <div className="button-group">
+                            <button>♥</button>
+                            <button onClick={handleEditToggle}>Edit</button>
+                            <button id="button-delete" onClick={() => handleDelete(room.id)}>Delete</button>
+                        </div>
+                    )}
+
                 </div>
             )}
         </div>
