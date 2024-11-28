@@ -7,7 +7,6 @@ import axios from "axios";
 
 type HomeProps = {
     user: string;
-    getUser: () => void;
 }
 
 export default function Home(props: Readonly<HomeProps>) {
@@ -43,7 +42,7 @@ export default function Home(props: Readonly<HomeProps>) {
                 setFilteredRooms={setFilteredRooms}
             />
             {filteredRooms.map((r) => (
-                <RoomCard key={r.id} room={r} user={props.user} getUser={props.getUser} onStatusChange={handleStatusChange} />
+                <RoomCard key={r.id} room={r} user={props.user} onStatusChange={handleStatusChange} />
             ))}
         </>
     );
