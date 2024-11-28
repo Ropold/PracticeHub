@@ -34,11 +34,11 @@ export default function App() {
         <BrowserRouter>
             <NavBar user={user} getUser={getUser}/>
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Home user={user} getUser={getUser}/>} />
                 <Route path="/room/:id" element={<Details />} />
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/wishlist" element={<WishList />} />
-                    <Route path="/addroom" element={<AddRoom />} />
+                    <Route path="/add-room" element={<AddRoom />} />
                     <Route path={"/profile"} element={<Profile />} />
                 </Route>
             </Routes>

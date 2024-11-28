@@ -5,6 +5,8 @@ import axios from "axios";
 
 type RoomCardProps = {
     room: RoomModel;
+    user: string;
+    getUser: () => void;
     onStatusChange?: (updatedRoom: RoomModel) => void;
 };
 
@@ -31,20 +33,45 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
             .catch((error) => console.error("Error updating wishlist status:", error));
     };
 
-    return (
-        <div className="room-card" onClick={handleCardClick} style={{cursor: "pointer"}}>
-            <div className="room-card-content">
-                <h2>{props.room.name}</h2>
-                <p><strong>Address: </strong>{props.room.address}</p>
-                <p><strong>Category: </strong>{props.room.category}</p>
+
+            return (
+            <div className="room-card" onClick={handleCardClick} style={{ cursor: "pointer" }}>
+                <div className="room-card-content">
+                    <h2>{props.room.name}</h2>
+                    <p><strong>Address: </strong>{props.room.address}</p>
+                    <p><strong>Category: </strong>{props.room.category}</p>
+                </div>
+                {/* Herz-Button nur anzeigen, wenn der Benutzer nicht "anonymousUser" ist */}
+                {props.user !== "anonymousUser" && (
+                    <button
+                        id="button-wishlist"
+                        onClick={(event) => {
+                            event.stopPropagation(); // Verhindert die Weitergabe des Klicks an die Karte
+                            handleToggleWishlist();
+                        }}
+                        className={props.room.wishlistStatus === "ON_WISHLIST" ? "wishlist-on" : "wishlist-off"}
+                    >
+                        ♥
+                    </button>
+                )}
             </div>
-            <button
-                id="button-wishlist"
-                onClick={(event) => {
-                    event.stopPropagation(); // Verhindert die Weitergabe des Klicks an die Karte
-                    handleToggleWishlist();}}
-                className={props.room.wishlistStatus === "ON_WISHLIST" ? "wishlist-on" : "wishlist-off"}
-            >♥</button>
-        </div>
-    );
+            );
+
 }
+
+// return (
+//     <div className="room-card" onClick={handleCardClick} style={{cursor: "pointer"}}>
+//         <div className="room-card-content">
+//             <h2>{props.room.name}</h2>
+//             <p><strong>Address: </strong>{props.room.address}</p>
+//             <p><strong>Category: </strong>{props.room.category}</p>
+//         </div>
+//         <button
+//             id="button-wishlist"
+//             onClick={(event) => {
+//                 event.stopPropagation(); // Verhindert die Weitergabe des Klicks an die Karte
+//                 handleToggleWishlist();}}
+//             className={props.room.wishlistStatus === "ON_WISHLIST" ? "wishlist-on" : "wishlist-off"}
+//         >♥</button>
+//     </div>
+// );

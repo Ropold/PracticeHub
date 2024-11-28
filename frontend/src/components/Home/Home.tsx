@@ -5,7 +5,12 @@ import SearchBar from "./SearchBar.tsx";
 import RoomCard from "../RoomCard.tsx";
 import axios from "axios";
 
-export default function Home() {
+type HomeProps = {
+    user: string;
+    getUser: () => void;
+}
+
+export default function Home(props: Readonly<HomeProps>) {
     const [rooms, setRooms] = useState<RoomModel[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredRooms, setFilteredRooms] = useState<RoomModel[]>([]);
@@ -38,7 +43,7 @@ export default function Home() {
                 setFilteredRooms={setFilteredRooms}
             />
             {filteredRooms.map((r) => (
-                <RoomCard key={r.id} room={r} onStatusChange={handleStatusChange} />
+                <RoomCard key={r.id} room={r} user={props.user} getUser={props.getUser} onStatusChange={handleStatusChange} />
             ))}
         </>
     );
