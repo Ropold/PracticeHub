@@ -37,7 +37,7 @@ export default function App() {
                 <Route path="/" element={<Home user={user}/>} />
                 <Route path="/room/:id" element={<Details user={user} />} />
                 <Route element={<ProtectedRoute user={user} />}>
-                    <Route path="/wishlist" element={<WishList />} />
+                    <Route path="/wishlist" element={<WishList user={user}/>} />
                     <Route path="/add-room" element={<AddRoom />} />
                     <Route path={"/profile"} element={<Profile />} />
                 </Route>

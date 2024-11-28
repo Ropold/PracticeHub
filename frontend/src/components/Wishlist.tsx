@@ -1,10 +1,14 @@
-import "./styles/Wishlist.css";
 import { useEffect, useState } from "react";
 import { RoomModel } from "./model/RoomModel.ts";
 import RoomCard from "./RoomCard.tsx";
 import axios from "axios";
 
-export default function Wishlist() {
+type WishlistProps = {
+    user: string;
+    onStatusChange?: (updatedRoom: RoomModel) => void;
+};
+
+export default function Wishlist(props: Readonly<WishlistProps>) {
     const [wishlistRooms, setWishlistRooms] = useState<RoomModel[]>([]);
 
     useEffect(() => {
@@ -30,7 +34,7 @@ export default function Wishlist() {
             <h2>Wishlist</h2>
             {wishlistRooms.length > 0 ? (
                 wishlistRooms.map((room) => (
-                    <RoomCard key={room.id} room={room} onStatusChange={handleStatusChange} />
+                    <RoomCard key={room.id} room={room} user={props.user} onStatusChange={handleStatusChange} />
                 ))
             ) : (
                 <p>No rooms on the wishlist.</p>

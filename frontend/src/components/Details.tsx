@@ -1,9 +1,10 @@
 import "./styles/Details.css";
+import "./styles/RoomCard.css";
 import { RoomModel } from "./model/RoomModel.ts";
 import { useEffect, useState } from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
-import "./styles/RoomCard.css"
+
 
 type DetailsProps = {
     user: string;
@@ -87,6 +88,20 @@ export default function Details(props: Readonly<DetailsProps>) {
         }
     };
 
+    const handleToggleWishlist = () => {
+        const updatedStatus =
+            room.wishlistStatus === "ON_WISHLIST" ? "NOT_ON_WISHLIST" : "ON_WISHLIST";
+
+        const updatedRoom = { ...room, wishlistStatus: updatedStatus };
+
+        axios
+            .put(`/api/practice-hub/${room.id}`, updatedRoom)
+            .then((response) => {
+                setRoom(response.data); // Update room state with new data
+            })
+            .catch((error) => console.error("Error updating wishlist status:", error));
+    };
+
     return (
         <div className="details-container">
             {editRoomId ? (
@@ -113,13 +128,18 @@ export default function Details(props: Readonly<DetailsProps>) {
                     <p><strong>Description: </strong> {room.description}</p>
 
                     {props.user !== "anonymousUser" && (
-                        <div className="button-group">
-                            <button>♥</button>
-                            <button onClick={handleEditToggle}>Edit</button>
-                            <button id="button-delete" onClick={() => handleDelete(room.id)}>Delete</button>
+                        <div>
+                            <div className="button-group">
+                                <button onClick={handleToggleWishlist}
+                                        className={room.wishlistStatus === "ON_WISHLIST" ? "wishlist-on" : "wishlist-off"}
+                                >♥
+                                </button>
+                                <button onClick={handleEditToggle}>Edit</button>
+                                <button id="button-delete" onClick={() => handleDelete(room.id)}>Delete</button>
+                            </div>
                         </div>
-                    )}
 
+                    )}
                 </div>
             )}
         </div>
