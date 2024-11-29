@@ -30,14 +30,12 @@ public class GlobalExceptionHandler {
     public Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
 
-        // Alle Fehler sammeln
         e.getBindingResult().getFieldErrors().forEach(fieldError -> {
             String fieldName = fieldError.getField();
             String errorMessage = fieldError.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
 
-        // Fehlermeldungen zurückgeben
         return errors;
     }
 

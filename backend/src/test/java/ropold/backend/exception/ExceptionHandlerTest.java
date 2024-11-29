@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -46,10 +45,9 @@ class ExceptionHandlerTest {
                 // THEN
                 .andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().json("""
- {"address":"Address must contain at least a street name, a 5-digit postal code, and a city name, e.g. 'Musterstraße 12345 Musterstadt'","name":"size must be between 3 and 2147483647","category":"must not be blank"}
-"""));
+                 {"address":"Address must contain at least a street name, a 5-digit postal code, and a city name, e.g. 'Musterstraße 12345 Musterstadt'",
+                 "name":"size must be between 3 and 2147483647",
+                 "category":"must not be blank"}
+                """));
     }
-
-
-
 }
