@@ -34,26 +34,22 @@ class ExceptionHandlerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                     {
-                        "name": "",
-                        "address": "Invalid Address",
-                        "category": "",
-                        "description": "",
-                        "wishlistStatus": "ON_WISHLIST"
-                     }
-                     """)
+                {
+                   "name": "hu",
+                   "address": "Neumarkt Köln",
+                   "category": "   ",
+                   "description": "huhu",
+                   "wishlistStatus": "ON_WISHLIST"
+                }
+                """)
                 )
                 // THEN
                 .andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().json("""
-        {
-            "name": "size must be between 3 and 2147483647",
-            "address": "Address must contain at least a street name, a 5-digit postal code, and a city name, e.g. 'Musterstraße 12345 Musterstadt'",
-            "category": "must not be blank",
-            "description": "must not be blank"
-        }
-    """));
+ {"address":"Address must contain at least a street name, a 5-digit postal code, and a city name, e.g. 'Musterstraße 12345 Musterstadt'","name":"size must be between 3 and 2147483647","category":"must not be blank"}
+"""));
     }
+
 
 
 }
