@@ -2,8 +2,7 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
-export default function AddRoom(){
-
+export default function AddRoom() {
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [category, setCategory] = useState<string>("");
@@ -15,7 +14,7 @@ export default function AddRoom(){
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const roomData = {name, address, category, description, wishlistStatus: status};
+        const roomData = { name, address, category, description, wishlistStatus: status };
         console.log("Room data:", roomData);
 
         axios
@@ -24,8 +23,25 @@ export default function AddRoom(){
                 const newRoomId = response.data.id;
                 navigate(`/room/${newRoomId}`);
             })
-            .catch((error) => console.error("Error adding room:", error));
-    }
+            .catch((error) => {
+                // Wenn ein Fehler auftritt, prüfen wir, ob es sich um einen Validierungsfehler handelt
+                if (error.response && error.response.status === 400 && error.response.data) {
+                    const errorMessages = error.response.data;
+                    let alertMessage = "Please fix the following errors:\n";
+
+                    // Fehler durchlaufen und in die Alert-Nachricht einfügen
+                    Object.keys(errorMessages).forEach((field) => {
+                        alertMessage += `${field}: ${errorMessages[field]}\n`;
+                    });
+
+                    // Fehler als Alert anzeigen
+                    alert(alertMessage);
+                } else {
+                    console.error("Error adding room:", error);
+                    alert("An unexpected error occurred. Please try again.");
+                }
+            });
+    };
 
     return (
         <div className="details-container">
