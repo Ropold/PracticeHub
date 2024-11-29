@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserIntegrationTest {
+class UserIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -21,14 +21,14 @@ public class UserIntegrationTest {
     @Test
     @WithMockUser(username = "user")
     void testGetMe_withLoggedInUser_expectUsername() throws Exception {
-        mockMvc.perform(get("/api/user/me"))
+        mockMvc.perform(get("/api/users/me"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("user"));
     }
 
     @Test
     void testGetMe_withoutLogin_expectAnonymousUsername() throws Exception {
-        mockMvc.perform(get("/api/user/me"))
+        mockMvc.perform(get("/api/users/me"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("anonymousUser"));
     }
