@@ -5,19 +5,44 @@ import WishList from "./components/Wishlist.tsx";
 import NavBar from "./components/NavBar.tsx";
 import Footer from "./components/Footer.tsx";
 import AddRoom from "./components/AddRoom.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Profile from "./components/Profile.tsx";
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 export default function App() {
+    const [user, setUser] = useState<string>("anonymousUser");
+
+    function getUser() {
+        axios.get("/api/users/me")
+            .then((response) => {
+                setUser(response.data)
+            })
+            .catch((error) => {
+                console.error(error);
+                setUser("anonymousUser");
+            });
+    }
+
+    useEffect(() => {
+        getUser()
+    }, []);
+
   return (
         <BrowserRouter>
-            <NavBar/>
+            <NavBar user={user} getUser={getUser}/>
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/room/:id" element={<Details />} />
-                <Route path="/wishlist" element={<WishList />} />
-                <Route path="/addroom" element={<AddRoom />} />
+                    <Route element={<ProtectedRoute user={user} />}>
+                        <Route path="/wishlist" element={<WishList />} />
+                         <Route path="/addroom" element={<AddRoom />} />
+                         <Route path={"/profile"} element={<Profile />} />
+                    </Route>
             </Routes>
             <Footer/>
         </BrowserRouter>
   )
 }
+

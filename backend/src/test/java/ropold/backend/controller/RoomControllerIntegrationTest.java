@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -86,6 +87,7 @@ class RoomControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = {"USER"})
     void postRoom_shouldReturnSavedRoom() throws Exception {
         // GIVEN
         roomRepository.deleteAll();
@@ -123,6 +125,7 @@ class RoomControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = {"USER"})
     void updateRoomWithPut_shouldUpdateWishlistStatus() throws Exception {
         // GIVEN
         RoomModel existingRoom = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln",
@@ -163,6 +166,7 @@ class RoomControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = {"USER"})
     void deleteRoom_shouldRemoveRoomFromRepository() throws Exception {
         // GIVEN
         RoomModel roomToDelete = new RoomModel("2", "Beethoven-Saal", "Beethovenstraße 1, 53115 Bonn",
