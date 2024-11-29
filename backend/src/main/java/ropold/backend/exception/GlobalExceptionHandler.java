@@ -17,6 +17,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public RoomError handleRuntimeException(RuntimeException e) {
+        e.printStackTrace();
         return new RoomError(e.getMessage());
     }
 

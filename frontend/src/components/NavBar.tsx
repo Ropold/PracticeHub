@@ -3,34 +3,47 @@ import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 
-export default function NavBar() {
+type NavbarProps = {
+    user: string;
+    getUser: () => void;
+}
 
+export default function NavBar(props: NavbarProps) {
     const navigate = useNavigate();
 
+
     function loginWithGithub() {
-        const host = window.location.host === 'localhost:5173' ? 'http://localhost:8080': window.location.origin
+        const host = window.location.host === 'localhost:5173' ? 'http://localhost:8080' : window.location.origin
 
         window.open(host + '/oauth2/authorization/github', '_self')
     }
 
-    function getUser() {
-        axios.get("/api/user/me")
-            .then((response) => {
-                console.log(response.data)
+    function logoutFromGithub() {
+        axios
+            .post("/api/users/logout")
+            .then(() => {
+                props.getUser();
+                navigate("/");
             })
             .catch((error) => {
-                console.error(error);
+                console.error("Logout failed:", error);
             });
     }
 
-    return(
-        <>
+
+    return (
+        <nav className="navbar">
             <button onClick={() => navigate("/")}>Home</button>
-            <button onClick={() => navigate("/wishlist")}>Wishlist</button>
-            <button onClick={() => navigate("/addroom")}>Add Room</button>
-            <button onClick={loginWithGithub}>login with github</button>
-            <button>logout</button>
-            <button onClick={getUser}>Me</button>
-        </>
-    )
+            {props.user !== "anonymousUser" ? (
+                <>
+                    <button onClick={() => navigate("/wishlist")}>Wishlist</button>
+                    <button onClick={() => navigate("/addroom")}>Add Room</button>
+                    <button onClick={() => navigate("/profile")}>Profile</button>
+                    <button onClick={logoutFromGithub}>Logout</button>
+                </>
+            ) : (
+                <button onClick={loginWithGithub}>Login with GitHub</button>
+            )}
+        </nav>
+    );
 }

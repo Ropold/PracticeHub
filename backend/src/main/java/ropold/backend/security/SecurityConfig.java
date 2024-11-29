@@ -20,6 +20,8 @@ public class SecurityConfig {
     @Value("${app.url}")
     private String appUrl;
 
+    private static final String PRACTICE_HUB_PATH = "/api/practice-hub/*";
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -27,13 +29,16 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(a -> a
                         .requestMatchers(HttpMethod.GET, "/api/practice-hub").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/practice-hub/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, PRACTICE_HUB_PATH).permitAll() // Verwendung der Konstante
+                        .requestMatchers(HttpMethod.PUT, PRACTICE_HUB_PATH).authenticated() // Verwendung der Konstante
+                        .requestMatchers(HttpMethod.DELETE, PRACTICE_HUB_PATH).authenticated() // Verwendung der Konstante
                         .requestMatchers("/api/practice-hub").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/practice-hub/*").authenticated()
-                        .requestMatchers("/api/user/me").authenticated()
+                        .requestMatchers("/api/users/me").permitAll()
                         .requestMatchers("/api/secured").authenticated()
                         .anyRequest().permitAll()
                 )
+                .logout(l -> l.logoutUrl("/api/users/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> response.setStatus(200)))
 
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .exceptionHandling(e -> e
