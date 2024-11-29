@@ -1,5 +1,6 @@
 package ropold.backend.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class RoomController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public RoomModel postRoom(@RequestBody RoomModelDto roomModelDto) {
+    public RoomModel postRoom(@RequestBody @Valid RoomModelDto roomModelDto) {
         return roomService.addRoom(
                 new RoomModel(
                         null,
