@@ -32,7 +32,8 @@ public class RoomService {
                 roomModel.address(),
                 roomModel.category(),
                 roomModel.description(),
-                roomModel.wishlistStatus()
+                roomModel.wishlistStatus(),
+                roomModel.imageUrl()
         );
         return roomRepository.save(newRoomModel);
     }
@@ -45,7 +46,8 @@ public class RoomService {
                     roomModel.address(),
                     roomModel.category(),
                     roomModel.description(),
-                    roomModel.wishlistStatus()
+                    roomModel.wishlistStatus(),
+                    roomModel.imageUrl()
             );
             return roomRepository.save(updatedRoomModel);
         } else {
