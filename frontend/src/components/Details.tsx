@@ -18,6 +18,7 @@ const defaultRoom: RoomModel = {
     category: "",
     description: "",
     wishlistStatus: "NOT_ON_WISHLIST",
+    imageUrl: "",
 };
 
 export default function Details(props: Readonly<DetailsProps>) {
@@ -49,6 +50,7 @@ export default function Details(props: Readonly<DetailsProps>) {
                 category: room.category,
                 description: room.description,
                 wishlistStatus: room.wishlistStatus,
+                imageUrl: room.imageUrl,
             });
         }
     };
