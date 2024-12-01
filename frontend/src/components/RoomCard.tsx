@@ -23,6 +23,13 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
                 <h2>{props.room.name}</h2>
                 <p><strong>Address: </strong>{props.room.address}</p>
                 <p><strong>Category: </strong>{props.room.category}</p>
+                {props.room.imageUrl ? (
+                    <img
+                        src={props.room.imageUrl}
+                        alt={props.room.name}
+                        className="room-card-image"
+                    />
+                ) : null}
             </div>
             {props.user !== "anonymousUser" && (
                 <button

@@ -22,6 +22,6 @@ public class CloudinaryService {
 
         // Upload durchführen und URL extrahieren
         Map uploadResult = cloudinary.uploader().upload(fileToUpload, Collections.emptyMap());
-        return (String) uploadResult.get("url");
+        return uploadResult.get("secure_url").toString();
     }
 }

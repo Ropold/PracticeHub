@@ -114,6 +114,13 @@ export default function Details(props: Readonly<DetailsProps>) {
                     <p><strong>Address: </strong> {room.address}</p>
                     <p><strong>Category: </strong> {room.category}</p>
                     <p><strong>Description: </strong> {room.description}</p>
+                    {room.imageUrl ? (
+                        <img
+                            src={room.imageUrl}
+                            alt={room.name}
+                            className="room-card-image"
+                        />
+                    ) : null}
 
                     {props.user !== "anonymousUser" && (
                         <div>

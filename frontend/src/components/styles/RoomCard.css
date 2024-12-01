@@ -54,3 +54,9 @@
     color: #666; /* Grauer Button, wenn nicht auf der Wunschliste */
 }
 
+.room-card-image {
+    width: 200px; /* Passt sich an die Breite des Containers an */
+    height: auto; /* Bewahrt das Seitenverhältnis */
+    object-fit: cover; /* Sorgt dafür, dass das Bild gut in den Rahmen passt */
+    border-bottom: 1px solid #ccc; /* Optional: Trennlinie zwischen Bild und Inhalt */
+}
