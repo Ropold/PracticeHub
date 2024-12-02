@@ -34,7 +34,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, PRACTICE_HUB_PATH).authenticated() // Verwendung der Konstante
                         .requestMatchers("/api/practice-hub").authenticated()
                         .requestMatchers("/api/users/me").permitAll()
-                        .requestMatchers("/api/secured").authenticated()
                         .anyRequest().permitAll()
                 )
                 .logout(l -> l.logoutUrl("/api/users/logout")

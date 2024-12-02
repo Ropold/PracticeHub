@@ -17,7 +17,6 @@ export default function App() {
     function getUser() {
         axios.get("/api/users/me")
             .then((response) => {
-                console.log("Github-userId: " + response.data)
                 setUser(response.data)
             })
             .catch((error) => {
@@ -30,7 +29,7 @@ export default function App() {
         getUser()
     }, []);
 
-  return (
+ return (
         <BrowserRouter>
             <NavBar user={user} getUser={getUser}/>
             <Routes>
@@ -46,4 +45,3 @@ export default function App() {
         </BrowserRouter>
   )
 }
-
