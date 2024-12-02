@@ -18,7 +18,7 @@ export default function AddRoom() {
         const data = new FormData();
 
         if (image) {
-            console.log("Gesendetes Bild:", image);
+            //console.log("Gesendetes Bild:", image);
             data.append("image", image);
         }
 
@@ -30,8 +30,7 @@ export default function AddRoom() {
             .post("/api/practice-hub", data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                },
-                withCredentials: true, // Cookies werden mitgesendet, falls nötig
+                }
             })
             .then((response) => {
                 //console.log("Antwort vom Server:", response.data);
