@@ -189,18 +189,22 @@ class RoomControllerIntegrationTest {
     @Test
     @WithMockUser(username = "testUser", roles = {"USER"})
     void deleteRoom_shouldRemoveRoomFromRepository() throws Exception {
-        // GIVEN
+        // GIVEN: Ein Raum, der bereits in der Datenbank existiert
         RoomModel roomToDelete = new RoomModel("2", "Beethoven-Saal", "Beethovenstraße 1, 53115 Bonn",
                 "Konzerthalle", "Ein moderner Saal für klassische Musik und Veranstaltungen.",
                 WishlistStatus.ON_WISHLIST, "https://www.test.de/");
         roomRepository.save(roomToDelete);
 
-        // WHEN
+        Uploader mockuploader = mock(Uploader.class);
+        when(mockuploader.destroy(any(), anyMap())).thenReturn(Map.of("result", "ok"));
+        when(cloudinary.uploader()).thenReturn(mockuploader);
+
+        // WHEN: Der DELETE-Request wird durchgeführt
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/practice-hub/2"))
-                // THEN
+                // THEN: Der Statuscode 204 (No Content) wird erwartet
                 .andExpect(status().isNoContent());
 
-        // Verify repository is empty
+        // Überprüfen, ob der Raum aus der Datenbank gelöscht wurde
         Assertions.assertFalse(roomRepository.existsById("2"));
     }
 }
