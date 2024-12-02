@@ -154,7 +154,6 @@ export default function Details(props: Readonly<DetailsProps>) {
                             className="room-card-image"
                         />
                     ) : null}
-                    <MapBox address={room.address}/>
                     {props.user !== "anonymousUser" && (
                         <div>
                             <div className="button-group">
@@ -167,6 +166,7 @@ export default function Details(props: Readonly<DetailsProps>) {
                             </div>
                         </div>
                     )}
+                    <MapBox address={room.address}/>
                 </div>
             )}
         </div>

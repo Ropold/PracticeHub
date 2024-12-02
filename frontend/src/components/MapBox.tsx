@@ -1,7 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css"; // Mapbox CSS importieren
-import "./styles/mapbox.css"; // Importiere die externe CSS-Datei für die Karte
 
 type MapBoxProps = {
     address: string;
@@ -14,7 +13,7 @@ export default function MapBox(props: Readonly<MapBoxProps>) {
     const mapContainerRef = useRef<HTMLDivElement | null>(null); // Referenz für den Map Container
     const [geocodeError, setGeocodeError] = useState<string | null>(null);
     const [center, setCenter] = useState<[number, number] | null>(null); // Initialer Mittelpunkt
-    const [zoom, setZoom] = useState<number>(12); // Initialer Zoom
+    const [zoom, setZoom] = useState<number>(15); // Initialer Zoom
 
     useEffect(() => {
         // Geocoding für die Adresse
@@ -30,20 +29,18 @@ export default function MapBox(props: Readonly<MapBoxProps>) {
                 if (data.features && data.features.length > 0) {
                     const [longitude, latitude] = data.features[0].geometry.coordinates;
                     setCenter([longitude, latitude]);
-                    setZoom(12); // Anpassen des Zooms bei Erfolg
 
-                    // Alte Karte entfernen, wenn sie existiert
+                    // Karte initialisieren oder neu setzen
                     if (mapRef.current) {
-                        mapRef.current.remove();
+                        mapRef.current.remove(); // Vorherige Karte entfernen
                     }
 
-                    // Neue Karte initialisieren, wenn der Container verfügbar ist
                     if (mapContainerRef.current) {
                         mapRef.current = new mapboxgl.Map({
                             container: mapContainerRef.current,
                             style: "mapbox://styles/mapbox/streets-v11", // Karte im "Streets"-Stil
                             center: [longitude, latitude], // Zentrum setzen
-                            zoom: 12, // Zoom-Level
+                            zoom: zoom, // Zoom-Level direkt setzen
                         });
 
                         // Marker hinzufügen
@@ -68,6 +65,13 @@ export default function MapBox(props: Readonly<MapBoxProps>) {
         };
     }, [props.address]); // Der Effekt wird nur ausgelöst, wenn sich die Adresse ändert
 
+    // Füge useEffect hinzu, um den Zoom-Wert zu aktualisieren
+    useEffect(() => {
+        if (mapRef.current) {
+            mapRef.current.setZoom(zoom); // Setze den Zoom-Level
+        }
+    }, [zoom]); // Nur wenn sich der zoom-Wert ändert
+
     return (
         <>
             <h3>MapBox</h3>
@@ -75,7 +79,7 @@ export default function MapBox(props: Readonly<MapBoxProps>) {
 
             {geocodeError && <div>{geocodeError}</div>} {/* Zeige Fehlernachricht an, falls es ein Problem gab */}
 
-            <div id="map-container" ref={mapContainerRef} />
+            <div id="map-container" ref={mapContainerRef} style={{ width: "100%", height: "500px" }} />
         </>
     );
 }
