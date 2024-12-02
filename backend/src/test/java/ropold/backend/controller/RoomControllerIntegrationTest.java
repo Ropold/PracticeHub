@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,7 +19,6 @@ import ropold.backend.model.WishlistStatus;
 import ropold.backend.repository.RoomRepository;
 
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -154,37 +152,46 @@ class RoomControllerIntegrationTest {
                 WishlistStatus.NOT_ON_WISHLIST, "https://www.test.de/");
         roomRepository.save(existingRoom);
 
-        // WHEN
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/practice-hub/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                     {
-                        "id": "1",
-                        "name": "Gürzenich Saal",
-                        "address": "Neumarkt 1, 50667 Köln",
-                        "category": "Orchester-Saal",
-                        "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                        "wishlistStatus": "ON_WISHLIST"
-                     }
-                     """)
-                )
-                // THEN
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json("""
-                                                             {
-                                                                "id": "1",
-                                                                "name": "Gürzenich Saal",
-                                                                "address": "Neumarkt 1, 50667 Köln",
-                                                                "category": "Orchester-Saal",
-                                                                "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                                                                "wishlistStatus": "ON_WISHLIST"
-                                                             }
-                                                             """));
+        Uploader mockuploader = mock(Uploader.class);
+        when(mockuploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://www.test.de/"));
+        when(cloudinary.uploader()).thenReturn(mockuploader);
 
-        // Verify in repository
+        // WHEN: Der PUT-Request wird explizit mit multipart und angepasster Methode gesendet
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/practice-hub/1")  // Multipart für PUT
+                        .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))  // Bild simulieren
+                        .file(new MockMultipartFile("roomModelDto", "", "application/json", """
+                        {
+                            "name": "Gürzenich Saal",
+                            "address": "Neumarkt 1, 50667 Köln",
+                            "category": "Orchester-Saal",
+                            "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                            "wishlistStatus": "ON_WISHLIST"
+                        }
+                        """.getBytes()))  // Raum-DTO als JSON
+                        .contentType("multipart/form-data")
+                        .with(request -> { request.setMethod("PUT"); return request; }))  // Methode überschreiben
+                .andExpect(status().isOk())  // Erfolg, weil PUT erfolgreich war
+                .andExpect(MockMvcResultMatchers.content().json("""
+                {
+                    "id": "1",
+                    "name": "Gürzenich Saal",
+                    "address": "Neumarkt 1, 50667 Köln",
+                    "category": "Orchester-Saal",
+                    "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                    "wishlistStatus": "ON_WISHLIST",
+                    "imageUrl": "https://www.test.de/"
+                }
+            """));
+
+        // THEN: Verifizieren, dass der Raum in der Datenbank aktualisiert wurde
         RoomModel updatedRoom = roomRepository.findById("1").orElseThrow();
         Assertions.assertEquals(WishlistStatus.ON_WISHLIST, updatedRoom.wishlistStatus());
+        Assertions.assertEquals("https://www.test.de/", updatedRoom.imageUrl());
     }
+
+
+
+
 
     @Test
     @WithMockUser(username = "testUser", roles = {"USER"})
