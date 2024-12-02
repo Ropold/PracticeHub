@@ -35,7 +35,7 @@ class ExceptionHandlerTest {
                         .content("""
                 {
                    "name": "hu",
-                   "address": "Neumarkt Köln",
+                   "address": "Neumarkt",
                    "category": "   ",
                    "description": "huhu",
                    "wishlistStatus": "ON_WISHLIST"
@@ -45,9 +45,7 @@ class ExceptionHandlerTest {
                 // THEN
                 .andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().json("""
-                 {"address":"Address must contain at least a street name, a 5-digit postal code, and a city name, e.g. 'Musterstraße 12345 Musterstadt'",
-                 "name":"size must be between 3 and 2147483647",
-                 "category":"must not be blank"}
+                 {"address":"Address must contain at least two words, a 5-digit postal code, and a city name, e.g. 'Musterstraße 12345 Musterstadt'","name":"size must be between 3 and 2147483647","category":"must not be blank"}
                 """));
     }
 }
