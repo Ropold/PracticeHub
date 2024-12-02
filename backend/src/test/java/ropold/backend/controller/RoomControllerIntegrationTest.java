@@ -18,19 +18,18 @@ import ropold.backend.model.RoomModel;
 import ropold.backend.model.WishlistStatus;
 import ropold.backend.repository.RoomRepository;
 
-
 import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class RoomControllerIntegrationTest {
+
     static RoomModel roomModel;
 
     @MockBean
@@ -42,53 +41,44 @@ class RoomControllerIntegrationTest {
     @Autowired
     RoomRepository roomRepository;
 
-
     @BeforeEach
     void setup() {
         roomRepository.deleteAll();
-
         roomModel = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln",
                 "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                 WishlistStatus.ON_WISHLIST, "https://www.test.de/");
-
         roomRepository.save(roomModel);
     }
 
     @Test
     void getAllRooms_expectListWithOneRoom_whenOneRoomSaved() throws Exception {
-
         // WHEN
-        mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/practice-hub")
-                )
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/practice-hub"))
                 // THEN
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
-                                                                                       [
-                                                                                         {
-                            "id": "1",
-                            "name": "Gürzenich Saal",
-                            "address": "Neumarkt 1, 50667 Köln",
-                            "category": "Orchester-Saal",
-                            "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                            "wishlistStatus": "ON_WISHLIST",
-                            "imageUrl": "https://www.test.de/"
-                                                                                         }]
-                        """
-                ));
+                        [
+                            {
+                                "id": "1",
+                                "name": "Gürzenich Saal",
+                                "address": "Neumarkt 1, 50667 Köln",
+                                "category": "Orchester-Saal",
+                                "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                                "wishlistStatus": "ON_WISHLIST",
+                                "imageUrl": "https://www.test.de/"
+                            }
+                        ]
+                        """));
     }
 
     @Test
     void getRoomById_returnRoomWithId1_whenRoomWithId1Saved() throws Exception {
-
         // WHEN
-        mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/practice-hub/1")
-                )
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/practice-hub/1"))
                 // THEN
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
-                                                                                         {
+                        {
                             "id": "1",
                             "name": "Gürzenich Saal",
                             "address": "Neumarkt 1, 50667 Köln",
@@ -96,9 +86,8 @@ class RoomControllerIntegrationTest {
                             "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                             "wishlistStatus": "ON_WISHLIST",
                             "imageUrl": "https://www.test.de/"
-                                                                                         }
-                        """
-                ));
+                        }
+                        """));
     }
 
     @Test
@@ -106,14 +95,14 @@ class RoomControllerIntegrationTest {
     void postRoom_shouldReturnSavedRoom() throws Exception {
         // GIVEN
         roomRepository.deleteAll();
-        Uploader mockuploader = mock(Uploader.class);
-        when(mockuploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://www.test.de/"));
-        when(cloudinary.uploader()).thenReturn(mockuploader);
+        Uploader mockUploader = mock(Uploader.class);
+        when(mockUploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://www.test.de/"));
+        when(cloudinary.uploader()).thenReturn(mockUploader);
 
         // WHEN
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/practice-hub")
-                .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))
-                .file(new MockMultipartFile("roomModelDto", "","application/json", """
+                        .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))
+                        .file(new MockMultipartFile("roomModelDto", "", "application/json", """
                         {
                             "name": "Gürzenich Saal",
                             "address": "Neumarkt 1, 50667 Köln",
@@ -127,8 +116,7 @@ class RoomControllerIntegrationTest {
         // THEN
         List<RoomModel> allRooms = roomRepository.findAll();
         Assertions.assertEquals(1, allRooms.size());
-
-        RoomModel savedRoom = allRooms.getFirst();
+        RoomModel savedRoom = allRooms.get(0);
         org.assertj.core.api.Assertions.assertThat(savedRoom)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
@@ -151,14 +139,13 @@ class RoomControllerIntegrationTest {
                 "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                 WishlistStatus.NOT_ON_WISHLIST, "https://www.test.de/");
         roomRepository.save(existingRoom);
+        Uploader mockUploader = mock(Uploader.class);
+        when(mockUploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://www.test.de/"));
+        when(cloudinary.uploader()).thenReturn(mockUploader);
 
-        Uploader mockuploader = mock(Uploader.class);
-        when(mockuploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://www.test.de/"));
-        when(cloudinary.uploader()).thenReturn(mockuploader);
-
-        // WHEN: Der PUT-Request wird explizit mit multipart und angepasster Methode gesendet
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/practice-hub/1")  // Multipart für PUT
-                        .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))  // Bild simulieren
+        // WHEN
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/practice-hub/1")
+                        .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))
                         .file(new MockMultipartFile("roomModelDto", "", "application/json", """
                         {
                             "name": "Gürzenich Saal",
@@ -167,51 +154,45 @@ class RoomControllerIntegrationTest {
                             "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                             "wishlistStatus": "ON_WISHLIST"
                         }
-                        """.getBytes()))  // Raum-DTO als JSON
+                        """.getBytes()))
                         .contentType("multipart/form-data")
-                        .with(request -> { request.setMethod("PUT"); return request; }))  // Methode überschreiben
-                .andExpect(status().isOk())  // Erfolg, weil PUT erfolgreich war
+                        .with(request -> { request.setMethod("PUT"); return request; }))
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
-                {
-                    "id": "1",
-                    "name": "Gürzenich Saal",
-                    "address": "Neumarkt 1, 50667 Köln",
-                    "category": "Orchester-Saal",
-                    "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                    "wishlistStatus": "ON_WISHLIST",
-                    "imageUrl": "https://www.test.de/"
-                }
-            """));
+                        {
+                            "id": "1",
+                            "name": "Gürzenich Saal",
+                            "address": "Neumarkt 1, 50667 Köln",
+                            "category": "Orchester-Saal",
+                            "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                            "wishlistStatus": "ON_WISHLIST",
+                            "imageUrl": "https://www.test.de/"
+                        }
+                        """));
 
-        // THEN: Verifizieren, dass der Raum in der Datenbank aktualisiert wurde
+        // THEN
         RoomModel updatedRoom = roomRepository.findById("1").orElseThrow();
         Assertions.assertEquals(WishlistStatus.ON_WISHLIST, updatedRoom.wishlistStatus());
         Assertions.assertEquals("https://www.test.de/", updatedRoom.imageUrl());
     }
 
-
-
-
-
     @Test
     @WithMockUser(username = "testUser", roles = {"USER"})
     void deleteRoom_shouldRemoveRoomFromRepository() throws Exception {
-        // GIVEN: Ein Raum, der bereits in der Datenbank existiert
+        // GIVEN
         RoomModel roomToDelete = new RoomModel("2", "Beethoven-Saal", "Beethovenstraße 1, 53115 Bonn",
                 "Konzerthalle", "Ein moderner Saal für klassische Musik und Veranstaltungen.",
                 WishlistStatus.ON_WISHLIST, "https://www.test.de/");
         roomRepository.save(roomToDelete);
+        Uploader mockUploader = mock(Uploader.class);
+        when(mockUploader.destroy(any(), anyMap())).thenReturn(Map.of("result", "ok"));
+        when(cloudinary.uploader()).thenReturn(mockUploader);
 
-        Uploader mockuploader = mock(Uploader.class);
-        when(mockuploader.destroy(any(), anyMap())).thenReturn(Map.of("result", "ok"));
-        when(cloudinary.uploader()).thenReturn(mockuploader);
-
-        // WHEN: Der DELETE-Request wird durchgeführt
+        // WHEN
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/practice-hub/2"))
-                // THEN: Der Statuscode 204 (No Content) wird erwartet
                 .andExpect(status().isNoContent());
 
-        // Überprüfen, ob der Raum aus der Datenbank gelöscht wurde
+        // THEN
         Assertions.assertFalse(roomRepository.existsById("2"));
     }
 }

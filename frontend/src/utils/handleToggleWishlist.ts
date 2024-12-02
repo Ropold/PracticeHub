@@ -1,9 +1,7 @@
 import axios from "axios";
 import {RoomModel} from "../components/model/RoomModel.ts";
 
-
 type HandleUpdateRoomType = (updatedRoom: RoomModel) => void;
-
 
 export default function handleToggleWishlist(room: RoomModel, handleUpdateRoom: HandleUpdateRoomType): void {
     const updatedStatus = room.wishlistStatus === "ON_WISHLIST" ? "NOT_ON_WISHLIST" : "ON_WISHLIST";

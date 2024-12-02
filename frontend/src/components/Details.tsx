@@ -6,7 +6,6 @@ import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import handleToggleWishlist from "../utils/handleToggleWishlist.ts";
 
-
 type DetailsProps = {
     user: string;
 }
@@ -68,7 +67,6 @@ export default function Details(props: Readonly<DetailsProps>) {
 
         const data = new FormData();
 
-        // Wenn ein neues Bild hochgeladen wird, fügen wir es hinzu
         if (image) {
             data.append("image", image);
         }
@@ -76,7 +74,7 @@ export default function Details(props: Readonly<DetailsProps>) {
         const updatedRoomData = {
             ...editData,
             wishlistStatus: editData.wishlistStatus,
-            imageUrl: "" // Falls kein neues Bild hochgeladen wird, bleibt das alte Bild
+            imageUrl: ""
         };
 
         data.append("roomModelDto", new Blob([JSON.stringify(updatedRoomData)], { type: "application/json" }));
@@ -95,7 +93,6 @@ export default function Details(props: Readonly<DetailsProps>) {
                 console.error("Error saving room edits:", error);
             });
     };
-
 
     const handleDelete = (id: string) => {
         const isConfirmed = window.confirm("Are you sure you want to delete this room?");
@@ -118,8 +115,6 @@ export default function Details(props: Readonly<DetailsProps>) {
             setImage(e.target.files[0]);
         }
     };
-
-
 
     return (
         <div className="details-container">
@@ -158,7 +153,6 @@ export default function Details(props: Readonly<DetailsProps>) {
                             className="room-card-image"
                         />
                     ) : null}
-
                     {props.user !== "anonymousUser" && (
                         <div>
                             <div className="button-group">
@@ -170,7 +164,6 @@ export default function Details(props: Readonly<DetailsProps>) {
                                 <button id="button-delete" onClick={() => handleDelete(room.id)}>Delete</button>
                             </div>
                         </div>
-
                     )}
                 </div>
             )}
