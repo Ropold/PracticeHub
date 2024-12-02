@@ -8,33 +8,43 @@ export default function AddRoom() {
     const [category, setCategory] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [status, setStatus] = useState<"ON_WISHLIST" | "NOT_ON_WISHLIST">("NOT_ON_WISHLIST");
+    const [image, setImage] = useState<File | null>(null);
 
     const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const roomData = { name, address, category, description, wishlistStatus: status };
-        console.log("Room data:", roomData);
+        const data = new FormData();
+
+        if (image) {
+            //console.log("Gesendetes Bild:", image);
+            data.append("image", image);
+        }
+
+        const roomData = { name, address, category, description, wishlistStatus: status, imageUrl: "" };
+
+        data.append("roomModelDto", new Blob([JSON.stringify(roomData)], { type: "application/json" }));
 
         axios
-            .post(`/api/practice-hub`, roomData)
+            .post("/api/practice-hub", data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            })
             .then((response) => {
-                const newRoomId = response.data.id;
-                navigate(`/room/${newRoomId}`);
+                //console.log("Antwort vom Server:", response.data);
+                navigate(`/room/${response.data.id}`);
             })
             .catch((error) => {
-                // Wenn ein Fehler auftritt, prüfen wir, ob es sich um einen Validierungsfehler handelt
                 if (error.response && error.response.status === 400 && error.response.data) {
                     const errorMessages = error.response.data;
                     let alertMessage = "Please fix the following errors:\n";
 
-                    // Fehler durchlaufen und in die Alert-Nachricht einfügen
                     Object.keys(errorMessages).forEach((field) => {
                         alertMessage += `${field}: ${errorMessages[field]}\n`;
                     });
 
-                    // Fehler als Alert anzeigen
                     alert(alertMessage);
                 } else {
                     console.error("Error adding room:", error);
@@ -42,6 +52,12 @@ export default function AddRoom() {
                 }
             });
     };
+
+    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files){
+            setImage(e.target.files[0]);
+        }
+    }
 
     return (
         <div className="details-container">
@@ -60,6 +76,8 @@ export default function AddRoom() {
                             onChange={(e) => setStatus(e.target.value as "ON_WISHLIST" | "NOT_ON_WISHLIST")}>
                             <option value="ON_WISHLIST">On Wishlist</option>
                             <option value="NOT_ON_WISHLIST">Not on Wishlist</option></select></label>
+                    <input type={"file"} onChange={onFileChange}/>
+                    {image && <img src={URL.createObjectURL(image)} className={"room-card-image"}/>}
                     <div className="button-group"><button type="submit">Add Room</button></div>
                 </form>
             </div>

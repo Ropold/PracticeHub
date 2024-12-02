@@ -13,6 +13,7 @@ import axios from "axios";
 
 export default function App() {
     const [user, setUser] = useState<string>("anonymousUser");
+    document.title = "Practice Hub";
 
     function getUser() {
         axios.get("/api/users/me")

@@ -6,7 +6,6 @@ import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import handleToggleWishlist from "../utils/handleToggleWishlist.ts";
 
-
 type DetailsProps = {
     user: string;
 }
@@ -18,14 +17,17 @@ const defaultRoom: RoomModel = {
     category: "",
     description: "",
     wishlistStatus: "NOT_ON_WISHLIST",
+    imageUrl: "",
 };
 
 export default function Details(props: Readonly<DetailsProps>) {
     const [room, setRoom] = useState<RoomModel>(defaultRoom);
     const [editRoomId, setEditRoomId] = useState<string | null>(null);
     const [editData, setEditData] = useState<RoomModel>(defaultRoom);
+    const [image, setImage] = useState<File | null>(null);
 
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
     const fetchRoomDetails = () => {
         if (!id) return;
@@ -49,6 +51,7 @@ export default function Details(props: Readonly<DetailsProps>) {
                 category: room.category,
                 description: room.description,
                 wishlistStatus: room.wishlistStatus,
+                imageUrl: room.imageUrl,
             });
         }
     };
@@ -61,17 +64,35 @@ export default function Details(props: Readonly<DetailsProps>) {
 
     const handleSaveEdit = () => {
         if (!editRoomId) return;
+
+        const data = new FormData();
+
+        if (image) {
+            data.append("image", image);
+        }
+
+        const updatedRoomData = {
+            ...editData,
+            wishlistStatus: editData.wishlistStatus,
+            imageUrl: ""
+        };
+
+        data.append("roomModelDto", new Blob([JSON.stringify(updatedRoomData)], { type: "application/json" }));
+
         axios
-            .put(`/api/practice-hub/${editRoomId}`, editData)
+            .put(`/api/practice-hub/${editRoomId}`, data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            })
             .then((response) => {
                 setRoom(response.data);
-                setEditRoomId(null);
-
+                setEditRoomId(null); // Bearbeiten beenden
             })
-            .catch((error) => console.error("Error saving room edits:", error));
-    }
-
-    const navigate = useNavigate();
+            .catch((error) => {
+                console.error("Error saving room edits:", error);
+            });
+    };
 
     const handleDelete = (id: string) => {
         const isConfirmed = window.confirm("Are you sure you want to delete this room?");
@@ -89,6 +110,11 @@ export default function Details(props: Readonly<DetailsProps>) {
         }
     };
 
+    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setImage(e.target.files[0]);
+        }
+    };
 
     return (
         <div className="details-container">
@@ -96,13 +122,19 @@ export default function Details(props: Readonly<DetailsProps>) {
                 <div className="edit-form">
                     <h2>Edit Room Details</h2>
                     <label>Name: <input className="input-small" type="text" value={editData.name}
-                                        onChange={(e) => handleEditChange("name", e.target.value)} /></label>
+                                        onChange={(e) => handleEditChange("name", e.target.value)}/></label>
                     <label>Address: <input className="input-small" type="text" value={editData.address}
-                                           onChange={(e) => handleEditChange("address", e.target.value)} /></label>
+                                           onChange={(e) => handleEditChange("address", e.target.value)}/></label>
                     <label>Category: <input className="input-small" type="text" value={editData.category}
-                                            onChange={(e) => handleEditChange("category", e.target.value)} /></label>
+                                            onChange={(e) => handleEditChange("category", e.target.value)}/></label>
                     <label>Description: <textarea className="textarea-large" value={editData.description}
-                                                  onChange={(e) => handleEditChange("description", e.target.value)} /></label>
+                                                  onChange={(e) => handleEditChange("description", e.target.value)}/></label>
+                    <label>Image:
+                        <input type="file" onChange={onFileChange}/>
+                        {image && <img src={URL.createObjectURL(image)} className={"room-card-image"} alt="Preview"/>}
+                        {!image && editData.imageUrl &&
+                            <img src={editData.imageUrl} className={"room-card-image"} alt="Current"/>}
+                    </label>
                     <div className="button-group">
                         <button onClick={handleSaveEdit}>Save</button>
                         <button onClick={handleCancelEdit}>Cancel</button>
@@ -114,7 +146,13 @@ export default function Details(props: Readonly<DetailsProps>) {
                     <p><strong>Address: </strong> {room.address}</p>
                     <p><strong>Category: </strong> {room.category}</p>
                     <p><strong>Description: </strong> {room.description}</p>
-
+                    {room.imageUrl ? (
+                        <img
+                            src={room.imageUrl}
+                            alt={room.name}
+                            className="room-card-image"
+                        />
+                    ) : null}
                     {props.user !== "anonymousUser" && (
                         <div>
                             <div className="button-group">
@@ -126,7 +164,6 @@ export default function Details(props: Readonly<DetailsProps>) {
                                 <button id="button-delete" onClick={() => handleDelete(room.id)}>Delete</button>
                             </div>
                         </div>
-
                     )}
                 </div>
             )}

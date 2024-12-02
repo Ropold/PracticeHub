@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 public record RoomModelDto(
         @NotBlank
-        @Size(min = 3)
+        @Size(min = 3, message = "Name must contain at least 3 characters")
         String name,
 
         @NotBlank
@@ -13,12 +13,13 @@ public record RoomModelDto(
         String address,
 
         @NotBlank
-        @Size(min = 3)
+        @Size(min = 3, message = "Category must contain at least 3 characters")
         String category,
 
         @NotBlank
-        @Size(min = 3)
+        @Size(min = 3, message = "Description must contain at least 3 characters")
         String description,
-        WishlistStatus wishlistStatus
+        WishlistStatus wishlistStatus,
+        String imageUrl
 ) {
 }

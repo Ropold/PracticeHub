@@ -14,6 +14,7 @@ public class RoomService {
 
     private final IdService idService;
     private final RoomRepository roomRepository;
+    private final CloudinaryService cloudinaryService;
 
     public List<RoomModel> getAllRooms() {
         return roomRepository.findAll();
@@ -32,7 +33,8 @@ public class RoomService {
                 roomModel.address(),
                 roomModel.category(),
                 roomModel.description(),
-                roomModel.wishlistStatus()
+                roomModel.wishlistStatus(),
+                roomModel.imageUrl()
         );
         return roomRepository.save(newRoomModel);
     }
@@ -45,7 +47,8 @@ public class RoomService {
                     roomModel.address(),
                     roomModel.category(),
                     roomModel.description(),
-                    roomModel.wishlistStatus()
+                    roomModel.wishlistStatus(),
+                    roomModel.imageUrl()
             );
             return roomRepository.save(updatedRoomModel);
         } else {
@@ -54,8 +57,11 @@ public class RoomService {
     }
 
     public void deleteRoom(String id) {
-        if (!roomRepository.existsById(id)) {
-            throw new RoomNotFoundException("No Room found to delete with id: " + id);
+        RoomModel room = roomRepository.findById(id)
+                .orElseThrow(() -> new RoomNotFoundException("Kein Raum gefunden zum Löschen mit der ID: " + id));
+
+        if (room.imageUrl() != null) {
+            cloudinaryService.deleteImage(room.imageUrl());
         }
         roomRepository.deleteById(id);
     }
