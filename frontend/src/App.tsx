@@ -29,20 +29,19 @@ export default function App() {
         getUser()
     }, []);
 
-  return (
+ return (
         <BrowserRouter>
             <NavBar user={user} getUser={getUser}/>
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/room/:id" element={<Details />} />
-                    <Route element={<ProtectedRoute user={user} />}>
-                        <Route path="/wishlist" element={<WishList />} />
-                         <Route path="/addroom" element={<AddRoom />} />
-                         <Route path={"/profile"} element={<Profile />} />
-                    </Route>
+                <Route path="/" element={<Home user={user}/>} />
+                <Route path="/room/:id" element={<Details user={user} />} />
+                <Route element={<ProtectedRoute user={user} />}>
+                    <Route path="/wishlist" element={<WishList user={user}/>} />
+                    <Route path="/add-room" element={<AddRoom />} />
+                    <Route path={"/profile"} element={<Profile />} />
+                </Route>
             </Routes>
             <Footer/>
         </BrowserRouter>
   )
 }
-
