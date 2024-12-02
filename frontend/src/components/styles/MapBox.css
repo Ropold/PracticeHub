@@ -1,0 +1,33 @@
+/* mapbox.css */
+
+/* Der Container, der die Karte anzeigt */
+#map-container {
+    height: 100%;
+    width: 100%;
+    background-color: lightgrey; /* Temporäre Hintergrundfarbe für die Container-Diagnose */
+}
+
+/* Falls du eine Sidebar in der Karte benötigst, kannst du dies hier hinzufügen */
+.sidebar {
+    background-color: rgb(35 55 75 / 90%);
+    color: #fff;
+    padding: 6px 12px;
+    font-family: monospace;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 12px;
+    border-radius: 4px;
+}
+
+/* Optional: Reset-Button (falls du ihn auf der Karte benötigst) */
+.reset-button {
+    position: absolute;
+    top: 50px;
+    z-index: 1;
+    left: 12px;
+    padding: 4px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
