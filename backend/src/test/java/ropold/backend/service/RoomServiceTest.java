@@ -17,10 +17,11 @@ import static org.mockito.Mockito.*;
 class RoomServiceTest {
     IdService idService = mock(IdService.class);
     RoomRepository roomRepository = mock(RoomRepository.class);
-    RoomService roomService = new RoomService(idService, roomRepository);
+    CloudinaryService cloudinaryService = mock(CloudinaryService.class);
+    RoomService roomService = new RoomService(idService, roomRepository,cloudinaryService);
 
-    RoomModel roomModel = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln", "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.", WishlistStatus.NOT_ON_WISHLIST);
-    RoomModel roomModel2 = new RoomModel("2", "Gürzenich Saal", "Neumarkt 1, 50667 Köln", "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.", WishlistStatus.NOT_ON_WISHLIST);
+    RoomModel roomModel = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln", "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.", WishlistStatus.NOT_ON_WISHLIST, "https://www.test.de/");
+    RoomModel roomModel2 = new RoomModel("2", "Gürzenich Saal", "Neumarkt 1, 50667 Köln", "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.", WishlistStatus.NOT_ON_WISHLIST, "https://www.test.de/");
     List<RoomModel> rooms = List.of(roomModel, roomModel2);
 
     @Test
@@ -50,8 +51,8 @@ class RoomServiceTest {
     @Test
     void addRoom() {
         // Given
-        RoomModel roomModel3 = new RoomModel("3", "Gürzenich Saal", "Neumarkt 1, 50667 Köln", "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.", WishlistStatus.NOT_ON_WISHLIST);
-        RoomModel newRoom = new RoomModel("3", roomModel3.name(), roomModel3.address(), roomModel3.category(), roomModel3.description(), roomModel3.wishlistStatus());
+        RoomModel roomModel3 = new RoomModel("3", "Gürzenich Saal", "Neumarkt 1, 50667 Köln", "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.", WishlistStatus.NOT_ON_WISHLIST, "https://www.test.de/");
+        RoomModel newRoom = new RoomModel("3", roomModel3.name(), roomModel3.address(), roomModel3.category(), roomModel3.description(), roomModel3.wishlistStatus(), roomModel3.imageUrl());
 
         when(idService.generateRandomId()).thenReturn("3");
         when(roomRepository.save(any(RoomModel.class))).thenReturn(newRoom);
@@ -77,7 +78,8 @@ class RoomServiceTest {
                 "Neumarkt 1, 50667 Köln",
                 "Orchester-Saal",
                 "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                WishlistStatus.NOT_ON_WISHLIST
+                WishlistStatus.NOT_ON_WISHLIST,
+                "https://www.test.de/"
         );
 
         RoomModel updatedRoom = new RoomModel(
@@ -86,7 +88,8 @@ class RoomServiceTest {
                 existingRoom.address(),
                 existingRoom.category(),
                 existingRoom.description(),
-                WishlistStatus.ON_WISHLIST
+                WishlistStatus.ON_WISHLIST,
+                "https://www.test.de/"
         );
 
         when(roomRepository.existsById("1")).thenReturn(true);

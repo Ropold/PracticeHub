@@ -36,7 +36,7 @@ class RoomControllerIntegrationTest {
 
         roomModel = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln",
                 "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                WishlistStatus.ON_WISHLIST);
+                WishlistStatus.ON_WISHLIST, "https://www.test.de/");
 
         roomRepository.save(roomModel);
     }
@@ -58,7 +58,8 @@ class RoomControllerIntegrationTest {
                             "address": "Neumarkt 1, 50667 Köln",
                             "category": "Orchester-Saal",
                             "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                            "wishlistStatus": "ON_WISHLIST"
+                            "wishlistStatus": "ON_WISHLIST",
+                            "imageUrl": "https://www.test.de/"
                                                                                          }]
                         """
                 ));
@@ -80,7 +81,8 @@ class RoomControllerIntegrationTest {
                             "address": "Neumarkt 1, 50667 Köln",
                             "category": "Orchester-Saal",
                             "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                            "wishlistStatus": "ON_WISHLIST"
+                            "wishlistStatus": "ON_WISHLIST",
+                            "imageUrl": "https://www.test.de/"
                                                                                          }
                         """
                 ));
@@ -101,7 +103,8 @@ class RoomControllerIntegrationTest {
                             "address": "Neumarkt 1, 50667 Köln",
                             "category": "Orchester-Saal",
                             "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                            "wishlistStatus": "ON_WISHLIST"
+                            "wishlistStatus": "ON_WISHLIST",
+                            "imageUrl": "https://www.test.de/"
                          }
                         """)
         ).andExpect(status().isCreated());
@@ -120,7 +123,8 @@ class RoomControllerIntegrationTest {
                         "Neumarkt 1, 50667 Köln",
                         "Orchester-Saal",
                         "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                        WishlistStatus.ON_WISHLIST
+                        WishlistStatus.ON_WISHLIST,
+                        "https://www.test.de/"
                 ));
     }
 
@@ -130,7 +134,7 @@ class RoomControllerIntegrationTest {
         // GIVEN
         RoomModel existingRoom = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln",
                 "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                WishlistStatus.NOT_ON_WISHLIST);
+                WishlistStatus.NOT_ON_WISHLIST, "https://www.test.de/");
         roomRepository.save(existingRoom);
 
         // WHEN
@@ -171,7 +175,7 @@ class RoomControllerIntegrationTest {
         // GIVEN
         RoomModel roomToDelete = new RoomModel("2", "Beethoven-Saal", "Beethovenstraße 1, 53115 Bonn",
                 "Konzerthalle", "Ein moderner Saal für klassische Musik und Veranstaltungen.",
-                WishlistStatus.ON_WISHLIST);
+                WishlistStatus.ON_WISHLIST, "https://www.test.de/");
         roomRepository.save(roomToDelete);
 
         // WHEN
