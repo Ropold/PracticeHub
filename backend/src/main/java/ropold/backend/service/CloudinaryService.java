@@ -20,7 +20,6 @@ public class CloudinaryService {
         File fileToUpload = File.createTempFile("practice-hub", "");
         image.transferTo(fileToUpload);
 
-        // Upload durchführen und URL extrahieren
         Map uploadResult = cloudinary.uploader().upload(fileToUpload, Collections.emptyMap());
         return uploadResult.get("secure_url").toString();
     }

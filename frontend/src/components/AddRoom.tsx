@@ -34,21 +34,18 @@ export default function AddRoom() {
                 withCredentials: true, // Cookies werden mitgesendet, falls nötig
             })
             .then((response) => {
-                console.log("Antwort vom Server:", response.data);
-                navigate(`/room/${response.data.id}`); // Weiterleitung auf den neu erstellten Raum
+                //console.log("Antwort vom Server:", response.data);
+                navigate(`/room/${response.data.id}`);
             })
             .catch((error) => {
-                // Wenn ein Fehler auftritt, prüfen wir, ob es sich um einen Validierungsfehler handelt
                 if (error.response && error.response.status === 400 && error.response.data) {
                     const errorMessages = error.response.data;
                     let alertMessage = "Please fix the following errors:\n";
 
-                    // Fehler durchlaufen und in die Alert-Nachricht einfügen
                     Object.keys(errorMessages).forEach((field) => {
                         alertMessage += `${field}: ${errorMessages[field]}\n`;
                     });
 
-                    // Fehler als Alert anzeigen
                     alert(alertMessage);
                 } else {
                     console.error("Error adding room:", error);
@@ -56,8 +53,6 @@ export default function AddRoom() {
                 }
             });
     };
-
-
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files){

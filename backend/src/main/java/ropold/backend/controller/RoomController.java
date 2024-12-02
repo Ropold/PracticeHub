@@ -1,6 +1,5 @@
 package ropold.backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,8 +42,6 @@ public class RoomController {
             imageUrl = cloudinaryService.uploadImage(image);
         }
 
-
-        // Erstellung eines neuen RoomModel basierend auf DTO und hochgeladener Datei
         return roomService.addRoom(
                 new RoomModel(
                         null,
@@ -53,25 +50,11 @@ public class RoomController {
                         roomModelDto.category(),
                         roomModelDto.description(),
                         roomModelDto.wishlistStatus(),
-                        imageUrl // URL des hochgeladenen Bildes
+                        imageUrl
                 )
         );
     }
 
-//    @ResponseStatus(HttpStatus.CREATED)
-//    @PostMapping
-//    public RoomModel postRoom(@RequestBody @Valid RoomModelDto roomModelDto) {
-//        return roomService.addRoom(
-//                new RoomModel(
-//                        null,
-//                        roomModelDto.name(),
-//                        roomModelDto.address(),
-//                        roomModelDto.category(),
-//                        roomModelDto.description(),
-//                        roomModelDto.wishlistStatus()
-//                )
-//        );
-//    }
 
     @PutMapping("/{id}")
     public RoomModel putRoom(@PathVariable String id, @RequestBody RoomModelDto roomModelDto) {
