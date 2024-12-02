@@ -1,10 +1,13 @@
 import { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css"; // Mapbox CSS importieren
+import "./styles/mapbox.css"; // Importiere die externe CSS-Datei für die Karte
 
 type MapBoxProps = {
     address: string;
 };
+
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 export default function MapBox(props: Readonly<MapBoxProps>) {
     const mapRef = useRef<mapboxgl.Map | null>(null); // Referenz für die Karte
@@ -72,7 +75,7 @@ export default function MapBox(props: Readonly<MapBoxProps>) {
 
             {geocodeError && <div>{geocodeError}</div>} {/* Zeige Fehlernachricht an, falls es ein Problem gab */}
 
-            <div id="map-container" ref={mapContainerRef} style={{ width: "100%", height: "100vh" }} />
+            <div id="map-container" ref={mapContainerRef} />
         </>
     );
 }

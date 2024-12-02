@@ -1,11 +1,13 @@
 /* mapbox.css */
 
+
 /* Der Container, der die Karte anzeigt */
 #map-container {
-    height: 100%;
-    width: 100%;
-    background-color: lightgrey; /* Temporäre Hintergrundfarbe für die Container-Diagnose */
+    width: 100%;  /* Die Karte nimmt 100% der Breite des Containers ein */
+    height: 60vh; /* Die Karte nimmt 60% der Bildschirmhöhe ein */
+    background-color: lightgrey; /* Temporäre Hintergrundfarbe für den Container zur Diagnose */
 }
+
 
 /* Falls du eine Sidebar in der Karte benötigst, kannst du dies hier hinzufügen */
 .sidebar {
