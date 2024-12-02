@@ -1,7 +1,18 @@
-export default function MapBox(){
+
+import mapboxgl from "mapbox-gl";
+
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+
+type MapBoxProps = {
+    address: string;
+};
+
+export default function MapBox(props: Readonly<MapBoxProps>) {
     return (
-        <div>
-            <h2>MapBox</h2>
-        </div>
+        <>
+            <h3>MapBox</h3>
+            <p>Address: {props.address}</p>
+
+        </>
     );
 }
