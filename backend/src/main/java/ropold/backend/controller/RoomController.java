@@ -35,17 +35,14 @@ public class RoomController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public RoomModel postRoom(
-            @RequestPart(required = false) MultipartFile image,
-            @RequestPart @Valid String json) throws IOException {
+            @RequestPart("roomModelDto") @Valid RoomModelDto roomModelDto,
+            @RequestPart("image") MultipartFile image) throws IOException {
 
-        // Parsing des JSON-Inputs
-        RoomModelDto roomModelDto = new ObjectMapper().readValue(json, RoomModelDto.class);
-
-        // Datei-Upload-Verarbeitung (falls vorhanden)
         String imageUrl = null;
         if (image != null && !image.isEmpty()) {
             imageUrl = cloudinaryService.uploadImage(image);
         }
+
 
         // Erstellung eines neuen RoomModel basierend auf DTO und hochgeladener Datei
         return roomService.addRoom(

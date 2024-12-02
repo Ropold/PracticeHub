@@ -22,10 +22,9 @@ export default function AddRoom() {
             data.append("image", image);
         }
 
-        let imageUrl = "";
-        const roomData = { name, address, category, description, wishlistStatus: status, imageUrl };
+        const roomData = { name, address, category, description, wishlistStatus: status, imageUrl: "" };
 
-        data.append("json", JSON.stringify(roomData));
+        data.append("roomModelDto", new Blob([JSON.stringify(roomData)], { type: "application/json" }));
 
         axios
             .post("/api/practice-hub", data, {
