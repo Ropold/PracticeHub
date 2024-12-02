@@ -60,11 +60,9 @@ public class RoomService {
         RoomModel room = roomRepository.findById(id)
                 .orElseThrow(() -> new RoomNotFoundException("Kein Raum gefunden zum Löschen mit der ID: " + id));
 
-        // Wenn das Bild existiert, lösche es von Cloudinary
         if (room.imageUrl() != null) {
             cloudinaryService.deleteImage(room.imageUrl());
         }
-
-        roomRepository.deleteById(id); // Lösche den Raum aus der Datenbank
+        roomRepository.deleteById(id);
     }
 }
