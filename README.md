@@ -1,6 +1,6 @@
 Final Project of NeueFische Java Bootcamp
 
-Website is live at:
+The website is live at:
 https://practicehub.onrender.com/
 
-(is a low server and has to wake up - you have to wait a few seconds)
+(It is a low-performance server and needs to wake up – you may have to wait a few seconds.)
