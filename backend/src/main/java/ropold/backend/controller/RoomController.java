@@ -57,19 +57,38 @@ public class RoomController {
 
 
     @PutMapping("/{id}")
-    public RoomModel putRoom(@PathVariable String id, @RequestBody RoomModelDto roomModelDto) {
-        return roomService.updateRoomWithPut(id,
-                new RoomModel(
-                        id,
-                        roomModelDto.name(),
-                        roomModelDto.address(),
-                        roomModelDto.category(),
-                        roomModelDto.description(),
-                        roomModelDto.wishlistStatus(),
-                        roomModelDto.imageUrl()
-                )
+    public RoomModel putRoom(@PathVariable String id,
+                             @RequestPart("roomModelDto") RoomModelDto roomModelDto,
+                             @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+
+        RoomModel existingRoom = roomService.getRoomById(id); // Hole den bestehenden Raum aus der DB
+
+        // Wenn ein neues Bild hochgeladen wurde, löschen wir das alte Bild von Cloudinary
+        String newImageUrl = null;
+        if (image != null && !image.isEmpty()) {
+            if (existingRoom.imageUrl() != null) {
+                cloudinaryService.deleteImage(existingRoom.imageUrl()); // Altes Bild löschen
+            }
+            newImageUrl = cloudinaryService.uploadImage(image); // Neues Bild hochladen
+        } else {
+            // Wenn kein Bild hochgeladen wurde, bleibt das alte Bild
+            newImageUrl = existingRoom.imageUrl();
+        }
+
+        // Aktualisiere den Raum mit den neuen Daten (einschließlich des neuen Bildes, falls vorhanden)
+        RoomModel updatedRoom = new RoomModel(
+                id,
+                roomModelDto.name(),
+                roomModelDto.address(),
+                roomModelDto.category(),
+                roomModelDto.description(),
+                roomModelDto.wishlistStatus(),
+                newImageUrl // Bild-URL wird entsprechend gesetzt
         );
+
+        return roomService.updateRoomWithPut(id, updatedRoom);
     }
+
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
