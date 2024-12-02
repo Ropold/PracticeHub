@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./styles/Profile.css"
 
+
+
 export default function Profile() {
     const [user, setUser] = useState<any>(null); // Wir verwenden `any` für flexible Daten.
 
