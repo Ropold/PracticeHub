@@ -1,12 +1,16 @@
 package ropold.backend.controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Uploader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -15,8 +19,15 @@ import ropold.backend.model.RoomModel;
 import ropold.backend.model.WishlistStatus;
 import ropold.backend.repository.RoomRepository;
 
-import java.util.List;
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -24,11 +35,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RoomControllerIntegrationTest {
     static RoomModel roomModel;
 
+    @MockBean
+    private Cloudinary cloudinary;
+
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     RoomRepository roomRepository;
+
 
     @BeforeEach
     void setup() {
@@ -93,21 +108,23 @@ class RoomControllerIntegrationTest {
     void postRoom_shouldReturnSavedRoom() throws Exception {
         // GIVEN
         roomRepository.deleteAll();
+        Uploader mockuploader = mock(Uploader.class);
+        when(mockuploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://www.test.de/"));
+        when(cloudinary.uploader()).thenReturn(mockuploader);
 
         // WHEN
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                         {
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/practice-hub")
+                .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))
+                .file(new MockMultipartFile("roomModelDto", "","application/json", """
+                        {
                             "name": "Gürzenich Saal",
                             "address": "Neumarkt 1, 50667 Köln",
                             "category": "Orchester-Saal",
                             "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                            "wishlistStatus": "ON_WISHLIST",
-                            "imageUrl": "https://www.test.de/"
-                         }
-                        """)
-        ).andExpect(status().isCreated());
+                            "wishlistStatus": "ON_WISHLIST"
+                        }
+                        """.getBytes())))
+                .andExpect(status().isCreated());
 
         // THEN
         List<RoomModel> allRooms = roomRepository.findAll();
