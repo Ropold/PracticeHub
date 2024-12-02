@@ -105,19 +105,24 @@ class RoomServiceTest {
     }
 
     @Test
-    void deleteRoom() {
-        // Given
-        String roomId = "1";
-        when(roomRepository.existsById(roomId)).thenReturn(true);
+    void deleteRoomTest() {
+        // Gegeben: Eine feste ID und gemockte Repository- und Cloudinary-Services
+        String fixedId = "123e4567-e89b-12d3-a456-426614174000";
+        RoomRepository roomRepositoryMock = mock(RoomRepository.class);
+        CloudinaryService cloudinaryServiceMock = mock(CloudinaryService.class);
 
-        // When
-        roomService.deleteRoom(roomId);
+        // Raum mit der festen ID
+        RoomModel room = new RoomModel(fixedId, "Test Room", "Test Address", "Test Category", "Test Description", WishlistStatus.ON_WISHLIST, null);
+        when(roomRepositoryMock.findById(fixedId)).thenReturn(Optional.of(room));
 
-        // Then
-        verify(roomRepository, times(1)).deleteById(roomId);
-        verify(roomRepository, times(1)).existsById(roomId);
-        verifyNoMoreInteractions(roomRepository);
+        RoomService roomService = new RoomService(new IdService(), roomRepositoryMock, cloudinaryServiceMock);
+
+        // Die deleteRoom-Methode aufrufen
+        roomService.deleteRoom(fixedId);
+
+        // Überprüfen, dass die Methoden aufgerufen wurden
+        verify(roomRepositoryMock).deleteById(fixedId);
+        verify(roomRepositoryMock).findById(fixedId);
     }
-
 
 }
