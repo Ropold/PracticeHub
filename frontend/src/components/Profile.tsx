@@ -3,12 +3,12 @@ import axios from "axios";
 import "./styles/Profile.css"
 
 export default function Profile() {
-    const [user, setUser] = useState<any>(null); // Wir verwenden `any` für flexible Daten.
+    const [user, setUser] = useState<any>(null);
 
     function getUserDetails() {
         axios.get("/api/users/me/details")
             .then((response) => {
-                console.log("User details:", response.data);
+                //console.log("User details:", response.data);
                 setUser(response.data);
             })
             .catch((error) => {

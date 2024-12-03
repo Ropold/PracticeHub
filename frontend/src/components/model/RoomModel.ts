@@ -7,4 +7,5 @@ export type RoomModel = {
     category: string;
     description: string;
     wishlistStatus: WishlistStatus;
+    imageUrl: string;
 }

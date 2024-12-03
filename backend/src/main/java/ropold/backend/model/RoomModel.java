@@ -6,6 +6,7 @@ public record RoomModel(
         String address,
         String category,
         String description,
-        WishlistStatus wishlistStatus
+        WishlistStatus wishlistStatus,
+        String imageUrl
 ) {
 }
