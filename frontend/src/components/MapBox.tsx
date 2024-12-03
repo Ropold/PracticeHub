@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css"; // Mapbox CSS importieren
 
@@ -6,19 +7,37 @@ type MapBoxProps = {
     address: string;
 };
 
-mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
-
 export default function MapBox(props: Readonly<MapBoxProps>) {
     const mapRef = useRef<mapboxgl.Map | null>(null); // Referenz für die Karte
     const mapContainerRef = useRef<HTMLDivElement | null>(null); // Referenz für den Map Container
-    const [geocodeError, setGeocodeError] = useState<string | null>(null);
+    const [geocodeError, setGeocodeError] = useState<string | null>(null); // Fehlerzustand für Geocoding
+    const [mapboxConfig, setMapboxConfig] = useState<string | null>(null); // Zustand für das Mapbox-Token
+
+    // Funktion, um das Mapbox-Konfigurationstoken vom Backend zu holen
+    function fetchMapBoxConfig() {
+        axios.get("/api/mapbox/72c81498-f6b2-4a8a-911c-cd217a65e0da")
+            .then((response) => {
+                const resp = response.data; // Hier nehmen wir das Token aus der Antwort
+                setMapboxConfig(resp); // Token speichern
+                mapboxgl.accessToken = resp; // Setze das Access-Token für Mapbox
+            })
+            .catch((error) => {
+                console.error("Error fetching MapBox configuration:", error);
+                setGeocodeError("Failed to fetch MapBox configuration"); // Fehler setzen
+            });
+    }
 
     useEffect(() => {
-        if (!props.address) return;
+        fetchMapBoxConfig(); // API-Aufruf beim Laden der Komponente
+    }, []);
+
+    // Geocoding und Map-Initialisierung
+    useEffect(() => {
+        if (!props.address || !mapboxConfig) return; // Warten, bis Adresse und Token verfügbar sind
 
         const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
             props.address
-        )}.json?access_token=${mapboxgl.accessToken}`;
+        )}.json?access_token=${mapboxConfig}`;
 
         fetch(geocodeUrl)
             .then((response) => response.json())
@@ -59,7 +78,7 @@ export default function MapBox(props: Readonly<MapBoxProps>) {
                 mapRef.current.remove();
             }
         };
-    }, [props.address]);
+    }, [props.address, mapboxConfig]); // `mapboxConfig` als Abhängigkeit, da es jetzt vom API-Aufruf kommt
 
     return (
         <>
