@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import handleToggleWishlist from "../utils/handleToggleWishlist.ts";
+import MapBox from "./MapBox.tsx";
 
 type DetailsProps = {
     user: string;
@@ -165,6 +166,7 @@ export default function Details(props: Readonly<DetailsProps>) {
                             </div>
                         </div>
                     )}
+                    <MapBox address={room.address}/>
                 </div>
             )}
         </div>

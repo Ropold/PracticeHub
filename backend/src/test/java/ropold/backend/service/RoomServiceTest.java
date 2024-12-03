@@ -1,7 +1,6 @@
 package ropold.backend.service;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import ropold.backend.model.RoomModel;
 import ropold.backend.model.WishlistStatus;
 import ropold.backend.repository.RoomRepository;
@@ -13,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 
-@SpringBootTest
 class RoomServiceTest {
     IdService idService = mock(IdService.class);
     RoomRepository roomRepository = mock(RoomRepository.class);
