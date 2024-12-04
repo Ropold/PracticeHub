@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ropold.backend.model.RoomModel;
 import ropold.backend.model.RoomModelDto;
-import ropold.backend.repository.AppUserRepository;
 import ropold.backend.service.AppUserService;
 import ropold.backend.service.CloudinaryService;
 import ropold.backend.service.RoomService;

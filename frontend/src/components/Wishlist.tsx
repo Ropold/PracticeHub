@@ -11,17 +11,32 @@ type WishlistProps = {
 export default function Wishlist(props: Readonly<WishlistProps>) {
     const [wishlistRooms, setWishlistRooms] = useState<RoomModel[]>([]);
 
+    // useEffect(() => {
+    //     axios
+    //         .get("/api/practice-hub")
+    //         .then((response) => {
+    //             const rooms = response.data;
+    //             setWishlistRooms(rooms.filter((room: RoomModel) => room.wishlistStatus === "ON_WISHLIST"));
+    //         })
+    //         .catch((error) => {
+    //             console.error(error);
+    //         });
+    // }, []);
+
     useEffect(() => {
+        // Hole die Favoritenräume des Benutzers von der API
         axios
-            .get("/api/practice-hub")
+            .get(`/api/practice-hub/favorites/${props.user}`)
             .then((response) => {
-                const rooms = response.data;
-                setWishlistRooms(rooms.filter((room: RoomModel) => room.wishlistStatus === "ON_WISHLIST"));
+                // Setze die erhaltenen Räume als Favoritenräume
+                setWishlistRooms(response.data);
+                console.log(response.data);
             })
             .catch((error) => {
                 console.error(error);
             });
-    }, []);
+    }, [props.user]);
+
 
     const handleStatusChange = (updatedRoom: RoomModel) => {
         setWishlistRooms((prevWishlistRooms) =>
@@ -31,7 +46,7 @@ export default function Wishlist(props: Readonly<WishlistProps>) {
 
     return (
         <div>
-            <h2>Public Wishlist</h2>
+            <h2>Wishlist</h2>
             {wishlistRooms.length > 0 ? (
                 wishlistRooms.map((room) => (
                     <RoomCard key={room.id} room={room} user={props.user} onStatusChange={handleStatusChange} />
