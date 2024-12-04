@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ropold.backend.model.RoomModel;
-import ropold.backend.model.WishlistStatus;
 import ropold.backend.repository.RoomRepository;
 
 import java.util.List;

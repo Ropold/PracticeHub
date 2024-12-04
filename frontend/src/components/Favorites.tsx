@@ -5,10 +5,11 @@ import axios from "axios";
 
 type WishlistProps = {
     user: string;
+    favorites: string[];
     onStatusChange?: (updatedRoom: RoomModel) => void;
 };
 
-export default function Wishlist(props: Readonly<WishlistProps>) {
+export default function Favorites(props: Readonly<WishlistProps>) {
     const [wishlistRooms, setWishlistRooms] = useState<RoomModel[]>([]);
 
     // useEffect(() => {
@@ -49,7 +50,7 @@ export default function Wishlist(props: Readonly<WishlistProps>) {
             <h2>Wishlist</h2>
             {wishlistRooms.length > 0 ? (
                 wishlistRooms.map((room) => (
-                    <RoomCard key={room.id} room={room} user={props.user} onStatusChange={handleStatusChange} />
+                    <RoomCard key={room.id} room={room} user={props.user} favorites={props.favorites} onStatusChange={handleStatusChange} />
                 ))
             ) : (
                 <p>No rooms on the wishlist.</p>

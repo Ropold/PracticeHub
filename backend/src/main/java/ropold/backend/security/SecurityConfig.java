@@ -76,6 +76,7 @@ public class SecurityConfig {
                                 githubUser.getAttribute("login"),
                                 githubUser.getAttribute("name"),
                                 githubUser.getAttribute("avatar_url"),
+                                githubUser.getAttribute("html_url"),
                                 Collections.emptyList());
                         return appUserRepository.save(newUser);
                     });

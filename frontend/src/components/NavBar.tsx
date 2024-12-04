@@ -37,7 +37,7 @@ export default function NavBar(props: NavbarProps) {
             <button onClick={() => navigate("/")}>Home</button>
             {props.user !== "anonymousUser" ? (
                 <>
-                    <button onClick={() => navigate(`/wishlist/${props.user}`)}>Wishlist</button>
+                    <button onClick={() => navigate(`/favorites/${props.user}`)}>Wishlist</button>
                     <button onClick={() => navigate("/add-room")}>Add Room</button>
                     <button onClick={() => navigate("/profile")}>Profile</button>
                     <button onClick={logoutFromGithub}>Logout</button>

@@ -69,7 +69,7 @@ public class RoomController {
                         roomModelDto.address(),
                         roomModelDto.category(),
                         roomModelDto.description(),
-                        roomModelDto.wishlistStatus(),
+                        roomModelDto.appUserGitbubId(),
                         imageUrl
                 )
         );
@@ -98,7 +98,7 @@ public class RoomController {
                 roomModelDto.address(),
                 roomModelDto.category(),
                 roomModelDto.description(),
-                roomModelDto.wishlistStatus(),
+                roomModelDto.appUserGitbubId(),
                 newImageUrl
         );
         return roomService.updateRoomWithPut(id, updatedRoom);

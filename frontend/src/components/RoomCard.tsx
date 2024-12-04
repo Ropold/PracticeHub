@@ -3,8 +3,10 @@ import { RoomModel } from "./model/RoomModel.ts";
 import { useNavigate } from "react-router-dom";
 import handleToggleWishlist from "../utils/handleToggleWishlist.ts";
 
+
 type RoomCardProps = {
     room: RoomModel;
+    favorites: string[];
     user: string;
     onStatusChange: (updatedRoom: RoomModel) => void;
 };
@@ -36,9 +38,9 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
                     id="button-wishlist"
                     onClick={(event) => {
                         event.stopPropagation(); // Verhindert die Weitergabe des Klicks an die Karte
-                        handleToggleWishlist(props.room, props.onStatusChange);
+                        handleToggleWishlist(props.room.id, props.user, props.favorites );
                     }}
-                    className={props.room.wishlistStatus === "ON_WISHLIST" ? "wishlist-on" : "wishlist-off"}
+                    //className={"ON_WISHLIST" ? "wishlist-on" : "wishlist-off"}
                 >
                     ♥
                 </button>

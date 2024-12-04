@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ropold.backend.model.AppUser;
 import ropold.backend.repository.AppUserRepository;
 
-
 import java.util.Map;
 
 @RequiredArgsConstructor

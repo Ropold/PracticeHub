@@ -3,7 +3,6 @@ package ropold.backend.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ropold.backend.model.RoomModel;
-import ropold.backend.model.WishlistStatus;
 import ropold.backend.repository.RoomRepository;
 
 import java.util.List;

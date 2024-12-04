@@ -1,7 +1,7 @@
 import './App.css'
 import Home from "./components/Home/Home.tsx";
 import Details from "./components/Details.tsx";
-import WishList from "./components/Wishlist.tsx";
+import Favorites from "./components/Favorites.tsx";
 import NavBar from "./components/NavBar.tsx";
 import Footer from "./components/Footer.tsx";
 import AddRoom from "./components/AddRoom.tsx";
@@ -13,6 +13,7 @@ import axios from "axios";
 
 export default function App() {
     const [user, setUser] = useState<string>("anonymousUser");
+    const [favorites, setFavorites] = useState<string[]>([]);
 
     function getUser() {
         axios.get("/api/users/me")
@@ -28,17 +29,30 @@ export default function App() {
 
     useEffect(() => {
         getUser()
+        getAppUserFavorites()
     }, []);
 
-  return (
+    function getAppUserFavorites(){
+        axios.get(`/api/practice-hub/favorites/${user}`)
+            .then((response) => {
+                console.log("Favorites: " + response.data)
+                setFavorites(response.data)
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+
+    return (
         <BrowserRouter>
             <NavBar user={user} getUser={getUser}/>
             <Routes>
-                <Route path="/" element={<Home user={user}/>} />
-                <Route path="/room/:id" element={<Details user={user} />} />
+                <Route path="/" element={<Home favorites={favorites} user={user}/>} />
+                <Route path="/room/:id" element={<Details favorites={favorites} user={user} />} />
                 <Route element={<ProtectedRoute user={user} />}>
-                    <Route path="/wishlist/:id" element={<WishList user={user}/>} />
-                    <Route path="/add-room" element={<AddRoom />} />
+                    <Route path="/favorites/:id" element={<Favorites favorites={favorites} user={user}/>} />
+                    <Route path="/add-room" element={<AddRoom user={user}/>} />
                     <Route path={"/profile"} element={<Profile />} />
                 </Route>
             </Routes>

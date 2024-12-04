@@ -9,6 +9,7 @@ import MapBox from "./MapBox.tsx";
 
 type DetailsProps = {
     user: string;
+    favorites: string[];
 }
 
 const defaultRoom: RoomModel = {
@@ -17,7 +18,7 @@ const defaultRoom: RoomModel = {
     address: "",
     category: "",
     description: "",
-    wishlistStatus: "NOT_ON_WISHLIST",
+    appUserGitbubId: "",
     imageUrl: "",
 };
 
@@ -51,11 +52,12 @@ export default function Details(props: Readonly<DetailsProps>) {
                 address: room.address,
                 category: room.category,
                 description: room.description,
-                wishlistStatus: room.wishlistStatus,
+                appUserGitbubId: room.appUserGitbubId,
                 imageUrl: room.imageUrl,
             });
         }
     };
+
 
     const handleEditChange = (field: string, value: string) => {
         setEditData((prevData) => ({ ...prevData, [field]: value }));
@@ -147,6 +149,7 @@ export default function Details(props: Readonly<DetailsProps>) {
                     <p><strong>Address: </strong> {room.address}</p>
                     <p><strong>Category: </strong> {room.category}</p>
                     <p><strong>Description: </strong> {room.description}</p>
+                    <p><strong>Added by Github-User: </strong> {room.appUserGitbubId}</p>
                     {room.imageUrl ? (
                         <img
                             src={room.imageUrl}

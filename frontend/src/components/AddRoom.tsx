@@ -2,12 +2,15 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
-export default function AddRoom() {
+type AddRoomProps = {
+    user: string;
+}
+
+export default function AddRoom({ user }: AddRoomProps) {
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [category, setCategory] = useState<string>("");
     const [description, setDescription] = useState<string>("");
-    const [status, setStatus] = useState<"ON_WISHLIST" | "NOT_ON_WISHLIST">("NOT_ON_WISHLIST");
     const [image, setImage] = useState<File | null>(null);
 
     const navigate = useNavigate();
@@ -22,7 +25,7 @@ export default function AddRoom() {
             data.append("image", image);
         }
 
-        const roomData = { name, address, category, description, wishlistStatus: status, imageUrl: "" };
+        const roomData = { name, address, category, description, appUserGitbubId: user, imageUrl: "" };
 
         data.append("roomModelDto", new Blob([JSON.stringify(roomData)], { type: "application/json" }));
 
@@ -72,10 +75,9 @@ export default function AddRoom() {
                             onChange={(e) => setCategory(e.target.value)}/></label>
                     <label>Description: <textarea className="textarea-large" value={description}
                             onChange={(e) => setDescription(e.target.value)}/></label>
-                    <label>Status: <select value={status}
-                            onChange={(e) => setStatus(e.target.value as "ON_WISHLIST" | "NOT_ON_WISHLIST")}>
-                            <option value="ON_WISHLIST">On Wishlist</option>
-                            <option value="NOT_ON_WISHLIST">Not on Wishlist</option></select></label>
+                    <label>Status: <select>
+                            <option>On Wishlist</option>
+                            <option>Not on Wishlist</option></select></label>
                     <input type={"file"} onChange={onFileChange}/>
                     {image && <img src={URL.createObjectURL(image)} className={"room-card-image"}/>}
                     <div className="button-group"><button type="submit">Add Room</button></div>
