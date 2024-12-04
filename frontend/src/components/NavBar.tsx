@@ -31,12 +31,13 @@ export default function NavBar(props: NavbarProps) {
     }
 
 
+
     return (
         <nav className="navbar">
             <button onClick={() => navigate("/")}>Home</button>
             {props.user !== "anonymousUser" ? (
                 <>
-                    <button onClick={() => navigate("/wishlist")}>Wishlist</button>
+                    <button onClick={() => navigate(`/wishlist/${props.user}`)}>Wishlist</button>
                     <button onClick={() => navigate("/add-room")}>Add Room</button>
                     <button onClick={() => navigate("/profile")}>Profile</button>
                     <button onClick={logoutFromGithub}>Logout</button>
@@ -47,3 +48,4 @@ export default function NavBar(props: NavbarProps) {
         </nav>
     );
 }
+

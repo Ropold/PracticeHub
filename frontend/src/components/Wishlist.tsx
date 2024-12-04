@@ -31,7 +31,7 @@ export default function Wishlist(props: Readonly<WishlistProps>) {
 
     return (
         <div>
-            <h2>Wishlist</h2>
+            <h2>Public Wishlist</h2>
             {wishlistRooms.length > 0 ? (
                 wishlistRooms.map((room) => (
                     <RoomCard key={room.id} room={room} user={props.user} onStatusChange={handleStatusChange} />

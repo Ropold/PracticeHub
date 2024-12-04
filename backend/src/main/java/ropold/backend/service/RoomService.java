@@ -26,6 +26,10 @@ public class RoomService {
                 .orElseThrow(()-> new RoomNotFoundException("No Room found with id: " + id));
     }
 
+    public List<RoomModel> getRoomsByIds(List<String> roomIds) {
+        return roomRepository.findAllById(roomIds);
+    }
+
     public RoomModel addRoom(RoomModel roomModel) {
         RoomModel newRoomModel = new RoomModel(
                 idService.generateRandomId(),

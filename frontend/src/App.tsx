@@ -18,7 +18,7 @@ export default function App() {
         axios.get("/api/users/me")
             .then((response) => {
                 console.log("Github-userId: " + response.data)
-                setUser(response.data)
+                setUser(response.data.id)
             })
             .catch((error) => {
                 console.error(error);
@@ -37,7 +37,7 @@ export default function App() {
                 <Route path="/" element={<Home user={user}/>} />
                 <Route path="/room/:id" element={<Details user={user} />} />
                 <Route element={<ProtectedRoute user={user} />}>
-                    <Route path="/wishlist" element={<WishList user={user}/>} />
+                    <Route path="/wishlist/:id" element={<WishList user={user}/>} />
                     <Route path="/add-room" element={<AddRoom />} />
                     <Route path={"/profile"} element={<Profile />} />
                 </Route>
