@@ -36,6 +36,19 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
         if (roomToEdit) {
             setEditData(roomToEdit);
             setIsEditing(true);
+
+            // Wenn der Raum ein Bild hat, setze es in den State
+            if (roomToEdit.imageUrl) {
+                fetch(roomToEdit.imageUrl)
+                    .then((response) => response.blob())
+                    .then((blob) => {
+                        const file = new File([blob], "current-image.jpg", { type: blob.type });
+                        setImage(file);
+                    })
+                    .catch((error) => console.error("Error loading current image:", error));
+            } else {
+                setImage(null); // Kein Bild vorhanden
+            }
         }
     };
 
@@ -163,7 +176,7 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
                                 />
                                 <div className="button-group">
                                     <button onClick={() => handleEditToggle(room.id)}>Edit</button>
-                                    <button onClick={() => handleDelete(room.id)}>Delete</button>
+                                    <button id="button-delete" onClick={() => handleDelete(room.id)}>Delete</button>
                                 </div>
                             </div>
                         ))

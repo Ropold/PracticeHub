@@ -35,7 +35,7 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
             </div>
             {props.user !== "anonymousUser" && (
                 <button
-                    id="#button-favorite-room-card"
+                    id="button-favorite-room-card"
                     onClick={(event) => {
                         event.stopPropagation(); // Verhindert die Weitergabe des Klicks an die Karte
                         props.toggleFavorite(props.room.id);
