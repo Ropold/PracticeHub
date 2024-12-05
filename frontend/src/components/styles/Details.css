@@ -38,6 +38,7 @@ select {
     gap: 10px; /* Fügt einen Abstand von 10px zwischen den Buttons hinzu */
     justify-content: center; /* Optional: Zentriert die Buttons */
     margin-top: 20px; /* Optional: Etwas Abstand nach oben */
+    margin-bottom: 20px;
 }
 
 /* DONT USE SELECTOR!!!!! CHANGE LATER */

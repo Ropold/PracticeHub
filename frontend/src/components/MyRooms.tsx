@@ -1,6 +1,8 @@
 import {RoomModel} from "./model/RoomModel.ts";
 import RoomCard from "./RoomCard.tsx";
-
+import {useEffect, useState} from "react";
+import axios from "axios";
+import { Category } from './model/Category.ts';
 
 type MyRoomsProps = {
     user: string;
@@ -11,210 +13,165 @@ type MyRoomsProps = {
 
 export default function MyRooms(props: Readonly<MyRoomsProps>) {
 
-    const userRooms = props.rooms.filter((room) => room.appUserGithubId === props.user);
+    const [rooms, setRooms] = useState<RoomModel[]>(props.rooms); // Zustand für alle Räume
+    const [userRooms, setUserRooms] = useState<RoomModel[]>([]); // Zustand für gefilterte Räume des Benutzers
+    const [isEditing, setIsEditing] = useState<boolean>(false);  // Ob der Raum bearbeitet wird
+    const [editData, setEditData] = useState<RoomModel | null>(null);  // Daten des Raums, der bearbeitet wird
+    const [image, setImage] = useState<File | null>(null);// Für das Bild
+    const [category, setCategory] = useState<Category>("SOLO_DUO_ROOM");  // Kategorie des Raums
 
+
+    // Filtere die Räume des aktuellen Benutzers und speichere sie im Zustand
+    useEffect(() => {
+        setUserRooms(rooms.filter((room) => room.appUserGithubId === props.user));
+    }, [rooms, props.user,isEditing]); // Dieser Effekt wird jedes Mal ausgeführt, wenn rooms oder user geändert werden
+
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setCategory(e.target.value as Category);  // Setze den Wert und zwinge TypeScript, ihn als Category zu behandeln
+    };
+
+    // Start editing the room
+    const handleEditToggle = (roomId: string) => {
+        const roomToEdit = props.rooms.find((room) => room.id === roomId);
+        if (roomToEdit) {
+            setEditData(roomToEdit);
+            setIsEditing(true);
+        }
+    };
+
+    // Handle form submission to save the changes
+    const handleSaveEdit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (!editData) return;
+
+        const data = new FormData();
+        if (image) {
+            data.append("image", image);
+        }
+
+        const updatedRoomData = {
+            ...editData,
+            imageUrl: "",  // You may want to update this after uploading the image
+        };
+
+        data.append("roomModelDto", new Blob([JSON.stringify(updatedRoomData)], { type: "application/json" }));
+
+        axios
+            .put(`/api/practice-hub/${editData.id}`, data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                console.log("Antwort vom Server:", response.data);
+                setIsEditing(false);  // Exit edit mode
+            })
+            .catch((error) => {
+                console.error("Error saving room edits:", error);
+                alert("An unexpected error occurred. Please try again.");
+            });
+    };
+
+    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setImage(e.target.files[0]);
+        }
+    };
+
+
+    const handleDelete = (id: string) => {
+        const isConfirmed = window.confirm("Are you sure you want to delete this room?");
+
+        if (isConfirmed) {
+            axios
+                .delete(`/api/practice-hub/${id}`)
+                .then(() => {
+                    setRooms(rooms.filter((room) => room.id !== id));
+                })
+                .catch((error) => {
+                    console.error("Error deleting room:", error);
+                    alert("An error occurred while deleting the room.");
+                });
+        }
+    };
 
     return (
         <div>
             <h3>My Rooms of User {props.user}</h3>
-            <div className="my-rooms-list">
-                {userRooms.length > 0 ? (
-                    userRooms.map((room) => (
-                        <RoomCard
-                            key={room.id}
-                            room={room}
-                            user={props.user}
-                            favorites={props.favorites}
-                            toggleFavorite={props.toggleFavorite}
-                        />
-                    ))
-                ) : (
-                    <p>No rooms found for this user.</p>
-                )}
-            </div>
+
+            {isEditing ? (
+                <div className="details-container">
+                    <div className="edit-form">
+                        <h2>Edit Room</h2>
+                        <form onSubmit={handleSaveEdit}>
+                            <label>Title:
+                                <input
+                                    className="input-small"
+                                    type="text"
+                                    value={editData?.name || ""}
+                                    onChange={(e) => setEditData({ ...editData!, name: e.target.value })}
+                                />
+                            </label>
+                            <label>Address:
+                                <input
+                                    className="input-small"
+                                    type="text"
+                                    value={editData?.address || ""}
+                                    onChange={(e) => setEditData({ ...editData!, address: e.target.value })}
+                                />
+                            </label>
+                            <label>Category:
+                                <select
+                                    className="input-small"
+                                    value={category}
+                                    onChange={handleCategoryChange}
+                                >
+                                    <option value="SOLO_DUO_ROOM">Solo/Duo Room</option>
+                                    <option value="BAND_ROOM">Band Room</option>
+                                    <option value="STUDIO_ROOM">Studio Room</option>
+                                    <option value="ORCHESTER_HALL">Orchestra Hall</option>
+                                </select>
+                            </label>
+                            <label>Description:
+                                <textarea
+                                    className="textarea-large"
+                                    value={editData?.description || ""}
+                                    onChange={(e) => setEditData({...editData!, description: e.target.value })}
+                                />
+                            </label>
+                            <input type="file" onChange={onFileChange} />
+                            {image && <img src={URL.createObjectURL(image)} className="room-card-image" />}
+                            <div className="button-group">
+                                <button type="submit">Save Changes</button>
+                                <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            ) : (
+                // Show the room cards if not in edit mode
+                <div className="my-rooms-list">
+                    {userRooms.length > 0 ? (
+                        userRooms.map((room) => (
+                            <div key={room.id} className="room-card-container">
+                                <RoomCard
+                                    room={room}
+                                    user={props.user}
+                                    favorites={props.favorites}
+                                    toggleFavorite={props.toggleFavorite}
+                                />
+                                <div className="button-group">
+                                    <button onClick={() => handleEditToggle(room.id)}>Edit</button>
+                                    <button onClick={() => handleDelete(room.id)}>Delete</button>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No rooms found for this user.</p>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
-
-
-
-
-
-//
-// import "./styles/Details.css";
-// import "./styles/RoomCard.css";
-// import { RoomModel } from "./model/RoomModel.ts";
-// import { useEffect, useState } from "react";
-// import {useNavigate, useParams} from "react-router-dom";
-// import axios from "axios";
-// import MapBox from "./MapBox.tsx";
-//
-// type DetailsProps = {
-//     favorites: string[];
-//     user: string;
-//     toggleFavorite: (roomId: string) => void;
-// }
-//
-// const defaultRoom: RoomModel = {
-//     id: "",
-//     name: "Loading....",
-//     address: "",
-//     category: "",
-//     description: "",
-//     appUserGitbubId: "",
-//     imageUrl: "",
-// };
-//
-// export default function Details(props: Readonly<DetailsProps>) {
-//     const [room, setRoom] = useState<RoomModel>(defaultRoom);
-//     const [editRoomId, setEditRoomId] = useState<string | null>(null);
-//     const [editData, setEditData] = useState<RoomModel>(defaultRoom);
-//     const [image, setImage] = useState<File | null>(null);
-//
-//     const { id } = useParams<{ id: string }>();
-//     const navigate = useNavigate();
-//
-//     const fetchRoomDetails = () => {
-//         if (!id) return;
-//         axios
-//             .get(`/api/practice-hub/${id}`)
-//             .then((response) => setRoom(response.data))
-//             .catch((error) => console.error("Error fetching room details", error));
-//     };
-//
-//     useEffect(() => {
-//         fetchRoomDetails();
-//     }, [id]);
-//
-//     const handleEditToggle = () => {
-//         if (room) {
-//             setEditRoomId(room.id);
-//             setEditData({
-//                 id: room.id,
-//                 name: room.name,
-//                 address: room.address,
-//                 category: room.category,
-//                 description: room.description,
-//                 appUserGitbubId: room.appUserGitbubId,
-//                 imageUrl: room.imageUrl,
-//             });
-//         }
-//     };
-//
-//
-//     const handleEditChange = (field: string, value: string) => {
-//         setEditData((prevData) => ({ ...prevData, [field]: value }));
-//     };
-//
-//     const handleCancelEdit = () => setEditRoomId(null);
-//
-//     const handleSaveEdit = () => {
-//         if (!editRoomId) return;
-//
-//         const data = new FormData();
-//
-//         if (image) {
-//             data.append("image", image);
-//         }
-//
-//         const updatedRoomData = {
-//             ...editData,
-//             wishlistStatus: editData.wishlistStatus,
-//             imageUrl: ""
-//         };
-//
-//         data.append("roomModelDto", new Blob([JSON.stringify(updatedRoomData)], { type: "application/json" }));
-//
-//         axios
-//             .put(`/api/practice-hub/${editRoomId}`, data, {
-//                 headers: {
-//                     "Content-Type": "multipart/form-data",
-//                 }
-//             })
-//             .then((response) => {
-//                 setRoom(response.data);
-//                 setEditRoomId(null); // Bearbeiten beenden
-//             })
-//             .catch((error) => {
-//                 console.error("Error saving room edits:", error);
-//             });
-//     };
-//
-//     const handleDelete = (id: string) => {
-//         const isConfirmed = window.confirm("Are you sure you want to delete this room?");
-//
-//         if (isConfirmed) {
-//             axios
-//                 .delete(`/api/practice-hub/${id}`)
-//                 .then(() => {
-//                     setRoom(defaultRoom);
-//                     navigate("/");
-//                 })
-//                 .catch((error) => {
-//                     console.error("Error deleting room:", error);
-//                 });
-//         }
-//     };
-//
-//     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//         if (e.target.files) {
-//             setImage(e.target.files[0]);
-//         }
-//     };
-//
-//     return (
-//         <div className="details-container">
-//             {editRoomId ? (
-//                 <div className="edit-form">
-//                     <h2>Edit Room Details</h2>
-//                     <label>Name: <input className="input-small" type="text" value={editData.name}
-//                                         onChange={(e) => handleEditChange("name", e.target.value)}/></label>
-//                     <label>Address: <input className="input-small" type="text" value={editData.address}
-//                                            onChange={(e) => handleEditChange("address", e.target.value)}/></label>
-//                     <label>Category: <input className="input-small" type="text" value={editData.category}
-//                                             onChange={(e) => handleEditChange("category", e.target.value)}/></label>
-//                     <label>Description: <textarea className="textarea-large" value={editData.description}
-//                                                   onChange={(e) => handleEditChange("description", e.target.value)}/></label>
-//                     <label>Image:
-//                         <input type="file" onChange={onFileChange}/>
-//                         {image && <img src={URL.createObjectURL(image)} className={"room-card-image"} alt="Preview"/>}
-//                         {!image && editData.imageUrl &&
-//                             <img src={editData.imageUrl} className={"room-card-image"} alt="Current"/>}
-//                     </label>
-//                     <div className="button-group">
-//                         <button onClick={handleSaveEdit}>Save</button>
-//                         <button onClick={handleCancelEdit}>Cancel</button>
-//                     </div>
-//                 </div>
-//             ) : (
-//                 <div className="room-details">
-//                     <h2>{room.name}</h2>
-//                     <p><strong>Address: </strong> {room.address}</p>
-//                     <p><strong>Category: </strong> {room.category}</p>
-//                     <p><strong>Description: </strong> {room.description}</p>
-//                     <p><strong>Added by Github-User: </strong> {room.appUserGitbubId}</p>
-//                     {room.imageUrl ? (
-//                         <img
-//                             src={room.imageUrl}
-//                             alt={room.name}
-//                             className="room-card-image"
-//                         />
-//                     ) : null}
-//                     {props.user !== "anonymousUser" && (
-//                         <div>
-//                             <div className="button-group">
-//                                 <button onClick={()=>handleToggleWishlist(room, setRoom)}
-//                                         className={room.wishlistStatus === "ON_WISHLIST" ? "wishlist-on" : "wishlist-off"}
-//                                 >♥
-//                                 </button>
-//                                 <button onClick={handleEditToggle}>Edit</button>
-//                                 <button id="button-delete" onClick={() => handleDelete(room.id)}>Delete</button>
-//                             </div>
-//                         </div>
-//                     )}
-//                     <MapBox address={room.address}/>
-//                 </div>
-//             )}
-//         </div>
-//     );
-// }

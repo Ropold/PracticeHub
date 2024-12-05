@@ -25,7 +25,6 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
         const data = new FormData();
 
         if (image) {
-            //console.log("Gesendetes Bild:", image);
             data.append("image", image);
         }
 
@@ -43,7 +42,7 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
 
         data.append("roomModelDto", new Blob([JSON.stringify(roomData)], {type: "application/json"}));
 
-        //console.log("roomData:", roomData);
+        console.log("roomData:", roomData);
 
         axios
             .post("/api/practice-hub", data, {
@@ -52,7 +51,7 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
                 }
             })
             .then((response) => {
-                //console.log("Antwort vom Server:", response.data);
+                console.log("Antwort vom Server:", response.data);
                 navigate(`/room/${response.data.id}`);
                 props.handleSubmit(response.data);
             })
