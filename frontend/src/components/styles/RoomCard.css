@@ -33,24 +33,32 @@
     margin: 5px 0;
 }
 
-
 /* Styling für den Wunschlisten-Button */
-#button-wishlist {
+#button-favorite-room-card {
     position: absolute;
     top: 8px;
     left: 8px;
-    background: none;
+    background: blue;
+    border: none;
+    font-size: 24px;
+    outline: none; /* Entfernt den Fokusrahmen */
+}
+
+#button-favorite-details-card {
+    top: 8px;
+    left: 8px;
+    background: blue;
     border: none;
     font-size: 24px;
     outline: none; /* Entfernt den Fokusrahmen */
 }
 
 /* Farben für den Zustand des Wunschzettels */
-.wishlist-on {
+.favorite-on {
     color: red; /* Rot, wenn auf der Wunschliste */
 }
 
-.wishlist-off {
+.favorite-off {
     color: #666; /* Grauer Button, wenn nicht auf der Wunschliste */
 }
 

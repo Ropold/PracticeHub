@@ -34,12 +34,12 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
             </div>
             {props.user !== "anonymousUser" && (
                 <button
-                    id="button-wishlist"
+                    id="#button-favorite-room-card"
                     onClick={(event) => {
                         event.stopPropagation(); // Verhindert die Weitergabe des Klicks an die Karte
                         props.toggleFavorite(props.room.id);
                     }}
-                    className={isFavorite ? "wishlist-on" : "wishlist-off"}
+                    className={isFavorite ? "favorite-on" : "favorite-off"}
                 >
                     ♥
                 </button>
