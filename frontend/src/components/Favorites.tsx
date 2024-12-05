@@ -21,7 +21,7 @@ export default function Favorites(props: Readonly<FavoritesProps>) {
             .catch((error) => {
                 console.error(error);
             });
-    }, [props.user]);
+    }, [props.user, props.favorites]);
 
     return (
         <div>

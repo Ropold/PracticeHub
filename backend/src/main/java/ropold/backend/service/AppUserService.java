@@ -28,7 +28,7 @@ public class AppUserService {
 
         if (!user.favorites().contains(roomId)) {
             user.favorites().add(roomId);
-            save(user);
+            appUserRepository.save(user);
         }
     }
 
@@ -37,11 +37,8 @@ public class AppUserService {
 
         if (user.favorites().contains(roomId)) {
             user.favorites().remove(roomId);
-            save(user);
+            appUserRepository.save(user);
         }
     }
 
-    public AppUser save(AppUser appUser) {
-        return appUserRepository.save(appUser);
-    }
 }

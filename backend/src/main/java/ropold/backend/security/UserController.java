@@ -22,8 +22,12 @@ public class UserController {
 
     @GetMapping("me")
     public String getMe(@AuthenticationPrincipal OAuth2User user) {
-        Optional<AppUser> appUserOpt = appUserRepository.findById(user.getName());
-        return appUserOpt.map(AppUser::id).orElse(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (user == null) {
+            return "anonymousUser";
+        } else {
+            Optional<AppUser> appUserOpt = appUserRepository.findById(user.getName());
+            return appUserOpt.map(AppUser::id).orElse(SecurityContextHolder.getContext().getAuthentication().getName());
+        }
     }
 
     @GetMapping("/me/details")

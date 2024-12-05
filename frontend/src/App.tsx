@@ -19,7 +19,7 @@ export default function App() {
         axios.get("/api/users/me")
             .then((response) => {
                 console.log("User Object:", JSON.stringify(response.data, null, 2));
-                setUser(response.data.id)
+                setUser(response.data)
             })
             .catch((error) => {
                 console.error(error);
@@ -65,7 +65,7 @@ export default function App() {
         if (user !== "anonymousUser") {
             getAppUserFavorites();
         }
-    }, []); //user rein????
+    }, [user,]);
 
     return (
         <BrowserRouter>
