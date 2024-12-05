@@ -4,7 +4,7 @@ public record RoomModel(
         String id,
         String name,
         String address,
-        String category,
+        Category category,
         String description,
         String appUserGithubId,
         String imageUrl

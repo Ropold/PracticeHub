@@ -12,7 +12,7 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
 
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
-    const [category, setCategory] = useState<string>("");
+    const [category, setCategory] = useState<string>("SOLO_DUO_ROOM");
     const [description, setDescription] = useState<string>("");
     const [image, setImage] = useState<File | null>(null);
 
@@ -31,6 +31,8 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
         const roomData = {name, address, category, description, appUserGithubId: props.user, imageUrl: ""};
 
         data.append("roomModelDto", new Blob([JSON.stringify(roomData)], {type: "application/json"}));
+
+        console.log("roomData:", roomData);
 
         axios
             .post("/api/practice-hub", data, {
@@ -72,11 +74,16 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
                 <h2>Add New Room</h2>
                 <form onSubmit={handleSubmit}>
                     <label>Title: <input className="input-small" type="text" value={name}
-                                        onChange={(e) => setName(e.target.value)}/></label>
+                                         onChange={(e) => setName(e.target.value)}/></label>
                     <label>Address: <input className="input-small" type="text" value={address}
                                            onChange={(e) => setAddress(e.target.value)}/></label>
-                    <label>Category: <input className="input-small" type="text" value={category}
-                                            onChange={(e) => setCategory(e.target.value)}/></label>
+                    <label>Category: <select className="input-small" value={category}
+                            onChange={(e) => setCategory(e.target.value)}>
+                            <option value="SOLO_DUO_ROOM">Solo/Duo Room</option>
+                            <option value="BAND_ROOM">Band Room</option>
+                            <option value="STUDIO_ROOM">Studio Room</option>
+                            <option value="ORCHESTER_HALL">Orchestra Hall</option></select>
+                    </label>
                     <label>Description: <textarea className="textarea-large" value={description}
                                                   onChange={(e) => setDescription(e.target.value)}/></label>
                     <input type={"file"} onChange={onFileChange}/>
