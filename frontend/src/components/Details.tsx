@@ -8,8 +8,9 @@ import handleToggleWishlist from "../utils/handleToggleWishlist.ts";
 import MapBox from "./MapBox.tsx";
 
 type DetailsProps = {
-    user: string;
     favorites: string[];
+    user: string;
+    toggleFavorite: (roomId: string) => void;
 }
 
 const defaultRoom: RoomModel = {

@@ -8,6 +8,7 @@ import axios from "axios";
 type HomeProps = {
     user: string;
     favorites: string[];
+    toggleFavorite: (roomId: string) => void;
 }
 
 export default function Home(props: Readonly<HomeProps>) {
@@ -27,12 +28,6 @@ export default function Home(props: Readonly<HomeProps>) {
     };
     useEffect(getAllRooms, []);
 
-    const handleStatusChange = (updatedRoom: RoomModel) => {
-        setRooms((prevRooms) =>
-            prevRooms.map((room) => (room.id === updatedRoom.id ? updatedRoom : room))
-        );
-    };
-
     return (
         <>
             <h1>PracticeHub</h1>
@@ -43,7 +38,7 @@ export default function Home(props: Readonly<HomeProps>) {
                 setFilteredRooms={setFilteredRooms}
             />
             {filteredRooms.map((r) => (
-                <RoomCard key={r.id} room={r} user={props.user} favorites={props.favorites} onStatusChange={handleStatusChange} />
+                <RoomCard key={r.id} room={r} user={props.user} favorites={props.favorites} toggleFavorite={props.toggleFavorite} />
             ))}
         </>
     );

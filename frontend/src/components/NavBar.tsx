@@ -2,7 +2,6 @@ import "./styles/NavBar.css"
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
-
 type NavbarProps = {
     user: string;
     getUser: () => void;
@@ -10,7 +9,6 @@ type NavbarProps = {
 
 export default function NavBar(props: NavbarProps) {
     const navigate = useNavigate();
-
 
     function loginWithGithub() {
         const host = window.location.host === 'localhost:5173' ? 'http://localhost:8080' : window.location.origin
@@ -30,14 +28,12 @@ export default function NavBar(props: NavbarProps) {
             });
     }
 
-
-
     return (
         <nav className="navbar">
             <button onClick={() => navigate("/")}>Home</button>
             {props.user !== "anonymousUser" ? (
                 <>
-                    <button onClick={() => navigate(`/favorites/${props.user}`)}>Wishlist</button>
+                    <button onClick={() => navigate(`/favorites/${props.user}`)}>Favorites</button>
                     <button onClick={() => navigate("/add-room")}>Add Room</button>
                     <button onClick={() => navigate("/profile")}>Profile</button>
                     <button onClick={logoutFromGithub}>Logout</button>

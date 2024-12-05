@@ -3,57 +3,35 @@ import { RoomModel } from "./model/RoomModel.ts";
 import RoomCard from "./RoomCard.tsx";
 import axios from "axios";
 
-type WishlistProps = {
-    user: string;
+type FavoritesProps = {
     favorites: string[];
-    onStatusChange?: (updatedRoom: RoomModel) => void;
+    user: string;
+    toggleFavorite: (roomId: string) => void;
 };
 
-export default function Favorites(props: Readonly<WishlistProps>) {
-    const [wishlistRooms, setWishlistRooms] = useState<RoomModel[]>([]);
-
-    // useEffect(() => {
-    //     axios
-    //         .get("/api/practice-hub")
-    //         .then((response) => {
-    //             const rooms = response.data;
-    //             setWishlistRooms(rooms.filter((room: RoomModel) => room.wishlistStatus === "ON_WISHLIST"));
-    //         })
-    //         .catch((error) => {
-    //             console.error(error);
-    //         });
-    // }, []);
+export default function Favorites(props: Readonly<FavoritesProps>) {
+    const [favoritesRooms, setFavoritesRooms] = useState<RoomModel[]>([]);
 
     useEffect(() => {
-        // Hole die Favoritenräume des Benutzers von der API
         axios
             .get(`/api/practice-hub/favorites/${props.user}`)
             .then((response) => {
-                // Setze die erhaltenen Räume als Favoritenräume
-                setWishlistRooms(response.data);
-                console.log(response.data);
+                setFavoritesRooms(response.data);
             })
             .catch((error) => {
                 console.error(error);
             });
     }, [props.user]);
 
-
-    const handleStatusChange = (updatedRoom: RoomModel) => {
-        setWishlistRooms((prevWishlistRooms) =>
-            prevWishlistRooms.filter((room) => room.id !== updatedRoom.id)
-        );
-    };
-
     return (
         <div>
             <h2>Wishlist</h2>
-            {wishlistRooms.length > 0 ? (
-                wishlistRooms.map((room) => (
-                    <RoomCard key={room.id} room={room} user={props.user} favorites={props.favorites} onStatusChange={handleStatusChange} />
+            {favoritesRooms.length > 0 ? (
+                favoritesRooms.map((room) => (
+                    <RoomCard key={room.id} room={room} user={props.user} favorites={props.favorites} toggleFavorite={props.toggleFavorite} />
                 ))
             ) : (
-                <p>No rooms on the wishlist.</p>
+                <p>No rooms is in favorites.</p>
             )}
         </div>
     );

@@ -18,7 +18,7 @@ export default function App() {
     function getUser() {
         axios.get("/api/users/me")
             .then((response) => {
-                console.log("Github-userId: " + response.data)
+                console.log("User Object:", JSON.stringify(response.data, null, 2));
                 setUser(response.data.id)
             })
             .catch((error) => {
@@ -27,15 +27,9 @@ export default function App() {
             });
     }
 
-    useEffect(() => {
-        getUser()
-        getAppUserFavorites()
-    }, []);
-
     function getAppUserFavorites(){
         axios.get(`/api/practice-hub/favorites/${user}`)
             .then((response) => {
-                console.log("Favorites: " + response.data)
                 setFavorites(response.data)
             })
             .catch((error) => {
@@ -43,15 +37,44 @@ export default function App() {
             });
     }
 
+    function toggleFavorite(roomId: string) {
+        const isFavorite = favorites.includes(roomId);
+
+        if (isFavorite) {
+            axios.delete(`/api/practice-hub/favorites/${user}/${roomId}`)
+                .then(() => {
+                    setFavorites((prevFavorites) =>
+                        prevFavorites.filter((id) => id !== roomId)
+                    );
+                })
+                .catch((error) => console.error(error));
+        } else {
+            axios.post(`/api/practice-hub/favorites/${user}/${roomId}`)
+                .then(() => {
+                    setFavorites((prevFavorites) => [...prevFavorites, roomId]);
+                })
+                .catch((error) => console.error(error));
+        }
+    }
+
+    useEffect(() => {
+        getUser()
+    }, []);
+
+    useEffect(() => {
+        if (user !== "anonymousUser") {
+            getAppUserFavorites();
+        }
+    }, []); //user rein????
 
     return (
         <BrowserRouter>
             <NavBar user={user} getUser={getUser}/>
             <Routes>
-                <Route path="/" element={<Home favorites={favorites} user={user}/>} />
-                <Route path="/room/:id" element={<Details favorites={favorites} user={user} />} />
+                <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
+                <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
                 <Route element={<ProtectedRoute user={user} />}>
-                    <Route path="/favorites/:id" element={<Favorites favorites={favorites} user={user}/>} />
+                    <Route path="/favorites/:id" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
                     <Route path="/add-room" element={<AddRoom user={user}/>} />
                     <Route path={"/profile"} element={<Profile />} />
                 </Route>
