@@ -71,6 +71,10 @@ export default function App() {
         }
     }
 
+    const handleNewRoomSubmit = (newRoom: RoomModel) => {
+        setRooms((prevRooms) => [...prevRooms, newRoom]);
+    }
+
     useEffect(() => {
         getUser()
         getAllRooms()
@@ -91,7 +95,7 @@ export default function App() {
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
                     <Route path={"/:id/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms}/>} />
-                    <Route path={"/:id/add-room/"} element={<AddRoom user={user}/>} />
+                    <Route path={"/:id/add-room/"} element={<AddRoom user={user} handleSubmit={handleNewRoomSubmit}/>} />
                     <Route path={"/:id/profile"} element={<Profile/>} />
                 </Route>
             </Routes>

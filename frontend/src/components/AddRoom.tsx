@@ -1,12 +1,16 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import {RoomModel} from "./model/RoomModel.ts";
 
 type AddRoomProps = {
     user: string;
+    handleSubmit: (room: RoomModel) => void;
 }
 
 export default function AddRoom(props: Readonly<AddRoomProps>) {
+
+    console.log("User from props:", typeof props.user, props.user);
 
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
@@ -26,7 +30,9 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
             data.append("image", image);
         }
 
-        const roomData = { name, address, category, description, appUserGithubId: props.user, imageUrl: "" };
+        const roomData = { name, address, category, description, appUserGithubId:props.user, imageUrl: "" };
+
+        console.log("roomData:", roomData);
 
         data.append("roomModelDto", new Blob([JSON.stringify(roomData)], { type: "application/json" }));
 
@@ -39,6 +45,7 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
             .then((response) => {
                 //console.log("Antwort vom Server:", response.data);
                 navigate(`/room/${response.data.id}`);
+                props.handleSubmit(response.data);
             })
             .catch((error) => {
                 if (error.response && error.response.status === 400 && error.response.data) {
