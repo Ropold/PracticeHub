@@ -6,6 +6,7 @@ import {RoomModel} from "./model/RoomModel.ts";
 type AddRoomProps = {
     user: string;
     handleSubmit: (room: RoomModel) => void;
+    userDetails: any;
 }
 
 export default function AddRoom(props: Readonly<AddRoomProps>) {

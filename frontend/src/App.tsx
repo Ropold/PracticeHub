@@ -15,6 +15,7 @@ import {RoomModel} from "./components/model/RoomModel.ts";
 
 export default function App() {
     const [user, setUser] = useState<string>("anonymousUser");
+    const [userDetails, setUserDetails] = useState<any>(null);
     const [favorites, setFavorites] = useState<string[]>([]);
     const [rooms, setRooms] = useState<RoomModel[]>([]);
 
@@ -29,6 +30,19 @@ export default function App() {
                 setUser("anonymousUser");
             });
     }
+
+    function getUserDetails() {
+        axios.get("/api/users/me/details")
+            .then((response) => {
+                //console.log("User details:", response.data);
+                setUserDetails(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+                setUserDetails(null);
+            });
+    }
+
 
     function getAppUserFavorites(){
         axios.get(`/api/practice-hub/favorites/${user}`)
@@ -83,6 +97,7 @@ export default function App() {
     useEffect(() => {
         if (user !== "anonymousUser") {
             getAppUserFavorites();
+            getUserDetails();
         }
     }, [user,]);
 
@@ -95,8 +110,8 @@ export default function App() {
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
                     <Route path={"/:id/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms}/>} />
-                    <Route path={"/:id/add-room/"} element={<AddRoom user={user} handleSubmit={handleNewRoomSubmit}/>} />
-                    <Route path={"/:id/profile"} element={<Profile/>} />
+                    <Route path={"/:id/add-room/"} element={<AddRoom user={user} handleSubmit={handleNewRoomSubmit} userDetails={userDetails}/>} />
+                    <Route path={"/:id/profile"} element={<Profile userDetails={userDetails}/>} />
                 </Route>
             </Routes>
             <Footer/>
