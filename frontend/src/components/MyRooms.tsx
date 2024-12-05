@@ -9,8 +9,8 @@ type MyRoomsProps = {
 export default function MyRooms(props: Readonly<MyRoomsProps>) {
     return (
         <div>
-            <h3>My Rooms</h3>
-            <p>{props.user}</p>
+            <h3>My Rooms of User {props.user}</h3>
+
         </div>
     );
 }
