@@ -78,6 +78,11 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
             })
             .then((response) => {
                 console.log("Antwort vom Server:", response.data);
+                setRooms((prevRooms) =>
+                    prevRooms.map((room) =>
+                        room.id === editData.id ? { ...room, ...response.data } : room
+                    )
+                );
                 setIsEditing(false);  // Exit edit mode
             })
             .catch((error) => {
