@@ -2,7 +2,7 @@ import "./styles/Details.css";
 import "./styles/RoomCard.css";
 import { RoomModel } from "./model/RoomModel.ts";
 import { useEffect, useState } from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import axios from "axios";
 import MapBox from "./MapBox.tsx";
 
@@ -26,7 +26,6 @@ export default function Details(props: Readonly<DetailsProps>) {
     const [room, setRoom] = useState<RoomModel>(defaultRoom);
 
     const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
 
     const fetchRoomDetails = () => {
         if (!id) return;

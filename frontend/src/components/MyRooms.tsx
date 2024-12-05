@@ -1,11 +1,20 @@
 
-export default function MyRooms(){
+
+type MyRoomsProps = {
+    user: string;
+    favorites: string[];
+    toggleFavorite: (roomId: string) => void;
+}
+
+export default function MyRooms(props: Readonly<MyRoomsProps>) {
     return (
         <div>
             <h3>My Rooms</h3>
+            <p>{props.user}</p>
         </div>
     );
 }
+
 //
 // import "./styles/Details.css";
 // import "./styles/RoomCard.css";

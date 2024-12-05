@@ -10,6 +10,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Profile from "./components/Profile.tsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import MyRooms from "./components/MyRooms.tsx";
 
 export default function App() {
     const [user, setUser] = useState<string>("anonymousUser");
@@ -74,9 +75,10 @@ export default function App() {
                 <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
                 <Route element={<ProtectedRoute user={user} />}>
-                    <Route path="/favorites/:id" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
-                    <Route path="/add-room" element={<AddRoom user={user}/>} />
-                    <Route path={"/profile"} element={<Profile />} />
+                    <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
+                    <Route path={"/:id/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
+                    <Route path={"/:id/add-room/"} element={<AddRoom user={user}/>} />
+                    <Route path={"/:id/profile"} element={<Profile/>} />
                 </Route>
             </Routes>
             <Footer/>

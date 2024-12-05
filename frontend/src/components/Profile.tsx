@@ -10,7 +10,6 @@ export default function Profile() {
             .then((response) => {
                 //console.log("User details:", response.data);
                 setUser(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error(error);
