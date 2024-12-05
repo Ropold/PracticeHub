@@ -20,6 +20,9 @@ const defaultRoom: RoomModel = {
     category: "SOLO_DUO_ROOM",
     description: "",
     appUserGithubId: "",
+    appUserUsername: "",
+    appUserAvatarUrl: "",
+    appUserGithubUrl: "",
     imageUrl: "",
 };
 
@@ -49,7 +52,6 @@ export default function Details(props: Readonly<DetailsProps>) {
                 <p><strong>Address: </strong> {room.address}</p>
                 <p><strong>Category: </strong> {getCategoryDisplayName(room.category)}</p>
                 <p><strong>Description: </strong> {room.description}</p>
-                <p><strong>Added by Github-User: </strong> {room.appUserGithubId}</p>
                 {room.imageUrl && (
                     <img
                         src={room.imageUrl}
@@ -57,6 +59,7 @@ export default function Details(props: Readonly<DetailsProps>) {
                         className="room-card-image"
                     />
                 )}
+
                 {props.user !== "anonymousUser" && (
                     <div className="wishlist-container">
                         <button
@@ -68,7 +71,23 @@ export default function Details(props: Readonly<DetailsProps>) {
                         </button>
                     </div>
                 )}
-                <MapBox address={room.address} />
+
+                <MapBox address={room.address}/>
+
+                <div className="profile-container">
+                    <h3>Room added by GitHub User</h3>
+                    <div>
+                        <p><strong>Username: </strong> {room.appUserUsername}</p>
+                        <p><strong>GitHub Profile: </strong>
+                            <a href={room.appUserGithubUrl} target="_blank" rel="noopener noreferrer">Visit Profile</a>
+                        </p>
+                        <img
+                            src={room.appUserAvatarUrl}
+                            alt={`${room.appUserUsername}'s avatar`}
+                            className="user-avatar"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );

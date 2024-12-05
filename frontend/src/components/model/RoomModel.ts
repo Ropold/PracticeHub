@@ -7,5 +7,9 @@ export type RoomModel = {
     category: Category;
     description: string;
     appUserGithubId: string;
+    appUserUsername: string;
+    appUserAvatarUrl: string;
+    appUserGithubUrl: string;
     imageUrl: string;
 }
+

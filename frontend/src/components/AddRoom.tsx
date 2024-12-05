@@ -29,11 +29,21 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
             data.append("image", image);
         }
 
-        const roomData = {name, address, category, description, appUserGithubId: props.user, imageUrl: ""};
+        const roomData = {
+            name,
+            address,
+            category: category as any, // Wir casten den String zu Category
+            description,
+            appUserGithubId: props.user,
+            appUserUsername: props.userDetails.login,
+            appUserAvatarUrl: props.userDetails.avatar_url,
+            appUserGithubUrl: props.userDetails.html_url,
+            imageUrl: "",
+        };
 
         data.append("roomModelDto", new Blob([JSON.stringify(roomData)], {type: "application/json"}));
 
-        console.log("roomData:", roomData);
+        //console.log("roomData:", roomData);
 
         axios
             .post("/api/practice-hub", data, {
@@ -97,8 +107,3 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
         </div>
     );
 }
-
-// <label>Status: <select>
-//     <option>On Wishlist</option>
-//     <option>Not on Wishlist</option>
-// </select></label>

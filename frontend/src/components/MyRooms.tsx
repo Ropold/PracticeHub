@@ -14,7 +14,6 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
     const userRooms = props.rooms.filter((room) => room.appUserGithubId === props.user);
 
 
-
     return (
         <div>
             <h3>My Rooms of User {props.user}</h3>
@@ -36,6 +35,10 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
         </div>
     );
 }
+
+
+
+
 
 //
 // import "./styles/Details.css";
