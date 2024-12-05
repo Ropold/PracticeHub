@@ -1,7 +1,7 @@
 import "./styles/RoomCard.css";
 import { RoomModel } from "./model/RoomModel.ts";
 import { useNavigate } from "react-router-dom";
-import {getCategoryDisplayName} from "../utils/getCategoryDisplayName.ts";
+import {getCategoryDisplayName} from "../utils/GetCategoryDisplayName.ts";
 
 type RoomCardProps = {
     room: RoomModel;

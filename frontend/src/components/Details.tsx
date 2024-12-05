@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import MapBox from "./MapBox.tsx";
+import {getCategoryDisplayName} from "../utils/GetCategoryDisplayName.ts";
 
 type DetailsProps = {
     favorites: string[];
@@ -16,7 +17,7 @@ const defaultRoom: RoomModel = {
     id: "",
     name: "Loading....",
     address: "",
-    category: "",
+    category: "SOLO_DUO_ROOM",
     description: "",
     appUserGithubId: "",
     imageUrl: "",
@@ -46,7 +47,7 @@ export default function Details(props: Readonly<DetailsProps>) {
             <div className="room-details">
                 <h2>{room.name}</h2>
                 <p><strong>Address: </strong> {room.address}</p>
-                <p><strong>Category: </strong> {room.category}</p>
+                <p><strong>Category: </strong> {getCategoryDisplayName(room.category)}</p>
                 <p><strong>Description: </strong> {room.description}</p>
                 <p><strong>Added by Github-User: </strong> {room.appUserGithubId}</p>
                 {room.imageUrl && (
