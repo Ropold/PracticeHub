@@ -6,7 +6,8 @@ type AddRoomProps = {
     user: string;
 }
 
-export default function AddRoom({ user }: AddRoomProps) {
+export default function AddRoom(props: Readonly<AddRoomProps>) {
+
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [category, setCategory] = useState<string>("");
@@ -25,7 +26,7 @@ export default function AddRoom({ user }: AddRoomProps) {
             data.append("image", image);
         }
 
-        const roomData = { name, address, category, description, appUserGithubId: user, imageUrl: "" };
+        const roomData = { name, address, category, description, appUserGithubId: props.user, imageUrl: "" };
 
         data.append("roomModelDto", new Blob([JSON.stringify(roomData)], { type: "application/json" }));
 

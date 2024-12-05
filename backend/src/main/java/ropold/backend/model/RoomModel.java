@@ -6,7 +6,7 @@ public record RoomModel(
         String address,
         String category,
         String description,
-        String appUserGitbubId,
+        String appUserGithubId,
         String imageUrl
 ) {
 }

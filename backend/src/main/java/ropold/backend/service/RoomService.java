@@ -37,7 +37,7 @@ public class RoomService {
                 roomModel.address(),
                 roomModel.category(),
                 roomModel.description(),
-                roomModel.appUserGitbubId(),
+                roomModel.appUserGithubId(),
                 roomModel.imageUrl()
         );
         return roomRepository.save(newRoomModel);
@@ -51,7 +51,7 @@ public class RoomService {
                     roomModel.address(),
                     roomModel.category(),
                     roomModel.description(),
-                    roomModel.appUserGitbubId(),
+                    roomModel.appUserGithubId(),
                     roomModel.imageUrl()
             );
             return roomRepository.save(updatedRoomModel);
