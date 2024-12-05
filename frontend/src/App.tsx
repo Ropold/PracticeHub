@@ -18,7 +18,7 @@ export default function App() {
     function getUser() {
         axios.get("/api/users/me")
             .then((response) => {
-                console.log("User Object:", JSON.stringify(response.data, null, 2));
+                console.log("Github-Id:", response.data);
                 setUser(response.data)
             })
             .catch((error) => {
