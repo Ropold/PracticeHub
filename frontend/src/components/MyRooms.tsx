@@ -1,16 +1,38 @@
+import {RoomModel} from "./model/RoomModel.ts";
+import RoomCard from "./RoomCard.tsx";
 
 
 type MyRoomsProps = {
     user: string;
     favorites: string[];
     toggleFavorite: (roomId: string) => void;
+    rooms: RoomModel[];
 }
 
 export default function MyRooms(props: Readonly<MyRoomsProps>) {
+
+    const userRooms = props.rooms.filter((room) => room.appUserGithubId === props.user);
+
+
+
     return (
         <div>
             <h3>My Rooms of User {props.user}</h3>
-
+            <div className="my-rooms-list">
+                {userRooms.length > 0 ? (
+                    userRooms.map((room) => (
+                        <RoomCard
+                            key={room.id}
+                            room={room}
+                            user={props.user}
+                            favorites={props.favorites}
+                            toggleFavorite={props.toggleFavorite}
+                        />
+                    ))
+                ) : (
+                    <p>No rooms found for this user.</p>
+                )}
+            </div>
         </div>
     );
 }

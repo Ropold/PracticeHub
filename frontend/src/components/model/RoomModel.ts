@@ -4,6 +4,6 @@ export type RoomModel = {
     address: string;
     category: string;
     description: string;
-    appUserGitbubId: string;
+    appUserGithubId: string;
     imageUrl: string;
 }

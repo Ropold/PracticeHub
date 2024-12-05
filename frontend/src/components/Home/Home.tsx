@@ -1,32 +1,20 @@
 import "../styles/Home.css";
 import { RoomModel } from "../model/RoomModel.ts";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SearchBar from "./SearchBar.tsx";
 import RoomCard from "../RoomCard.tsx";
-import axios from "axios";
+
 
 type HomeProps = {
     user: string;
     favorites: string[];
     toggleFavorite: (roomId: string) => void;
+    rooms: RoomModel[];
 }
 
 export default function Home(props: Readonly<HomeProps>) {
-    const [rooms, setRooms] = useState<RoomModel[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredRooms, setFilteredRooms] = useState<RoomModel[]>([]);
-
-    const getAllRooms = () => {
-        axios
-            .get("/api/practice-hub")
-            .then((response) => {
-                setRooms(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    };
-    useEffect(getAllRooms, []);
 
     return (
         <>
@@ -34,7 +22,7 @@ export default function Home(props: Readonly<HomeProps>) {
             <SearchBar
                 value={searchQuery}
                 onChange={setSearchQuery}
-                rooms={rooms}
+                rooms={props.rooms}
                 setFilteredRooms={setFilteredRooms}
             />
             {filteredRooms.map((r) => (

@@ -18,7 +18,7 @@ const defaultRoom: RoomModel = {
     address: "",
     category: "",
     description: "",
-    appUserGitbubId: "",
+    appUserGithubId: "",
     imageUrl: "",
 };
 
@@ -48,7 +48,7 @@ export default function Details(props: Readonly<DetailsProps>) {
                 <p><strong>Address: </strong> {room.address}</p>
                 <p><strong>Category: </strong> {room.category}</p>
                 <p><strong>Description: </strong> {room.description}</p>
-                <p><strong>Added by Github-User: </strong> {room.appUserGitbubId}</p>
+                <p><strong>Added by Github-User: </strong> {room.appUserGithubId}</p>
                 {room.imageUrl && (
                     <img
                         src={room.imageUrl}
