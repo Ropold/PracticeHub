@@ -25,7 +25,7 @@ export default function AddRoom({ user }: AddRoomProps) {
             data.append("image", image);
         }
 
-        const roomData = { name, address, category, description, appUserGitbubId: user, imageUrl: "" };
+        const roomData = { name, address, category, description, appUserGithubId: user, imageUrl: "" };
 
         data.append("roomModelDto", new Blob([JSON.stringify(roomData)], { type: "application/json" }));
 
