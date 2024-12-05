@@ -38,6 +38,9 @@ public class RoomService {
                 roomModel.category(),
                 roomModel.description(),
                 roomModel.appUserGithubId(),
+                roomModel.appUserUsername(),
+                roomModel.appUserAvatarUrl(),
+                roomModel.appUserGithubUrl(),
                 roomModel.imageUrl()
         );
         return roomRepository.save(newRoomModel);
@@ -52,6 +55,9 @@ public class RoomService {
                     roomModel.category(),
                     roomModel.description(),
                     roomModel.appUserGithubId(),
+                    roomModel.appUserUsername(),
+                    roomModel.appUserAvatarUrl(),
+                    roomModel.appUserGithubUrl(),
                     roomModel.imageUrl()
             );
             return roomRepository.save(updatedRoomModel);

@@ -31,7 +31,6 @@ public class SecurityConfig {
     private String appUrl;
 
     private final AppUserRepository appUserRepository;
-    //AppUserService später hier
 
     private static final String PRACTICE_HUB_PATH = "/api/practice-hub/*";
 

@@ -18,6 +18,9 @@ public record RoomModelDto(
         @Size(min = 3, message = "Description must contain at least 3 characters")
         String description,
         String appUserGithubId,
+        String appUserUsername,
+        String appUserAvatarUrl,
+        String appUserGithubUrl,
         String imageUrl
 ) {
 }

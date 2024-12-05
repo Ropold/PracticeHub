@@ -7,6 +7,9 @@ public record RoomModel(
         Category category,
         String description,
         String appUserGithubId,
+        String appUserUsername,
+        String appUserAvatarUrl,
+        String appUserGithubUrl,
         String imageUrl
 ) {
 }

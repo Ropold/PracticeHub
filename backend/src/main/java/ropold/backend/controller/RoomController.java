@@ -70,6 +70,9 @@ public class RoomController {
                         roomModelDto.category(),
                         roomModelDto.description(),
                         roomModelDto.appUserGithubId(),
+                        roomModelDto.appUserUsername(),
+                        roomModelDto.appUserAvatarUrl(),
+                        roomModelDto.appUserGithubUrl(),
                         imageUrl
                 )
         );
@@ -99,6 +102,9 @@ public class RoomController {
                 roomModelDto.category(),
                 roomModelDto.description(),
                 roomModelDto.appUserGithubId(),
+                roomModelDto.appUserUsername(),
+                roomModelDto.appUserAvatarUrl(),
+                roomModelDto.appUserGithubUrl(),
                 newImageUrl
         );
         return roomService.updateRoomWithPut(id, updatedRoom);
