@@ -1,6 +1,7 @@
 import "./styles/RoomCard.css";
 import { RoomModel } from "./model/RoomModel.ts";
 import { useNavigate } from "react-router-dom";
+import {getCategoryDisplayName} from "../utils/getCategoryDisplayName.ts";
 
 type RoomCardProps = {
     room: RoomModel;
@@ -23,7 +24,7 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
             <div className="room-card-content">
                 <h2>{props.room.name}</h2>
                 <p><strong>Address: </strong>{props.room.address}</p>
-                <p><strong>Category: </strong>{props.room.category}</p>
+                <p><strong>Category: </strong>{getCategoryDisplayName(props.room.category)}</p>
                 {props.room.imageUrl ? (
                     <img
                         src={props.room.imageUrl}
