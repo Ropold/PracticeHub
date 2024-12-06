@@ -41,6 +41,7 @@ public class RoomService {
                 roomModel.appUserUsername(),
                 roomModel.appUserAvatarUrl(),
                 roomModel.appUserGithubUrl(),
+                roomModel.isActive(),
                 roomModel.imageUrl()
         );
         return roomRepository.save(newRoomModel);
@@ -58,6 +59,7 @@ public class RoomService {
                     roomModel.appUserUsername(),
                     roomModel.appUserAvatarUrl(),
                     roomModel.appUserGithubUrl(),
+                    roomModel.isActive(),
                     roomModel.imageUrl()
             );
             return roomRepository.save(updatedRoomModel);

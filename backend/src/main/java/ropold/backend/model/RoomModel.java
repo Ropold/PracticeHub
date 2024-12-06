@@ -10,6 +10,7 @@ public record RoomModel(
         String appUserUsername,
         String appUserAvatarUrl,
         String appUserGithubUrl,
+        boolean isActive,
         String imageUrl
 ) {
 }

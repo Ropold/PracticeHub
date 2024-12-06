@@ -10,6 +10,6 @@ export type RoomModel = {
     appUserUsername: string;
     appUserAvatarUrl: string;
     appUserGithubUrl: string;
+    isActive: boolean;
     imageUrl: string;
 }
-
