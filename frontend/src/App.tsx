@@ -6,12 +6,13 @@ import NavBar from "./components/NavBar.tsx";
 import Footer from "./components/Footer.tsx";
 import AddRoom from "./components/AddRoom.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {Route, Routes} from "react-router";
 import Profile from "./components/Profile.tsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import MyRooms from "./components/MyRooms.tsx";
 import {RoomModel} from "./components/model/RoomModel.ts";
+import {BrowserRouter} from "react-router-dom";
 
 export default function App() {
     const [user, setUser] = useState<string>("anonymousUser");
