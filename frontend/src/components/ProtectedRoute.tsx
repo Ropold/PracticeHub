@@ -5,7 +5,8 @@ type ProtectedRouteProps = {
 }
 
 export default function ProtectedRoute(props: ProtectedRouteProps){
-    const isAuthenticated = props.user !== "anonymousUser" && props.user !== null;
+
+    const isAuthenicated = props.user !== "anonymousUser";
 
     return(
         isAuthenticated ? <Outlet /> : <Navigate to={"/"} />

@@ -20,7 +20,8 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
     const isFavorite = props.favorites.includes(props.room.id);
 
     return (
-        <div className="room-card" onClick={handleCardClick} style={{ cursor: "pointer" }}>
+
+        <div className="room-card" onClick={handleCardClick}>
             <div className="room-card-content">
                 <h2>{props.room.name}</h2>
                 <p><strong>Address: </strong>{props.room.address}</p>

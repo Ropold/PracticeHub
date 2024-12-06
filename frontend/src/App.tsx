@@ -23,8 +23,7 @@ export default function App() {
     function getUser() {
         axios.get("/api/users/me")
             .then((response) => {
-                console.log("Github-Id:", response.data);
-                setUser(response.data.toString());
+                setUser(response.data)
             })
             .catch((error) => {
                 console.error(error);
@@ -130,4 +129,3 @@ export default function App() {
         </BrowserRouter>
   )
 }
-
