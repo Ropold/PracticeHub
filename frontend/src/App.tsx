@@ -23,7 +23,7 @@ export default function App() {
     function getUser() {
         axios.get("/api/users/me")
             .then((response) => {
-                setUser(response.data)
+                setUser(response.data.toString());
             })
             .catch((error) => {
                 console.error(error);
@@ -120,7 +120,7 @@ export default function App() {
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
-                    <Route path={"/:id/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms} userDetails={userDetails}/>} />
+                    <Route path={"/:id/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms} userDetails={userDetails} setRooms={setRooms}/>} />
                     <Route path={"/:id/add-room/"} element={<AddRoom user={user} handleSubmit={handleNewRoomSubmit} userDetails={userDetails}/>} />
                     <Route path={"/:id/profile"} element={<Profile userDetails={userDetails}/>} />
                 </Route>

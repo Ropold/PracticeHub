@@ -10,11 +10,11 @@ type MyRoomsProps = {
     toggleFavorite: (roomId: string) => void;
     rooms: RoomModel[];
     userDetails: any;
+    setRooms: React.Dispatch<React.SetStateAction<RoomModel[]>>;
 }
 
 export default function MyRooms(props: Readonly<MyRoomsProps>) {
 
-    const [rooms, setRooms] = useState<RoomModel[]>(props.rooms); // Zustand für alle Räume
     const [userRooms, setUserRooms] = useState<RoomModel[]>([]); // Zustand für gefilterte Räume des Benutzers
     const [isEditing, setIsEditing] = useState<boolean>(false);  // Ob der Raum bearbeitet wird
     const [editData, setEditData] = useState<RoomModel | null>(null);  // Daten des Raums, der bearbeitet wird
@@ -24,8 +24,8 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
 
     // Filtere die Räume des aktuellen Benutzers und speichere sie im Zustand
     useEffect(() => {
-        setUserRooms(rooms.filter((room) => room.appUserGithubId === props.user));
-    }, [rooms, props.user, isEditing]); // Dieser Effekt wird jedes Mal ausgeführt, wenn rooms oder user geändert werden
+        setUserRooms(props.rooms.filter((room) => room.appUserGithubId === props.user));
+    }, [props.rooms, props.user, isEditing]); // Dieser Effekt wird jedes Mal ausgeführt, wenn rooms oder user geändert werden
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCategory(e.target.value as Category);  // Setze den Wert und zwinge TypeScript, ihn als Category zu behandeln
@@ -79,7 +79,7 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
             })
             .then((response) => {
                 console.log("Antwort vom Server:", response.data);
-                setRooms((prevRooms) =>
+                props.setRooms((prevRooms) =>
                     prevRooms.map((room) =>
                         room.id === editData.id ? {...room, ...response.data} : room
                     )
@@ -106,7 +106,7 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
             axios
                 .delete(`/api/practice-hub/${id}`)
                 .then(() => {
-                    setRooms((prevRooms) => prevRooms.filter((room) => room.id !== id));
+                    props.setRooms((prevRooms) => prevRooms.filter((room) => room.id !== id));
                 })
                 .catch((error) => {
                     console.error("Error deleting room:", error);
@@ -120,7 +120,7 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
             .put(`/api/practice-hub/${roomId}/toggle-active`)
             .then(() => {
                 // Sobald die Antwort kommt, aktualisiere den Status der Räume
-                setRooms((prevRooms) =>
+                props.setRooms((prevRooms) =>
                     prevRooms.map((room) =>
                         room.id === roomId ? {...room, isActive: !room.isActive} : room
                     )

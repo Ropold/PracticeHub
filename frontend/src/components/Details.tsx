@@ -30,6 +30,7 @@ const defaultRoom: RoomModel = {
 export default function Details(props: Readonly<DetailsProps>) {
     const [room, setRoom] = useState<RoomModel>(defaultRoom);
 
+
     const { id } = useParams<{ id: string }>();
 
     const fetchRoomDetails = () => {
