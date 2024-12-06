@@ -55,7 +55,7 @@ public class RoomController {
     @PostMapping
     public RoomModel postRoom(
             @RequestPart("roomModelDto") @Valid RoomModelDto roomModelDto,
-            @RequestPart("image") MultipartFile image) throws IOException {
+            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
 
         String imageUrl = null;
         if (image != null && !image.isEmpty()) {

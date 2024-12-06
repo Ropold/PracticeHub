@@ -105,7 +105,7 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
             axios
                 .delete(`/api/practice-hub/${id}`)
                 .then(() => {
-                    setRooms(rooms.filter((room) => room.id !== id));
+                    setRooms((prevRooms) => prevRooms.filter((room) => room.id !== id));
                 })
                 .catch((error) => {
                     console.error("Error deleting room:", error);
