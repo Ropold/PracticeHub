@@ -18,6 +18,7 @@ export default function App() {
     const [userDetails, setUserDetails] = useState<any>(null);
     const [favorites, setFavorites] = useState<string[]>([]);
     const [rooms, setRooms] = useState<RoomModel[]>([]);
+    const[activeRooms, setActiveRooms] = useState<RoomModel[]>([]);
 
     function getUser() {
         axios.get("/api/users/me")
@@ -43,7 +44,6 @@ export default function App() {
             });
     }
 
-
     function getAppUserFavorites(){
         axios.get(`/api/practice-hub/favorites/${user}`)
             .then((response) => {
@@ -64,6 +64,17 @@ export default function App() {
                 console.error(error);
             });
     };
+
+    const getAllActiveRooms = () => {
+        axios
+            .get("/api/practice-hub/active")
+            .then((response) => {
+                setActiveRooms(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
 
     function toggleFavorite(roomId: string) {
         const isFavorite = favorites.includes(roomId);
@@ -91,21 +102,22 @@ export default function App() {
 
     useEffect(() => {
         getUser()
-        getAllRooms()
+        getAllActiveRooms()
     }, []);
 
     useEffect(() => {
         if (user !== "anonymousUser") {
             getAppUserFavorites();
             getUserDetails();
+            getAllRooms()
         }
-    }, [user,]);
+    }, [user]);
 
     return (
         <BrowserRouter>
-            <NavBar user={user} getUser={getUser}/>
+            <NavBar user={user} getUser={getUser} getAllActiveRooms={getAllActiveRooms}/>
             <Routes>
-                <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms}/>} />
+                <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms}/>} />
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />

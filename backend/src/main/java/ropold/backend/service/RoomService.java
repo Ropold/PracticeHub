@@ -20,6 +20,12 @@ public class RoomService {
         return roomRepository.findAll();
     }
 
+    public List<RoomModel> getActiveRooms() {
+        return roomRepository.findAll().stream()
+                .filter(RoomModel::isActive)
+                .toList();
+    }
+
     public RoomModel getRoomById(String id) {
         return roomRepository
                 .findById(id)
@@ -66,6 +72,27 @@ public class RoomService {
         } else {
             throw new RoomNotFoundException("No Room found to update with id: " + id);
         }
+    }
+
+    public RoomModel toggleActiveStatus(String id) {
+        RoomModel room = roomRepository.findById(id)
+                .orElseThrow(() -> new RoomNotFoundException("No Room found with id: " + id));
+
+        RoomModel updatedRoomModel = new RoomModel(
+                id,
+                room.name(),
+                room.address(),
+                room.category(),
+                room.description(),
+                room.appUserGithubId(),
+                room.appUserUsername(),
+                room.appUserAvatarUrl(),
+                room.appUserGithubUrl(),
+                !room.isActive(),
+                room.imageUrl()
+        );
+
+        return roomRepository.save(updatedRoomModel);
     }
 
     public void deleteRoom(String id) {

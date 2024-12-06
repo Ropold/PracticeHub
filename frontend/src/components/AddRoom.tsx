@@ -37,6 +37,7 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
             appUserUsername: props.userDetails.login,
             appUserAvatarUrl: props.userDetails.avatar_url,
             appUserGithubUrl: props.userDetails.html_url,
+            isActive: true,
             imageUrl: "",
         };
 

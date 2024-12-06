@@ -5,9 +5,10 @@ import axios from "axios";
 type NavbarProps = {
     user: string;
     getUser: () => void;
+    getAllActiveRooms: () => void;
 }
 
-export default function NavBar(props: NavbarProps) {
+export default function NavBar(props: Readonly<NavbarProps>) {
     const navigate = useNavigate();
 
     function loginWithGithub() {
@@ -30,10 +31,10 @@ export default function NavBar(props: NavbarProps) {
 
     return (
         <nav className="navbar">
-            <button onClick={() => navigate("/")}>Home</button>
+            <button onClick={() => {props.getAllActiveRooms(); navigate("/")}}>Home</button>
             {props.user !== "anonymousUser" ? (
                 <>
-                    <button onClick={() => navigate(`/${props.user}/favorites`)}>Favorites</button>
+                <button onClick={() => navigate(`/${props.user}/favorites`)}>Favorites</button>
                     <button onClick={() => navigate(`/${props.user}/add-room`)}>Add Room</button>
                     <button onClick={() => navigate(`/${props.user}/my-rooms`)}>My Rooms</button>
                     <button onClick={() => navigate(`/${props.user}/profile`)}>Profile</button>

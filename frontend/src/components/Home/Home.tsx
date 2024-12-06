@@ -9,7 +9,7 @@ type HomeProps = {
     user: string;
     favorites: string[];
     toggleFavorite: (roomId: string) => void;
-    rooms: RoomModel[];
+    activeRooms: RoomModel[];
 }
 
 export default function Home(props: Readonly<HomeProps>) {
@@ -22,7 +22,7 @@ export default function Home(props: Readonly<HomeProps>) {
             <SearchBar
                 value={searchQuery}
                 onChange={setSearchQuery}
-                rooms={props.rooms}
+                rooms={props.activeRooms}
                 setFilteredRooms={setFilteredRooms}
             />
             {filteredRooms.map((r) => (

@@ -25,7 +25,7 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
     // Filtere die Räume des aktuellen Benutzers und speichere sie im Zustand
     useEffect(() => {
         setUserRooms(rooms.filter((room) => room.appUserGithubId === props.user));
-    }, [rooms, props.user,isEditing]); // Dieser Effekt wird jedes Mal ausgeführt, wenn rooms oder user geändert werden
+    }, [rooms, props.user, isEditing]); // Dieser Effekt wird jedes Mal ausgeführt, wenn rooms oder user geändert werden
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCategory(e.target.value as Category);  // Setze den Wert und zwinge TypeScript, ihn als Category zu behandeln
@@ -43,7 +43,7 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
                 fetch(roomToEdit.imageUrl)
                     .then((response) => response.blob())
                     .then((blob) => {
-                        const file = new File([blob], "current-image.jpg", { type: blob.type });
+                        const file = new File([blob], "current-image.jpg", {type: blob.type});
                         setImage(file);
                     })
                     .catch((error) => console.error("Error loading current image:", error));
@@ -69,7 +69,7 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
             imageUrl: "",  // You may want to update this after uploading the image
         };
 
-        data.append("roomModelDto", new Blob([JSON.stringify(updatedRoomData)], { type: "application/json" }));
+        data.append("roomModelDto", new Blob([JSON.stringify(updatedRoomData)], {type: "application/json"}));
 
         axios
             .put(`/api/practice-hub/${editData.id}`, data, {
@@ -81,7 +81,7 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
                 console.log("Antwort vom Server:", response.data);
                 setRooms((prevRooms) =>
                     prevRooms.map((room) =>
-                        room.id === editData.id ? { ...room, ...response.data } : room
+                        room.id === editData.id ? {...room, ...response.data} : room
                     )
                 );
                 setIsEditing(false);  // Exit edit mode
@@ -118,30 +118,35 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
     return (
         <div>
             <h3> Hi {props.userDetails.login},</h3>
-            <p>your added Rooms:</p>
+            <p>Your added Rooms:</p>
 
             {isEditing ? (
                 <div className="details-container">
                     <div className="edit-form">
                         <h2>Edit Room</h2>
                         <form onSubmit={handleSaveEdit}>
-                            <label>Title:
+                            <label>
+                                Title:
                                 <input
                                     className="input-small"
                                     type="text"
                                     value={editData?.name || ""}
-                                    onChange={(e) => setEditData({ ...editData!, name: e.target.value })}
+                                    onChange={(e) => setEditData({...editData!, name: e.target.value})}
                                 />
                             </label>
-                            <label>Address:
+
+                            <label>
+                                Address:
                                 <input
                                     className="input-small"
                                     type="text"
                                     value={editData?.address || ""}
-                                    onChange={(e) => setEditData({ ...editData!, address: e.target.value })}
+                                    onChange={(e) => setEditData({...editData!, address: e.target.value})}
                                 />
                             </label>
-                            <label>Category:
+
+                            <label>
+                                Category:
                                 <select
                                     className="input-small"
                                     value={category}
@@ -153,15 +158,32 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
                                     <option value="ORCHESTER_HALL">Orchestra Hall</option>
                                 </select>
                             </label>
-                            <label>Description:
+                            <label>
+                                Description:
                                 <textarea
                                     className="textarea-large"
                                     value={editData?.description || ""}
-                                    onChange={(e) => setEditData({...editData!, description: e.target.value })}
+                                    onChange={(e) => setEditData({...editData!, description: e.target.value})}
                                 />
                             </label>
-                            <input type="file" onChange={onFileChange} />
-                            {image && <img src={URL.createObjectURL(image)} className="room-card-image" />}
+                            <label>
+                                Visibility:
+                                <select
+                                    className="input-small"
+                                    value={editData?.isActive ? "true" : "false"}
+                                    onChange={(e) => setEditData({...editData!, isActive: e.target.value === "true"})}
+                                >
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+                            </label>
+
+                            <label>
+                                Image:
+                                <input type="file" onChange={onFileChange}/>
+                                {image && <img src={URL.createObjectURL(image)} className="room-card-image"/>}
+                            </label>
+
                             <div className="button-group">
                                 <button type="submit">Save Changes</button>
                                 <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
@@ -170,7 +192,6 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
                     </div>
                 </div>
             ) : (
-                // Show the room cards if not in edit mode
                 <div className="my-rooms-list">
                     {userRooms.length > 0 ? (
                         userRooms.map((room) => (
@@ -182,6 +203,7 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
                                     toggleFavorite={props.toggleFavorite}
                                 />
                                 <div className="button-group">
+                                    <button id="button-set-active">Active</button>
                                     <button onClick={() => handleEditToggle(room.id)}>Edit</button>
                                     <button id="button-delete" onClick={() => handleDelete(room.id)}>Delete</button>
                                 </div>

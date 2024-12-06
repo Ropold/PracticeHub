@@ -46,6 +46,11 @@ public class RoomController {
         return roomService.getAllRooms();
     }
 
+    @GetMapping("/active")
+    public List<RoomModel> getActiveRooms() {
+        return roomService.getActiveRooms();
+    }
+
     @GetMapping("/{id}")
     public RoomModel getRoomById(@PathVariable String id) {
         return roomService.getRoomById(id);
@@ -110,6 +115,11 @@ public class RoomController {
                 newImageUrl
         );
         return roomService.updateRoomWithPut(id, updatedRoom);
+    }
+
+    @PutMapping("/{id}/toggle-active")
+    public RoomModel toggleActiveStatus(@PathVariable String id) {
+       return roomService.toggleActiveStatus(id);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

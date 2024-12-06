@@ -23,6 +23,7 @@ const defaultRoom: RoomModel = {
     appUserUsername: "",
     appUserAvatarUrl: "",
     appUserGithubUrl: "",
+    isActive: true,
     imageUrl: "",
 };
 
