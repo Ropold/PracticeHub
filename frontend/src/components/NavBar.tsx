@@ -6,6 +6,7 @@ type NavbarProps = {
     user: string;
     getUser: () => void;
     getAllActiveRooms: () => void;
+    getAllRooms: () => void;
 }
 
 export default function NavBar(props: Readonly<NavbarProps>) {
@@ -36,7 +37,7 @@ export default function NavBar(props: Readonly<NavbarProps>) {
                 <>
                 <button onClick={() => navigate(`/${props.user}/favorites`)}>Favorites</button>
                     <button onClick={() => navigate(`/${props.user}/add-room`)}>Add Room</button>
-                    <button onClick={() => navigate(`/${props.user}/my-rooms`)}>My Rooms</button>
+                    <button onClick={() => {props.getAllRooms(); navigate(`/${props.user}/my-rooms`)}}>My Rooms</button>
                     <button onClick={() => navigate(`/${props.user}/profile`)}>Profile</button>
                     <button onClick={logoutFromGithub}>Logout</button>
                 </>

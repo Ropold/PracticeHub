@@ -115,6 +115,24 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
         }
     };
 
+    const handleToggleActiveStatus = (roomId: string) => {
+        axios
+            .put(`/api/practice-hub/${roomId}/toggle-active`)
+            .then(() => {
+                // Sobald die Antwort kommt, aktualisiere den Status der Räume
+                setRooms((prevRooms) =>
+                    prevRooms.map((room) =>
+                        room.id === roomId ? {...room, isActive: !room.isActive} : room
+                    )
+                );
+            })
+            .catch((error) => {
+                console.error("Error during Toggle Offline/Active", error);
+                alert("An Error while changing the status of Active/Offline.");
+            });
+    };
+
+
     return (
         <div>
             <h3> Hi {props.userDetails.login},</h3>
@@ -203,7 +221,12 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
                                     toggleFavorite={props.toggleFavorite}
                                 />
                                 <div className="button-group">
-                                    <button id="button-set-active">Active</button>
+                                    <button
+                                        id={room.isActive ? "active-button" : "inactive-button"}
+                                        onClick={() => handleToggleActiveStatus(room.id)} // Event-Handler für das toggeln
+                                    >
+                                        {room.isActive ? "Active" : "Offline"}
+                                    </button>
                                     <button onClick={() => handleEditToggle(room.id)}>Edit</button>
                                     <button id="button-delete" onClick={() => handleDelete(room.id)}>Delete</button>
                                 </div>

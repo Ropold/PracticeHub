@@ -64,4 +64,44 @@ select {
     background-color: #d32f2f; /* Dunkleres Rot beim Hover */
 }
 
+#active-button {
+    background-color: #66bb6a;
+}
+
+#active-button:hover {
+    background-color: #388e3c; /* Etwas dunkleres Grün */
+}
+
+#inactive-button {
+    background-color: #999;
+}
+#inactive-button:hover {
+    background-color: #555; /* Etwas dunkleres Grau */
+}
+
+#button-favorite-details-card {
+    top: 8px;
+    left: 8px;
+    background: #007bff;
+    border: none;
+    font-size: 24px;
+    outline: none; /* Entfernt den Fokusrahmen */
+}
+
+/* Farben für den Zustand des Wunschzettels */
+.favorite-on {
+    color: red; /* Rot, wenn auf der Wunschliste */
+}
+
+.favorite-off {
+    color: #999; /* Grauer Button, wenn nicht auf der Wunschliste */
+}
+
+.room-card-image {
+    width: 250px; /* Passt sich an die Breite des Containers an */
+    height: auto; /* Bewahrt das Seitenverhältnis */
+    object-fit: cover; /* Sorgt dafür, dass das Bild gut in den Rahmen passt */
+    border-bottom: 1px solid #ccc; /* Optional: Trennlinie zwischen Bild und Inhalt */
+}
+
 

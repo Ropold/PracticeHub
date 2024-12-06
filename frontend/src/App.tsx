@@ -115,7 +115,7 @@ export default function App() {
 
     return (
         <BrowserRouter>
-            <NavBar user={user} getUser={getUser} getAllActiveRooms={getAllActiveRooms}/>
+            <NavBar user={user} getUser={getUser} getAllActiveRooms={getAllActiveRooms} getAllRooms={getAllRooms}/>
             <Routes>
                 <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms}/>} />
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
