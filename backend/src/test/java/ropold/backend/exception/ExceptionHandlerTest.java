@@ -42,7 +42,7 @@ class ExceptionHandlerTest {
                 .andExpect(jsonPath("$.message").value("No Room found with id: non-existing-id"));
     }
 
-    @Test
+   @Test
     @WithMockUser(username = "testUser", roles = {"USER"})
     void postRoom_shouldFailValidation_whenAllFieldsExceptWishlistStatusAreInvalid() throws Exception {
         // WHEN
