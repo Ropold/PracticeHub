@@ -12,7 +12,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import MyRooms from "./components/MyRooms.tsx";
 import {RoomModel} from "./components/model/RoomModel.ts";
-import {BrowserRouter} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 
 export default function App() {
     const [user, setUser] = useState<string>("anonymousUser");
@@ -20,6 +20,8 @@ export default function App() {
     const [favorites, setFavorites] = useState<string[]>([]);
     const [rooms, setRooms] = useState<RoomModel[]>([]);
     const[activeRooms, setActiveRooms] = useState<RoomModel[]>([]);
+
+    const location = useLocation();
 
     function getUser() {
         axios.get("/api/users/me")
@@ -113,8 +115,12 @@ export default function App() {
         }
     }, [user]);
 
+    useEffect(() => {
+        window.scroll(0, 0);
+    }, [location]);
+
     return (
-        <BrowserRouter>
+            <>
             <NavBar user={user} getUser={getUser} getAllActiveRooms={getAllActiveRooms} getAllRooms={getAllRooms}/>
             <Routes>
                 <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms}/>} />
@@ -127,6 +133,6 @@ export default function App() {
                 </Route>
             </Routes>
             <Footer/>
-        </BrowserRouter>
+            </>
   )
 }
