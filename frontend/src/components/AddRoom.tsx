@@ -13,7 +13,7 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
 
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
-    const [category, setCategory] = useState<string>("SOLO_DUO_ROOM");
+    const [category, setCategory] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [image, setImage] = useState<File | null>(null);
 
@@ -88,11 +88,13 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
                     <label>Address: <input className="input-small" type="text" value={address}
                                            onChange={(e) => setAddress(e.target.value)}/></label>
                     <label>Category: <select className="input-small" value={category}
-                            onChange={(e) => setCategory(e.target.value)}>
-                            <option value="SOLO_DUO_ROOM">Solo/Duo Room</option>
-                            <option value="BAND_ROOM">Band Room</option>
-                            <option value="STUDIO_ROOM">Studio Room</option>
-                            <option value="ORCHESTER_HALL">Orchestra Hall</option></select>
+                                             onChange={(e) => setCategory(e.target.value)} required>
+                        <option value="" disabled>*Choose a category*</option>
+                        <option value="SOLO_DUO_ROOM">Solo/Duo Room</option>
+                        <option value="BAND_ROOM">Band Room</option>
+                        <option value="STUDIO_ROOM">Studio Room</option>
+                        <option value="ORCHESTER_HALL">Orchestra Hall</option>
+                    </select>
                     </label>
                     <label>Description: <textarea className="textarea-large" value={description}
                                                   onChange={(e) => setDescription(e.target.value)}/></label>
