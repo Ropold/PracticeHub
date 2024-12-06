@@ -106,10 +106,10 @@ export default function App() {
             <NavBar user={user} getUser={getUser}/>
             <Routes>
                 <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms}/>} />
-                <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
+                <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
-                    <Route path={"/:id/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms}/>} />
+                    <Route path={"/:id/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms} userDetails={userDetails}/>} />
                     <Route path={"/:id/add-room/"} element={<AddRoom user={user} handleSubmit={handleNewRoomSubmit} userDetails={userDetails}/>} />
                     <Route path={"/:id/profile"} element={<Profile userDetails={userDetails}/>} />
                 </Route>

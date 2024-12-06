@@ -9,6 +9,7 @@ type MyRoomsProps = {
     favorites: string[];
     toggleFavorite: (roomId: string) => void;
     rooms: RoomModel[];
+    userDetails: any;
 }
 
 export default function MyRooms(props: Readonly<MyRoomsProps>) {
@@ -116,7 +117,8 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
 
     return (
         <div>
-            <h3>My Rooms of User {props.user}</h3>
+            <h3> Hi {props.userDetails.login},</h3>
+            <p>your added Rooms:</p>
 
             {isEditing ? (
                 <div className="details-container">
