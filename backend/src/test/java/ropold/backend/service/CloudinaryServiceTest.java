@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.multipart.MultipartFile;
+import ropold.backend.exception.ImageDeletionException;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,17 +88,23 @@ class CloudinaryServiceTest {
 
 
     @Test
-    void deleteImage_DestroyThrowsIOException_ThrowsRuntimeException() throws IOException {
+    void deleteImage_DestroyThrowsIOException_ThrowsImageDeletionException() throws IOException {
         // Beispiel-URL für das Bild
         String imageUrl = "https://res.cloudinary.com/demo/image/upload/v1614149342/sample.jpg";
         String expectedPublicId = "sample";
 
         // Simuliere einen Fehler beim Löschen des Bildes
-        doThrow(IOException.class).when(uploader).destroy(eq(expectedPublicId), eq(Collections.emptyMap()));
+        doThrow(new IOException("Failed to delete image")).when(uploader).destroy(eq(expectedPublicId), eq(Collections.emptyMap()));
 
-        // Teste, dass eine RuntimeException geworfen wird, wenn das Löschen fehlschlägt
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> cloudinaryService.deleteImage(imageUrl));
-        assertTrue(exception.getMessage().contains("Fehler beim Löschen des Bildes"));
-        verify(uploader, times(1)).destroy(eq(expectedPublicId), eq(Collections.emptyMap()));  // Verifiziere, dass der Uploader zum Löschen aufgerufen wurde
+        // Teste, dass eine ImageDeletionException geworfen wird, wenn das Löschen fehlschlägt
+        ImageDeletionException exception = assertThrows(ImageDeletionException.class, () -> cloudinaryService.deleteImage(imageUrl));
+
+        // Überprüfe, dass die Ausnahme die erwartete Fehlermeldung enthält
+        assertTrue(exception.getMessage().contains("Error deleting image from Cloudinary"));
+
+        // Verifiziere, dass der Uploader zum Löschen aufgerufen wurde
+        verify(uploader, times(1)).destroy(eq(expectedPublicId), eq(Collections.emptyMap()));
     }
+
+
 }
