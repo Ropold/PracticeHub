@@ -1,6 +1,7 @@
 package ropold.backend.security;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,15 +11,26 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import ropold.backend.model.AppUser;
+import ropold.backend.repository.AppUserRepository;
+
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Value("${app.url}")
     private String appUrl;
+
+    private final AppUserRepository appUserRepository;
 
     private static final String PRACTICE_HUB_PATH = "/api/practice-hub/*";
 
@@ -48,4 +60,26 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
+    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
+        DefaultOAuth2UserService userService = new DefaultOAuth2UserService();
+
+        return (userRequest) -> {
+            OAuth2User githubUser = userService.loadUser(userRequest);
+
+            AppUser user = appUserRepository.findById(githubUser.getName())
+                    .orElseGet(() -> {
+                        AppUser newUser = new AppUser(
+                                githubUser.getName(),
+                                githubUser.getAttribute("login"),
+                                githubUser.getAttribute("name"),
+                                githubUser.getAttribute("avatar_url"),
+                                githubUser.getAttribute("html_url"),
+                                Collections.emptyList());
+                        return appUserRepository.save(newUser);
+                    });
+
+            return githubUser; //defaultOauth2User hier vllt?
+        };
+    }
 }

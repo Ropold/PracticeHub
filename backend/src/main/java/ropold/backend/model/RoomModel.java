@@ -4,9 +4,13 @@ public record RoomModel(
         String id,
         String name,
         String address,
-        String category,
+        Category category,
         String description,
-        WishlistStatus wishlistStatus,
+        String appUserGithubId,
+        String appUserUsername,
+        String appUserAvatarUrl,
+        String appUserGithubUrl,
+        boolean isActive,
         String imageUrl
 ) {
 }

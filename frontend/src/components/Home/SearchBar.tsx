@@ -46,7 +46,7 @@ const SearchBar: React.FC<SearchBarProps> = ({value, onChange, rooms, setFiltere
         <div className="search-bar">
             <input
                 type="text"
-                placeholder="Search PracticeHub..."
+                placeholder="Search PracticeHub by..."
                 value={value}
                 onChange={handleInputChange}
             />
