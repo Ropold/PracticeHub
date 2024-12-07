@@ -25,7 +25,7 @@ export default function Favorites(props: Readonly<FavoritesProps>) {
 
     return (
         <div>
-            <h2>Wishlist</h2>
+            <h2>Favorites</h2>
             {favoritesRooms.length > 0 ? (
                 favoritesRooms.map((room) => (
                     <RoomCard key={room.id} room={room} user={props.user} favorites={props.favorites} toggleFavorite={props.toggleFavorite} />
