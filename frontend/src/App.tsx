@@ -13,6 +13,7 @@ import axios from "axios";
 import MyRooms from "./components/MyRooms.tsx";
 import {RoomModel} from "./components/model/RoomModel.ts";
 import {useLocation} from "react-router-dom";
+import MapBoxAll from "./components/MapBoxAll.tsx";
 
 export default function App() {
     const [user, setUser] = useState<string>("anonymousUser");
@@ -132,6 +133,7 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms} showSearch={showSearch}/>}/>
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
+                <Route path="/mapbox-all" element={<MapBoxAll favorites={favorites} activeRooms={activeRooms} />} />
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
                     <Route path={"/:id/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms} userDetails={userDetails} setRooms={setRooms}/>} />

@@ -49,6 +49,7 @@ export default function NavBar(props: Readonly<NavbarProps>) {
                 />
             </div>
 
+
             <button
                 onClick={() => {
                     props.toggleSearchBar();
@@ -58,7 +59,8 @@ export default function NavBar(props: Readonly<NavbarProps>) {
             >
                 {props.showSearch ? "Hide Search" : "Search"} {/* Dynamischer Text */}
             </button>
-            {/* Button in der NavBar */}
+
+            <button onClick={()=> navigate(`/mapbox-all`)} >Map</button>
 
             {props.user !== "anonymousUser" ? (
                 <>
