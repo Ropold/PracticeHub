@@ -15,15 +15,26 @@ type HomeProps = {
 export default function Home(props: Readonly<HomeProps>) {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredRooms, setFilteredRooms] = useState<RoomModel[]>([]);
+    const [showSearch, setShowSearch] = useState<boolean>(false);
+
+    const toggleSearchBar = () => {
+        setShowSearch(prevState => !prevState);
+    };
 
     return (
         <>
-            <SearchBar
-                value={searchQuery}
-                onChange={setSearchQuery}
-                rooms={props.activeRooms}
-                setFilteredRooms={setFilteredRooms}
-            />
+            <button onClick={toggleSearchBar}>
+                {showSearch ? "Hide Search" : "Show Search"}
+            </button>
+
+            {showSearch && (
+                <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    rooms={props.activeRooms}
+                    setFilteredRooms={setFilteredRooms}
+                />
+            )}
             <div className="room-card-container">
                 {filteredRooms.map((r) => (
                     <RoomCard
