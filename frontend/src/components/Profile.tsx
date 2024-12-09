@@ -1,42 +1,28 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
 import "./styles/Profile.css"
 
-export default function Profile() {
-    const [user, setUser] = useState<any>(null);
+type UserDetailsProps={
+    userDetails: any;
+}
 
-    function getUserDetails() {
-        axios.get("/api/users/me/details")
-            .then((response) => {
-                //console.log("User details:", response.data);
-                setUser(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-                setUser(null);
-            });
-    }
-
-    useEffect(() => {
-        getUserDetails();
-    }, []);
+export default function Profile(props: Readonly<UserDetailsProps>) {
+    const userDetails = props.userDetails;
 
     return (
         <div className="profile-container">
             <h2>GitHub Profile</h2>
-            {user ? (
+            {userDetails ? (
                 <div>
-                    <p>Username: {user.login}</p>
-                    <p>Name: {user.name || "No name provided"}</p>
-                    <p>Location: {user.location || "No location provided"}</p>
-                    {user.bio && <p>Bio: {user.bio}</p>}
-                    <p>Followers: {user.followers}</p>
-                    <p>Following: {user.following}</p>
-                    <p>Public Repositories: {user.public_repos}</p>
-                    <p>GitHub Profile: <a href={user.html_url} target="_blank" rel="noopener noreferrer">Visit Profile</a></p>
-                    <img src={user.avatar_url} alt={`${user.login}'s avatar`} />
-                    <p>Account Created: {new Date(user.created_at).toLocaleDateString()}</p>
-                    <p>Last Updated: {new Date(user.updated_at).toLocaleDateString()}</p>
+                    <p>Username: {userDetails.login}</p>
+                    <p>Name: {userDetails.name || "No name provided"}</p>
+                    <p>Location: {userDetails.location || "No location provided"}</p>
+                    {userDetails.bio && <p>Bio: {userDetails.bio}</p>}
+                    <p>Followers: {userDetails.followers}</p>
+                    <p>Following: {userDetails.following}</p>
+                    <p>Public Repositories: {userDetails.public_repos}</p>
+                    <p>GitHub Profile: <a href={userDetails.html_url} target="_blank" rel="noopener noreferrer">Visit Profile</a></p>
+                    <img src={userDetails.avatar_url} alt={`${userDetails.login}'s avatar`} />
+                    <p>Account Created: {new Date(userDetails.created_at).toLocaleDateString()}</p>
+                    <p>Last Updated: {new Date(userDetails.updated_at).toLocaleDateString()}</p>
                 </div>
             ) : (
                 <p className="loading">Loading...</p>

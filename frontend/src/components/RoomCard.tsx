@@ -1,12 +1,13 @@
 import "./styles/RoomCard.css";
 import { RoomModel } from "./model/RoomModel.ts";
 import { useNavigate } from "react-router-dom";
-import handleToggleWishlist from "../utils/handleToggleWishlist.ts";
+import {getCategoryDisplayName} from "../utils/GetCategoryDisplayName.ts";
 
 type RoomCardProps = {
     room: RoomModel;
+    favorites: string[];
     user: string;
-    onStatusChange: (updatedRoom: RoomModel) => void;
+    toggleFavorite: (roomId: string) => void;
 };
 
 export default function RoomCard(props: Readonly<RoomCardProps>) {
@@ -16,6 +17,7 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
         navigate(`/room/${props.room.id}`);
     };
 
+    const isFavorite = props.favorites.includes(props.room.id);
 
     return (
 
@@ -23,7 +25,7 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
             <div className="room-card-content">
                 <h2>{props.room.name}</h2>
                 <p><strong>Address: </strong>{props.room.address}</p>
-                <p><strong>Category: </strong>{props.room.category}</p>
+                <p><strong>Category: </strong>{getCategoryDisplayName(props.room.category)}</p>
                 {props.room.imageUrl ? (
                     <img
                         src={props.room.imageUrl}
@@ -34,12 +36,12 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
             </div>
             {props.user !== "anonymousUser" && (
                 <button
-                    id="button-wishlist"
+                    id="button-favorite-room-card"
                     onClick={(event) => {
                         event.stopPropagation(); // Verhindert die Weitergabe des Klicks an die Karte
-                        handleToggleWishlist(props.room, props.onStatusChange);
+                        props.toggleFavorite(props.room.id);
                     }}
-                    className={props.room.wishlistStatus === "ON_WISHLIST" ? "wishlist-on" : "wishlist-off"}
+                    className={isFavorite ? "favorite-on" : "favorite-off"}
                 >
                     ♥
                 </button>

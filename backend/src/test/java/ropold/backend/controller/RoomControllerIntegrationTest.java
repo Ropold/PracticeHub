@@ -13,9 +13,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import ropold.backend.model.AppUser;
+import ropold.backend.model.Category;
 import ropold.backend.model.RoomModel;
-import ropold.backend.model.WishlistStatus;
+import ropold.backend.repository.AppUserRepository;
 import ropold.backend.repository.RoomRepository;
 
 import java.util.List;
@@ -24,13 +25,13 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class RoomControllerIntegrationTest {
-
-    static RoomModel roomModel;
 
     @MockBean
     private Cloudinary cloudinary;
@@ -41,57 +42,156 @@ class RoomControllerIntegrationTest {
     @Autowired
     RoomRepository roomRepository;
 
+    @Autowired
+    private AppUserRepository appUserRepository;
+
     @BeforeEach
     void setup() {
         roomRepository.deleteAll();
-        roomModel = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln",
-                "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                WishlistStatus.ON_WISHLIST, "https://www.test.de/");
-        roomRepository.save(roomModel);
+        appUserRepository.deleteAll();
+
+        RoomModel room1 = new RoomModel(
+                "1", "Gürzenich Saal", "Martinstr. 29 50667 Köln",
+                Category.ORCHESTER_HALL, "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                "123", "Testuser", "https://avatars-of-test-user.com/",
+                "https://github.com/Testuser", true, "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage1.jpg");
+
+        RoomModel room2 = new RoomModel(
+                "2", "Beethoven-Saal", "Beethovenstraße 1, 53115 Bonn",
+                Category.ORCHESTER_HALL, "Ein moderner Saal für klassische Musik.",
+                "123", "Testuser", "https://avatars-of-test-user.com/",
+                "https://github.com/Testuser", true, "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage2.jpg");
+
+        roomRepository.saveAll(List.of(room1, room2));
+
+        AppUser user = new AppUser(
+                "123",
+                "Testuser",
+                "Max Mustermann",
+                "https://avatars-of-test-user.com/",
+                "https://github.com/Testuser",
+                List.of("1")
+        );
+        appUserRepository.save(user);
     }
 
     @Test
-    void getAllRooms_expectListWithOneRoom_whenOneRoomSaved() throws Exception {
+    @WithMockUser(username = "123")
+    void getUserFavorites_shouldReturnFavoriteRooms() throws Exception {
+        mockMvc.perform(get("/api/practice-hub/favorites/123"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                [
+                    {
+                        "id": "1",
+                        "name": "Gürzenich Saal",
+                        "address": "Martinstr. 29 50667 Köln",
+                        "category": "ORCHESTER_HALL",
+                        "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                        "appUserGithubId": "123",
+                        "appUserUsername": "Testuser",
+                        "appUserAvatarUrl": "https://avatars-of-test-user.com/",
+                        "appUserGithubUrl": "https://github.com/Testuser",
+                        "isActive": true,
+                        "imageUrl": "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage1.jpg"
+                    }
+                ]
+                """));
+    }
+
+    @Test
+    @WithMockUser(username = "123")
+    void addRoomToFavorites_shouldAddRoomToFavoritesAndReturnCreated() throws Exception {
+        // GIVEN Room with ID "2" exists // WHEN:
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub/favorites/123/2"))
+                .andExpect(status().isCreated());
+
+        // THEN:
+        AppUser updatedUser = appUserRepository.findById("123").orElseThrow();
+        Assertions.assertTrue(updatedUser.favorites().contains("2"));
+    }
+
+    @Test
+    @WithMockUser(username = "123")
+    void removeRoomFromFavorites_expectNoContent_whenRoomRemoved() throws Exception {
+        // GIVEN
+        AppUser user = appUserRepository.findById("123").orElseThrow();
+        List<String> favoritesBefore = user.favorites();
+        Assertions.assertTrue(favoritesBefore.contains("1"));
+
+        // WHEN:
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/practice-hub/favorites/{userId}/{roomId}", "123", "1"))
+                .andExpect(status().isNoContent());
+
+        // THEN:
+        AppUser updatedUser = appUserRepository.findById("123").orElseThrow();
+        List<String> favoritesAfter = updatedUser.favorites();
+        Assertions.assertFalse(favoritesAfter.contains("1"));
+    }
+
+    @Test
+    void getAllRooms_expectListWithTwoRooms_whenTwoRoomsSaved() throws Exception {
         // WHEN
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/practice-hub"))
+        mockMvc.perform(get("/api/practice-hub"))
                 // THEN
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json("""
-                        [
-                            {
-                                "id": "1",
-                                "name": "Gürzenich Saal",
-                                "address": "Neumarkt 1, 50667 Köln",
-                                "category": "Orchester-Saal",
-                                "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                                "wishlistStatus": "ON_WISHLIST",
-                                "imageUrl": "https://www.test.de/"
-                            }
-                        ]
-                        """));
+                .andExpect(content().json("""
+                [
+                    {
+                        "id": "1",
+                        "name": "Gürzenich Saal",
+                        "address": "Martinstr. 29 50667 Köln",
+                        "category": "ORCHESTER_HALL",
+                        "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                        "appUserGithubId": "123",
+                        "appUserUsername": "Testuser",
+                        "appUserAvatarUrl": "https://avatars-of-test-user.com/",
+                        "appUserGithubUrl": "https://github.com/Testuser",
+                        "isActive": true,
+                        "imageUrl": "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage1.jpg"
+                    },
+                    {
+                        "id": "2",
+                        "name": "Beethoven-Saal",
+                        "address": "Beethovenstraße 1, 53115 Bonn",
+                        "category": "ORCHESTER_HALL",
+                        "description": "Ein moderner Saal für klassische Musik.",
+                        "appUserGithubId": "123",
+                        "appUserUsername": "Testuser",
+                        "appUserAvatarUrl": "https://avatars-of-test-user.com/",
+                        "appUserGithubUrl": "https://github.com/Testuser",
+                        "isActive": true,
+                        "imageUrl": "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage2.jpg"
+                    }
+                ]
+            """));
     }
 
     @Test
     void getRoomById_returnRoomWithId1_whenRoomWithId1Saved() throws Exception {
         // WHEN
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/practice-hub/1"))
+        mockMvc.perform(get("/api/practice-hub/1"))
                 // THEN
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json("""
-                        {
-                            "id": "1",
-                            "name": "Gürzenich Saal",
-                            "address": "Neumarkt 1, 50667 Köln",
-                            "category": "Orchester-Saal",
-                            "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                            "wishlistStatus": "ON_WISHLIST",
-                            "imageUrl": "https://www.test.de/"
-                        }
-                        """));
+                .andExpect(content().json("""
+                    {
+                        "id": "1",
+                        "name": "Gürzenich Saal",
+                        "address": "Martinstr. 29 50667 Köln",
+                        "category": "ORCHESTER_HALL",
+                        "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                        "appUserGithubId": "123",
+                        "appUserUsername": "Testuser",
+                        "appUserAvatarUrl": "https://avatars-of-test-user.com/",
+                        "appUserGithubUrl": "https://github.com/Testuser",
+                        "isActive": true,
+                        "imageUrl": "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage1.jpg"
+                    }
+                    """));
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = {"USER"})
+    @WithMockUser(username = "123")
     void postRoom_shouldReturnSavedRoom() throws Exception {
         // GIVEN
         roomRepository.deleteAll();
@@ -103,77 +203,97 @@ class RoomControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/practice-hub")
                         .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))
                         .file(new MockMultipartFile("roomModelDto", "", "application/json", """
-                        {
-                            "name": "Gürzenich Saal",
-                            "address": "Neumarkt 1, 50667 Köln",
-                            "category": "Orchester-Saal",
-                            "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                            "wishlistStatus": "ON_WISHLIST"
-                        }
-                        """.getBytes())))
+                    {
+                        "name": "Beethoven-Saal",
+                        "address": "Beethovenstraße 1, 53115 Bonn",
+                        "category": "ORCHESTER_HALL",
+                        "description": "Ein moderner Saal für klassische Musik.",
+                        "appUserGithubId": "123",
+                        "appUserUsername": "testUser",
+                        "appUserAvatarUrl": "https://avatars.example.com/testUser",
+                        "appUserGithubUrl": "https://github.com/testUser",
+                        "isActive": true
+                    }
+                    """.getBytes())))
                 .andExpect(status().isCreated());
 
         // THEN
         List<RoomModel> allRooms = roomRepository.findAll();
         Assertions.assertEquals(1, allRooms.size());
-        RoomModel savedRoom = allRooms.get(0);
+        RoomModel savedRoom = allRooms.getFirst();
         org.assertj.core.api.Assertions.assertThat(savedRoom)
                 .usingRecursiveComparison()
-                .ignoringFields("id")
+                .ignoringFields("id", "imageUrl") // Ignoring generated fields
                 .isEqualTo(new RoomModel(
                         null,
-                        "Gürzenich Saal",
-                        "Neumarkt 1, 50667 Köln",
-                        "Orchester-Saal",
-                        "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                        WishlistStatus.ON_WISHLIST,
-                        "https://www.test.de/"
+                        "Beethoven-Saal",
+                        "Beethovenstraße 1, 53115 Bonn",
+                        Category.ORCHESTER_HALL,
+                        "Ein moderner Saal für klassische Musik.",
+                        "123",
+                        "testUser",
+                        "https://avatars.example.com/testUser",
+                        "https://github.com/testUser",
+                        true,
+                        null
                 ));
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = {"USER"})
-    void updateRoomWithPut_shouldUpdateWishlistStatus() throws Exception {
+    @WithMockUser(username = "123")
+    void updateRoomWithPut_shouldUpdateRoomDetails() throws Exception {
         // GIVEN
-        RoomModel existingRoom = new RoomModel("1", "Gürzenich Saal", "Neumarkt 1, 50667 Köln",
-                "Orchester-Saal", "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                WishlistStatus.NOT_ON_WISHLIST, "https://www.test.de/");
+        RoomModel existingRoom = new RoomModel("1", "Gürzenich Saal", "Martinstr. 29 50667 Köln",
+                Category.ORCHESTER_HALL, "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                "123", "TestUser", "https://avatars-of-test-user.com/",
+                "https://github.com/Testuser", true, "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage1.jpg");
         roomRepository.save(existingRoom);
         Uploader mockUploader = mock(Uploader.class);
-        when(mockUploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://www.test.de/"));
+        when(mockUploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://www.updated-image.com/"));
         when(cloudinary.uploader()).thenReturn(mockUploader);
 
         // WHEN
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/practice-hub/1")
                         .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))
                         .file(new MockMultipartFile("roomModelDto", "", "application/json", """
-                        {
-                            "name": "Gürzenich Saal",
-                            "address": "Neumarkt 1, 50667 Köln",
-                            "category": "Orchester-Saal",
-                            "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                            "wishlistStatus": "ON_WISHLIST"
-                        }
-                        """.getBytes()))
+                    {
+                        "name": "Updated Saal",
+                        "address": "Updatedstraße 1, 12345 Stadt",
+                        "category": "ORCHESTER_HALL",
+                        "description": "Ein aktualisierter Saal für Konzerte.",
+                        "appUserGithubId": "123",
+                        "appUserUsername": "TestUserUpdated",
+                        "appUserAvatarUrl": "https://avatars.example.com/testUserUpdated",
+                        "appUserGithubUrl": "https://github.com/testUserUpdated",
+                        "isActive": false
+                    }
+                    """.getBytes()))
                         .contentType("multipart/form-data")
-                        .with(request -> { request.setMethod("PUT"); return request; }))
+                        .with(request -> {
+                            request.setMethod("PUT");
+                            return request;
+                        }))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json("""
-                        {
-                            "id": "1",
-                            "name": "Gürzenich Saal",
-                            "address": "Neumarkt 1, 50667 Köln",
-                            "category": "Orchester-Saal",
-                            "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
-                            "wishlistStatus": "ON_WISHLIST",
-                            "imageUrl": "https://www.test.de/"
-                        }
-                        """));
+                .andExpect(content().json("""
+                    {
+                        "id": "1",
+                        "name": "Updated Saal",
+                        "address": "Updatedstraße 1, 12345 Stadt",
+                        "category": "ORCHESTER_HALL",
+                        "description": "Ein aktualisierter Saal für Konzerte.",
+                        "appUserGithubId": "123",
+                        "appUserUsername": "TestUserUpdated",
+                        "appUserAvatarUrl": "https://avatars.example.com/testUserUpdated",
+                        "appUserGithubUrl": "https://github.com/testUserUpdated",
+                        "isActive": false,
+                        "imageUrl": "https://www.updated-image.com/"
+                    }
+                    """));
 
         // THEN
         RoomModel updatedRoom = roomRepository.findById("1").orElseThrow();
-        Assertions.assertEquals(WishlistStatus.ON_WISHLIST, updatedRoom.wishlistStatus());
-        Assertions.assertEquals("https://www.test.de/", updatedRoom.imageUrl());
+        Assertions.assertFalse(updatedRoom.isActive());
+        Assertions.assertEquals("https://www.updated-image.com/", updatedRoom.imageUrl());
     }
 
     @Test
@@ -181,18 +301,25 @@ class RoomControllerIntegrationTest {
     void deleteRoom_shouldRemoveRoomFromRepository() throws Exception {
         // GIVEN
         RoomModel roomToDelete = new RoomModel("2", "Beethoven-Saal", "Beethovenstraße 1, 53115 Bonn",
-                "Konzerthalle", "Ein moderner Saal für klassische Musik und Veranstaltungen.",
-                WishlistStatus.ON_WISHLIST, "https://www.test.de/");
+                Category.ORCHESTER_HALL, "Ein moderner Saal für klassische Musik und Veranstaltungen.",
+                "123", "Testuser", "https://avatars-of-test-user.com/",
+                "https://github.com/Testuser", true, "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage2.jpg");
         roomRepository.save(roomToDelete);
+
+        // Mock the Cloudinary API to simulate the deletion of the image
         Uploader mockUploader = mock(Uploader.class);
         when(mockUploader.destroy(any(), anyMap())).thenReturn(Map.of("result", "ok"));
         when(cloudinary.uploader()).thenReturn(mockUploader);
 
         // WHEN
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/practice-hub/2"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/practice-hub/{roomId}", "2"))
                 .andExpect(status().isNoContent());
 
         // THEN
         Assertions.assertFalse(roomRepository.existsById("2"));
+
+        // Verifying that the Cloudinary destroy method was called with the correct image name
+        verify(mockUploader).destroy(eq("testimage2"), anyMap());
     }
+
 }

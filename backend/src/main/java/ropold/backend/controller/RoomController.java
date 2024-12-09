@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ropold.backend.model.RoomModel;
 import ropold.backend.model.RoomModelDto;
+import ropold.backend.service.AppUserService;
 import ropold.backend.service.CloudinaryService;
 import ropold.backend.service.RoomService;
 
@@ -20,10 +21,34 @@ public class RoomController {
 
     private final RoomService roomService;
     private final CloudinaryService cloudinaryService;
+    private final AppUserService appUserService;
+
+    @GetMapping("/favorites/{userId}")
+    public List<RoomModel> getUserFavorites(@PathVariable String userId) {
+        List<String> favoriteRoomIds = appUserService.getUserFavorites(userId);
+        return roomService.getRoomsByIds(favoriteRoomIds);
+    }
+
+    @PostMapping("/favorites/{userId}/{roomId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addRoomToFavorites(@PathVariable String userId, @PathVariable String roomId) {
+        appUserService.addRoomToFavorites(userId, roomId);
+    }
+
+    @DeleteMapping("/favorites/{userId}/{roomId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeRoomFromFavorites(@PathVariable String userId, @PathVariable String roomId) {
+        appUserService.removeRoomFromFavorites(userId, roomId);
+    }
 
     @GetMapping()
     public List<RoomModel> getAllRooms() {
         return roomService.getAllRooms();
+    }
+
+    @GetMapping("/active")
+    public List<RoomModel> getActiveRooms() {
+        return roomService.getActiveRooms();
     }
 
     @GetMapping("/{id}")
@@ -35,7 +60,7 @@ public class RoomController {
     @PostMapping
     public RoomModel postRoom(
             @RequestPart("roomModelDto") @Valid RoomModelDto roomModelDto,
-            @RequestPart("image") MultipartFile image) throws IOException {
+            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
 
         String imageUrl = null;
         if (image != null && !image.isEmpty()) {
@@ -49,7 +74,11 @@ public class RoomController {
                         roomModelDto.address(),
                         roomModelDto.category(),
                         roomModelDto.description(),
-                        roomModelDto.wishlistStatus(),
+                        roomModelDto.appUserGithubId(),
+                        roomModelDto.appUserUsername(),
+                        roomModelDto.appUserAvatarUrl(),
+                        roomModelDto.appUserGithubUrl(),
+                        roomModelDto.isActive(),
                         imageUrl
                 )
         );
@@ -78,10 +107,19 @@ public class RoomController {
                 roomModelDto.address(),
                 roomModelDto.category(),
                 roomModelDto.description(),
-                roomModelDto.wishlistStatus(),
+                roomModelDto.appUserGithubId(),
+                roomModelDto.appUserUsername(),
+                roomModelDto.appUserAvatarUrl(),
+                roomModelDto.appUserGithubUrl(),
+                roomModelDto.isActive(),
                 newImageUrl
         );
         return roomService.updateRoomWithPut(id, updatedRoom);
+    }
+
+    @PutMapping("/{id}/toggle-active")
+    public RoomModel toggleActiveStatus(@PathVariable String id) {
+       return roomService.toggleActiveStatus(id);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

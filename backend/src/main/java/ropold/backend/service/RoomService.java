@@ -20,10 +20,20 @@ public class RoomService {
         return roomRepository.findAll();
     }
 
+    public List<RoomModel> getActiveRooms() {
+        return roomRepository.findAll().stream()
+                .filter(RoomModel::isActive)
+                .toList();
+    }
+
     public RoomModel getRoomById(String id) {
         return roomRepository
                 .findById(id)
                 .orElseThrow(()-> new RoomNotFoundException("No Room found with id: " + id));
+    }
+
+    public List<RoomModel> getRoomsByIds(List<String> roomIds) {
+        return roomRepository.findAllById(roomIds);
     }
 
     public RoomModel addRoom(RoomModel roomModel) {
@@ -33,7 +43,11 @@ public class RoomService {
                 roomModel.address(),
                 roomModel.category(),
                 roomModel.description(),
-                roomModel.wishlistStatus(),
+                roomModel.appUserGithubId(),
+                roomModel.appUserUsername(),
+                roomModel.appUserAvatarUrl(),
+                roomModel.appUserGithubUrl(),
+                roomModel.isActive(),
                 roomModel.imageUrl()
         );
         return roomRepository.save(newRoomModel);
@@ -47,13 +61,38 @@ public class RoomService {
                     roomModel.address(),
                     roomModel.category(),
                     roomModel.description(),
-                    roomModel.wishlistStatus(),
+                    roomModel.appUserGithubId(),
+                    roomModel.appUserUsername(),
+                    roomModel.appUserAvatarUrl(),
+                    roomModel.appUserGithubUrl(),
+                    roomModel.isActive(),
                     roomModel.imageUrl()
             );
             return roomRepository.save(updatedRoomModel);
         } else {
             throw new RoomNotFoundException("No Room found to update with id: " + id);
         }
+    }
+
+    public RoomModel toggleActiveStatus(String id) {
+        RoomModel room = roomRepository.findById(id)
+                .orElseThrow(() -> new RoomNotFoundException("No Room found with id: " + id));
+
+        RoomModel updatedRoomModel = new RoomModel(
+                id,
+                room.name(),
+                room.address(),
+                room.category(),
+                room.description(),
+                room.appUserGithubId(),
+                room.appUserUsername(),
+                room.appUserAvatarUrl(),
+                room.appUserGithubUrl(),
+                !room.isActive(),
+                room.imageUrl()
+        );
+
+        return roomRepository.save(updatedRoomModel);
     }
 
     public void deleteRoom(String id) {

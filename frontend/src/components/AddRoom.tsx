@@ -1,13 +1,20 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import {RoomModel} from "./model/RoomModel.ts";
 
-export default function AddRoom() {
+type AddRoomProps = {
+    user: string;
+    handleSubmit: (room: RoomModel) => void;
+    userDetails: any;
+}
+
+export default function AddRoom(props: Readonly<AddRoomProps>) {
+
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [category, setCategory] = useState<string>("");
     const [description, setDescription] = useState<string>("");
-    const [status, setStatus] = useState<"ON_WISHLIST" | "NOT_ON_WISHLIST">("NOT_ON_WISHLIST");
     const [image, setImage] = useState<File | null>(null);
 
     const navigate = useNavigate();
@@ -18,13 +25,25 @@ export default function AddRoom() {
         const data = new FormData();
 
         if (image) {
-            //console.log("Gesendetes Bild:", image);
             data.append("image", image);
         }
 
-        const roomData = { name, address, category, description, wishlistStatus: status, imageUrl: "" };
+        const roomData = {
+            name,
+            address,
+            category: category as any, // Wir casten den String zu Category
+            description,
+            appUserGithubId: props.user,
+            appUserUsername: props.userDetails.login,
+            appUserAvatarUrl: props.userDetails.avatar_url,
+            appUserGithubUrl: props.userDetails.html_url,
+            isActive: true,
+            imageUrl: "",
+        };
 
-        data.append("roomModelDto", new Blob([JSON.stringify(roomData)], { type: "application/json" }));
+        data.append("roomModelDto", new Blob([JSON.stringify(roomData)], {type: "application/json"}));
+
+        console.log("roomData:", roomData);
 
         axios
             .post("/api/practice-hub", data, {
@@ -33,8 +52,9 @@ export default function AddRoom() {
                 }
             })
             .then((response) => {
-                //console.log("Antwort vom Server:", response.data);
+                console.log("Antwort vom Server:", response.data);
                 navigate(`/room/${response.data.id}`);
+                props.handleSubmit(response.data);
             })
             .catch((error) => {
                 if (error.response && error.response.status === 400 && error.response.data) {
@@ -54,7 +74,7 @@ export default function AddRoom() {
     };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files){
+        if (e.target.files) {
             setImage(e.target.files[0]);
         }
     }
@@ -64,21 +84,26 @@ export default function AddRoom() {
             <div className="edit-form">
                 <h2>Add New Room</h2>
                 <form onSubmit={handleSubmit}>
-                    <label>Name: <input className="input-small" type="text" value={name}
-                            onChange={(e) => setName(e.target.value)}/></label>
+                    <label>Title: <input className="input-small" type="text" value={name}
+                                         onChange={(e) => setName(e.target.value)}/></label>
                     <label>Address: <input className="input-small" type="text" value={address}
-                            onChange={(e) => setAddress(e.target.value)}/></label>
-                    <label>Category: <input className="input-small" type="text" value={category}
-                            onChange={(e) => setCategory(e.target.value)}/></label>
+                                           onChange={(e) => setAddress(e.target.value)}/></label>
+                    <label>Category: <select className="input-small" value={category}
+                                             onChange={(e) => setCategory(e.target.value)} required>
+                        <option value="" disabled>*Choose a category*</option>
+                        <option value="SOLO_DUO_ROOM">Solo/Duo Room</option>
+                        <option value="BAND_ROOM">Band Room</option>
+                        <option value="STUDIO_ROOM">Studio Room</option>
+                        <option value="ORCHESTER_HALL">Orchestra Hall</option>
+                    </select>
+                    </label>
                     <label>Description: <textarea className="textarea-large" value={description}
-                            onChange={(e) => setDescription(e.target.value)}/></label>
-                    <label>Status: <select value={status}
-                            onChange={(e) => setStatus(e.target.value as "ON_WISHLIST" | "NOT_ON_WISHLIST")}>
-                            <option value="ON_WISHLIST">On Wishlist</option>
-                            <option value="NOT_ON_WISHLIST">Not on Wishlist</option></select></label>
+                                                  onChange={(e) => setDescription(e.target.value)}/></label>
                     <input type={"file"} onChange={onFileChange}/>
                     {image && <img src={URL.createObjectURL(image)} className={"room-card-image"}/>}
-                    <div className="button-group"><button type="submit">Add Room</button></div>
+                    <div className="button-group">
+                        <button type="submit">Add Room</button>
+                    </div>
                 </form>
             </div>
         </div>

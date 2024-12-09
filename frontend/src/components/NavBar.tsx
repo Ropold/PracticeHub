@@ -2,15 +2,15 @@ import "./styles/NavBar.css"
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
-
 type NavbarProps = {
     user: string;
     getUser: () => void;
+    getAllActiveRooms: () => void;
+    getAllRooms: () => void;
 }
 
-export default function NavBar(props: NavbarProps) {
+export default function NavBar(props: Readonly<NavbarProps>) {
     const navigate = useNavigate();
-
 
     function loginWithGithub() {
         const host = window.location.host === 'localhost:5173' ? 'http://localhost:8080' : window.location.origin
@@ -30,15 +30,15 @@ export default function NavBar(props: NavbarProps) {
             });
     }
 
-
     return (
         <nav className="navbar">
-            <button onClick={() => navigate("/")}>Home</button>
+            <button onClick={() => {props.getAllActiveRooms(); navigate("/")}}>Home</button>
             {props.user !== "anonymousUser" ? (
                 <>
-                    <button onClick={() => navigate("/wishlist")}>Wishlist</button>
-                    <button onClick={() => navigate("/add-room")}>Add Room</button>
-                    <button onClick={() => navigate("/profile")}>Profile</button>
+                <button onClick={() => navigate(`/${props.user}/favorites`)}>Favorites</button>
+                    <button onClick={() => navigate(`/${props.user}/add-room`)}>Add Room</button>
+                    <button onClick={() => {props.getAllRooms(); navigate(`/${props.user}/my-rooms`)}}>My Rooms</button>
+                    <button onClick={() => navigate(`/${props.user}/profile`)}>Profile</button>
                     <button onClick={logoutFromGithub}>Logout</button>
                 </>
             ) : (
@@ -47,3 +47,4 @@ export default function NavBar(props: NavbarProps) {
         </nav>
     );
 }
+

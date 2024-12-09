@@ -6,4 +6,5 @@ import ropold.backend.model.RoomModel;
 
 @Repository
 public interface RoomRepository extends MongoRepository<RoomModel, String> {
+    // add custom search for active rooms here
 }
