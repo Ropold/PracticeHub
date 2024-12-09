@@ -1,0 +1,32 @@
+
+.navbar {
+    margin: 20px auto;
+    display: flex;            /* Nutze Flexbox */
+    align-items: center;      /* Zentriert die Items vertikal */
+    justify-content: center;  /* Zentriert die Items horizontal */
+    gap: 20px;                /* Abstand zwischen den Items */
+    padding: 10px 20px;       /* Padding für die Navbar */
+    width: 100%;              /* Breite der Navbar */
+    box-sizing: border-box;   /* Verhindert das Überschreiten der angegebenen Breite */
+    top: 0;                   /* Setzt die Navbar ganz oben */
+    left: 0;                  /* Setzt sie ganz nach links */
+    z-index: 1000;            /* Stellt sicher, dass die Navbar oben bleibt */
+    background-color: white;  /* Optionale Hintergrundfarbe */
+}
+
+
+/* Stil für das Logo */
+.logo-image {
+    height: 40px; /* Passe die Größe des Logos an */
+    width: auto;
+    border: 1px solid #ccc; /* Normaler Rand wie bei den Buttons */
+    border-radius: 4px; /* Gleicher abgerundeter Rand wie bei den Buttons */
+    transition: all 0.3s ease; /* Weiche Übergänge für den Rand und Hintergrund */
+    cursor: pointer; /* Zeigt an, dass das Bild klickbar ist */
+}
+
+/* Hover-Effekt wie bei den Buttons */
+.logo-image:hover {
+    background-color: #f0f0f0; /* Ähnlicher Hover-Hintergrund wie bei den Buttons */
+    border-color: #007BFF; /* Blauer Rand */
+}

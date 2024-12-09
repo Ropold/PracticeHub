@@ -25,9 +25,17 @@ export default function Home(props: Readonly<HomeProps>) {
                 rooms={props.activeRooms}
                 setFilteredRooms={setFilteredRooms}
             />
-            {filteredRooms.map((r) => (
-                <RoomCard key={r.id} room={r} user={props.user} favorites={props.favorites} toggleFavorite={props.toggleFavorite} />
-            ))}
+            <div className="room-card-container">
+                {filteredRooms.map((r) => (
+                    <RoomCard
+                        key={r.id}
+                        room={r}
+                        user={props.user}
+                        favorites={props.favorites}
+                        toggleFavorite={props.toggleFavorite}
+                    />
+                ))}
+            </div>
         </>
     );
 }

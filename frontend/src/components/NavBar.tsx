@@ -32,12 +32,24 @@ export default function NavBar(props: Readonly<NavbarProps>) {
 
     return (
         <nav className="navbar">
-            <button onClick={() => {props.getAllActiveRooms(); navigate("/")}}>Home</button>
+
+            <div onClick={() => {
+                props.getAllActiveRooms();
+                navigate("/");
+            }}>
+                <img src="/PracticeHub-Logo.png" alt="PracticeHub Logo" className="logo-image"/>
+            </div>
+
+
             {props.user !== "anonymousUser" ? (
                 <>
-                <button onClick={() => navigate(`/${props.user}/favorites`)}>Favorites</button>
+                    <button onClick={() => navigate(`/${props.user}/favorites`)}>Favorites</button>
                     <button onClick={() => navigate(`/${props.user}/add-room`)}>Add Room</button>
-                    <button onClick={() => {props.getAllRooms(); navigate(`/${props.user}/my-rooms`)}}>My Rooms</button>
+                    <button onClick={() => {
+                        props.getAllRooms();
+                        navigate(`/${props.user}/my-rooms`)
+                    }}>My Rooms
+                    </button>
                     <button onClick={() => navigate(`/${props.user}/profile`)}>Profile</button>
                     <button onClick={logoutFromGithub}>Logout</button>
                 </>

@@ -1,6 +1,8 @@
+
 /* Styling für die Karte */
 .room-card {
-    position: relative;
+    height: 400px;
+    width: 400px;
     background-color: #fff; /* Heller Hintergrund für die Karte */
     border: 1px solid #ddd; /* Dünne graue Grenze */
     border-radius: 12px; /* Abgerundete Ecken */
@@ -9,9 +11,11 @@
     display: flex;
     flex-direction: column; /* Vertikales Layout für den Inhalt */
     justify-content: flex-start;
+    align-items: center;
+    position: relative;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Leichter Schatten */
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animationen für Hover */
-    cursor: pointer
+    cursor: pointer;
 }
 
 /* Hover-Effekte für die Karte */
@@ -20,15 +24,48 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stärkerer Schatten bei Hover */
 }
 
-/* Styling für den Text in der Karte */
-.room-card-content h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 0 10px 0; /* Abstand nach unten */
-    color: #333; /* Dunkelgraue Farbe */
+/* Styling für den Container der Karten */
+.room-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center; /* Zentriert alle Karten */
 }
 
-.room-card-content p {
+/* Styling für das Bild */
+.room-card-image {
+    width: 280px; /* Das Bild passt sich der Breite des Containers an */
+    height: 200px; /* Feste Höhe für das Bild */
+    object-fit: cover; /* Stellt sicher, dass das Bild den Container ausfüllt */
+    border-bottom: 1px solid #ccc; /* Trennlinie zwischen Bild und Inhalt */
+    margin-bottom: 15px; /* Abstand zwischen Bild und Text */
+    bottom: 20px;
+}
+
+/* Styling für den Text in der Karte */
+.room-card-text {
+    flex: 1; /* Der Textbereich nimmt den verfügbaren Platz ein */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertikale Zentrierung */
+    text-align: center; /* Zentriert den Text */
+    align-items: center; /* Horizontale Zentrierung */
+}
+
+/* Styling für die Überschrift (h2) */
+.room-card-text h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    padding-left: 0;
+    color: #333;
+    max-width: 100%; /* Verhindert, dass die Überschrift zu weit geht */
+    overflow-wrap: break-word; /* Ermöglicht Umbruch bei langen Wörtern */
+}
+
+/* Styling für den Text unter der Überschrift */
+.room-card p {
     font-size: 1rem;
     color: #555; /* Mittelgraue Textfarbe */
     margin: 5px 0;
@@ -42,5 +79,13 @@
     background: none;
     border: none;
     font-size: 24px;
-    outline: none; /* Entfernt den Fokusrahmen *//* Entfernt den Fokusrahmen */
+    outline: none;
+    z-index: 10; /* Stellt sicher, dass der Button immer oben bleibt */
 }
+
+/* Styling für den Container der Details (noch nicht genutzt) */
+.details-container {
+    /*not used yet!!!!!!*/
+}
+
+

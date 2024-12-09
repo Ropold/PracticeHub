@@ -1,5 +1,5 @@
 .search-bar {
-    margin-bottom: 20px;
+    margin: 20px auto;
     padding: 10px;
     background-color: #f0f0f0;
     border-radius: 8px;
@@ -50,22 +50,6 @@
     border: 2px solid #007BFF;
     font-weight: bold;
     background-color: #e6f0ff;
-}
-
-
-.input-small {
-    font-size: 14px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    transition: border 0.3s ease;
-    height: 40px;        /* Feste Höhe, die zu den anderen Eingabefeldern passt */
-}
-
-
-.input-small:focus {
-    border-color: #007BFF;
-    outline: none;
 }
 
 

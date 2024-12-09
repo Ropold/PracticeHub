@@ -22,7 +22,7 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
     return (
 
         <div className="room-card" onClick={handleCardClick}>
-            <div className="room-card-content">
+            <div className="room-card-text">
                 <h2>{props.room.name}</h2>
                 <p><strong>Address: </strong>{props.room.address}</p>
                 <p><strong>Category: </strong>{getCategoryDisplayName(props.room.category)}</p>
