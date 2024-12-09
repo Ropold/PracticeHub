@@ -10,11 +10,20 @@ type HomeProps = {
     toggleFavorite: (roomId: string) => void;
     activeRooms: RoomModel[];
     showSearch: boolean;
+    resetSearchQuery: string;
 }
 
 export default function Home(props: Readonly<HomeProps>) {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredRooms, setFilteredRooms] = useState<RoomModel[]>([]);
+
+    // Effekt, der searchQuery zurücksetzt, wenn resetSearchQuery den Wert "reset" hat
+    useEffect(() => {
+        if (props.resetSearchQuery === "reset") {
+            setSearchQuery("");  // Setzt den searchQuery auf einen leeren String
+        }
+    }, [props.resetSearchQuery]);  // Reagiert auf Änderungen von resetSearchQuery
+
 
     useEffect(() => {
         const filtered = props.activeRooms.filter((room) => {

@@ -21,11 +21,14 @@ export default function App() {
     const [rooms, setRooms] = useState<RoomModel[]>([]);
     const [activeRooms, setActiveRooms] = useState<RoomModel[]>([]);
     const [showSearch, setShowSearch] = useState<boolean>(false);
+    const [resetSearchQuery, setResetSearchQuery] = useState<string>("");
 
     const location = useLocation();
 
+
     const toggleSearchBar = () => {
         setShowSearch((prevState) => !prevState); // Toggle die Sichtbarkeit der Suchleiste
+        setResetSearchQuery(prevState => prevState === "" ? "reset" : ""); // Setzt die Suchanfrage zurück
     };
 
     function getUser() {
@@ -129,7 +132,7 @@ export default function App() {
             <>
             <NavBar user={user} getUser={getUser} getAllActiveRooms={getAllActiveRooms} getAllRooms={getAllRooms} toggleSearchBar={toggleSearchBar} showSearch={showSearch}/>
             <Routes>
-                <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms} showSearch={showSearch}/>} />
+                <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms} showSearch={showSearch} resetSearchQuery={resetSearchQuery}/>}/>
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
