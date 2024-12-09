@@ -138,7 +138,6 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
         <div>
 
             {isEditing ? (
-                <div className="details-container">
                     <div className="edit-form">
                         <h2>Edit Room</h2>
                         <form onSubmit={handleSaveEdit}>
@@ -207,12 +206,11 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
                             </div>
                         </form>
                     </div>
-                </div>
             ) : (
-                <div className="my-rooms-list">
+                <div className="room-card-container">
                     {userRooms.length > 0 ? (
                         userRooms.map((room) => (
-                            <div key={room.id} className="room-card-container">
+                            <div key={room.id}>
                                 <RoomCard
                                     room={room}
                                     user={props.user}

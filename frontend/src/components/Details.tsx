@@ -1,4 +1,3 @@
-import "./styles/Details.css";
 import "./styles/RoomCard.css";
 import { RoomModel } from "./model/RoomModel.ts";
 import { useEffect, useState } from "react";
@@ -48,7 +47,6 @@ export default function Details(props: Readonly<DetailsProps>) {
     const isFavorite = props.favorites.includes(room.id);
 
     return (
-        <div className="details-container">
             <div className="room-details">
                 <h2>{room.name}</h2>
                 <p><strong>Address: </strong> {room.address}</p>
@@ -89,6 +87,5 @@ export default function Details(props: Readonly<DetailsProps>) {
                     </div>
                 </div>
             </div>
-        </div>
     );
 }

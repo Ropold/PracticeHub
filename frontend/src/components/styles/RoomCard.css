@@ -1,3 +1,47 @@
+/* Allgemeine Eingabefelder */
+.input-small, select {
+    width: 100%;
+    height: 40px;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fff;
+    transition: border 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.input-small:focus, select:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+.room-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Textarea */
+.textarea-large {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+    margin-bottom: 15px;
+}
+
+/* Form */
+.edit-form {
+    width: 800px;
+}
 
 /* Styling für die Karte */
 .room-card {
@@ -6,8 +50,7 @@
     background-color: #fff; /* Heller Hintergrund für die Karte */
     border: 1px solid #ddd; /* Dünne graue Grenze */
     border-radius: 12px; /* Abgerundete Ecken */
-    padding: 20px; /* Etwas mehr Abstand innen */
-    margin-bottom: 5px; /* Abstand zwischen den Karten */
+    padding: 20px;
     display: flex;
     flex-direction: column; /* Vertikales Layout für den Inhalt */
     justify-content: flex-start;
@@ -15,7 +58,6 @@
     position: relative;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Leichter Schatten */
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animationen für Hover */
-    cursor: pointer;
 }
 
 /* Hover-Effekte für die Karte */
@@ -24,54 +66,42 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stärkerer Schatten bei Hover */
 }
 
-/* Styling für den Container der Karten */
-.room-card-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center; /* Zentriert alle Karten */
-}
-
 /* Styling für das Bild */
 .room-card-image {
-    width: 280px; /* Das Bild passt sich der Breite des Containers an */
-    height: 200px; /* Feste Höhe für das Bild */
-    object-fit: cover; /* Stellt sicher, dass das Bild den Container ausfüllt */
-    border-bottom: 1px solid #ccc; /* Trennlinie zwischen Bild und Inhalt */
-    margin-bottom: 15px; /* Abstand zwischen Bild und Text */
-    bottom: 20px;
+    width: 280px; /* Bild passt sich der Breite an */
+    height: 200px; /* Feste Höhe */
+    object-fit: cover; /* Bild wird vollständig angezeigt */
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 15px;
 }
 
-/* Styling für den Text in der Karte */
+/* Text in der Karte */
 .room-card-text {
-    flex: 1; /* Der Textbereich nimmt den verfügbaren Platz ein */
-    height: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Vertikale Zentrierung */
-    text-align: center; /* Zentriert den Text */
-    align-items: center; /* Horizontale Zentrierung */
+    justify-content: center;
+    text-align: center;
+    align-items: center;
 }
 
-/* Styling für die Überschrift (h2) */
+/* Überschrift (Titel der RoomCard) */
 .room-card-text h2 {
     font-size: 1.5rem;
     font-weight: bold;
     margin: 0 0 10px 0;
-    padding-left: 0;
     color: #333;
-    max-width: 100%; /* Verhindert, dass die Überschrift zu weit geht */
-    overflow-wrap: break-word; /* Ermöglicht Umbruch bei langen Wörtern */
+    overflow-wrap: break-word; /* Umbrüche bei langen Wörtern */
 }
 
-/* Styling für den Text unter der Überschrift */
+/* Beschreibungstext */
 .room-card p {
     font-size: 1rem;
-    color: #555; /* Mittelgraue Textfarbe */
+    color: #555;
     margin: 5px 0;
 }
 
-/* Styling für den Wunschlisten-Button */
+/* Wunschlisten-Button */
 #button-favorite-room-card {
     position: absolute;
     top: 8px;
@@ -80,12 +110,76 @@
     border: none;
     font-size: 24px;
     outline: none;
-    z-index: 10; /* Stellt sicher, dass der Button immer oben bleibt */
+    z-index: 10;
 }
 
-/* Styling für den Container der Details (noch nicht genutzt) */
-.details-container {
-    /*not used yet!!!!!!*/
+/* Buttons unterhalb der RoomCard */
+.button-group {
+    margin-top: 10px; /* Abstand zur RoomCard */
+    display: flex;    /* Aktiviert Flexbox */
+    gap: 10px;        /* Abstand zwischen den Buttons */
+    justify-content: center; /* Optional: Zentriert die Buttons */
 }
 
 
+.button-group button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #66b3ff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button-group button:hover {
+    background-color: #007bff;
+}
+
+/* Delete-Button */
+#button-delete {
+    background-color: #ff9999;
+}
+
+#button-delete:hover {
+    background-color: #d32f2f;
+}
+
+/* Aktiv- und Offline-Buttons */
+#active-button {
+    background-color: #66bb6a;
+}
+
+#active-button:hover {
+    background-color: #388e3c;
+}
+
+#inactive-button {
+    background-color: #999;
+}
+
+#inactive-button:hover {
+    background-color: #555;
+}
+
+/* Wunschlisten-Status */
+.favorite-on {
+    color: red;
+}
+
+.favorite-off {
+    color: #999;
+}
+
+/* Responsives Design */
+@media (max-width: 768px) {
+    .room-card-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 Karten pro Reihe */
+    }
+}
+
+@media (max-width: 480px) {
+    .room-card-container {
+        grid-template-columns: 1fr; /* 1 Karte pro Reihe */
+    }
+}
