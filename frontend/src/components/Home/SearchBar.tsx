@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import "../styles/SearchBar.css";
 import { RoomModel } from "../model/RoomModel.ts";
+import "../styles/SearchBar.css";
 
 type SearchBarProps = {
     value: string;
@@ -52,7 +53,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, rooms, setFilter
         <div className="search-bar">
             <input
                 type="text"
-                placeholder="Search PracticeHub by Name or Address..."
+                placeholder="Search PracticeHub..."
                 value={value}
                 onChange={handleInputChange}
             />
@@ -62,28 +63,25 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, rooms, setFilter
                         setFilterType("name");
                     }}
                     className={filterType === "name" ? "active" : ""}
-                >
-                    Name
+                >Name
                 </button>
                 <button
                     onClick={() => {
                         setFilterType("address");
                     }}
                     className={filterType === "address" ? "active" : ""}
-                >
-                    Address
+                >Address
                 </button>
                 <button
                     onClick={() => {
                         setFilterType("all");
                         setSelectedCategory("");
+                        onChange('');
                     }}
                     className={filterType === "all" && selectedCategory === "" ? "active" : ""}
-                >
-                    No Filter
+                >No Filter
                 </button>
                 <label>
-                    Category:
                     <select
                         className="input-small"
                         value={selectedCategory}
