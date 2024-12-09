@@ -25,8 +25,24 @@
     cursor: pointer; /* Zeigt an, dass das Bild klickbar ist */
 }
 
-/* Hover-Effekt wie bei den Buttons */
-.logo-image:hover {
-    background-color: #f0f0f0; /* Ähnlicher Hover-Hintergrund wie bei den Buttons */
-    border-color: #007BFF; /* Blauer Rand */
+.clickable-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer; /* Zeigt an, dass der Bereich klickbar ist */
+    background-color: #f9f9f9;
+    border-radius: 1px; /* Optionale Abrundung für den Hover-Hintergrund */
+    border: 1px solid transparent;
+}
+
+.clickable-header:hover {
+    border-color: #007BFF; /* Blauer Rand beim Hover */
+    background-color: #f0f0f0; /* Optional: heller Hintergrund beim Hover */
+}
+
+.header-title {
+    margin: 0; /* Entfernt den Standardabstand */
+}
+
+.logo-image {
+    margin-left: 10px; /* Abstand zwischen Text und Bild */
 }

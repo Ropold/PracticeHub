@@ -18,7 +18,6 @@ export default function Home(props: Readonly<HomeProps>) {
 
     return (
         <>
-            <h1>PracticeHub</h1>
             <SearchBar
                 value={searchQuery}
                 onChange={setSearchQuery}

@@ -32,12 +32,19 @@ export default function NavBar(props: Readonly<NavbarProps>) {
 
     return (
         <nav className="navbar">
-
-            <div onClick={() => {
-                props.getAllActiveRooms();
-                navigate("/");
-            }}>
-                <img src="/PracticeHub-Logo.png" alt="PracticeHub Logo" className="logo-image"/>
+            <div
+                className="clickable-header"
+                onClick={() => {
+                    props.getAllActiveRooms();
+                    navigate("/");
+                }}
+            >
+                <h2 className="header-title">PracticeHub</h2>
+                <img
+                    src="/PracticeHub-Logo.png"
+                    alt="PracticeHub Logo"
+                    className="logo-image"
+                />
             </div>
 
 
