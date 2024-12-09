@@ -51,7 +51,6 @@ export default function App() {
             .then((response) => {
                 const favoriteIds = response.data.map((favorite: any) => favorite.id);
                 setFavorites(favoriteIds);
-                //console.log("Extracted Favorite IDs:", favoriteIds);
             })
             .catch((error) => {
                 console.error(error);
