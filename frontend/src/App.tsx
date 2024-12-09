@@ -19,9 +19,14 @@ export default function App() {
     const [userDetails, setUserDetails] = useState<any>(null);
     const [favorites, setFavorites] = useState<string[]>([]);
     const [rooms, setRooms] = useState<RoomModel[]>([]);
-    const[activeRooms, setActiveRooms] = useState<RoomModel[]>([]);
+    const [activeRooms, setActiveRooms] = useState<RoomModel[]>([]);
+    const [showSearch, setShowSearch] = useState<boolean>(false);
 
     const location = useLocation();
+
+    const toggleSearchBar = () => {
+        setShowSearch((prevState) => !prevState); // Toggle die Sichtbarkeit der Suchleiste
+    };
 
     function getUser() {
         axios.get("/api/users/me")
@@ -122,9 +127,9 @@ export default function App() {
 
     return (
             <>
-            <NavBar user={user} getUser={getUser} getAllActiveRooms={getAllActiveRooms} getAllRooms={getAllRooms}/>
+            <NavBar user={user} getUser={getUser} getAllActiveRooms={getAllActiveRooms} getAllRooms={getAllRooms} toggleSearchBar={toggleSearchBar} showSearch={showSearch}/>
             <Routes>
-                <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms}/>} />
+                <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms} showSearch={showSearch}/>} />
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />

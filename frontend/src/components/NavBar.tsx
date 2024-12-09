@@ -7,6 +7,8 @@ type NavbarProps = {
     getUser: () => void;
     getAllActiveRooms: () => void;
     getAllRooms: () => void;
+    toggleSearchBar: () => void;
+    showSearch: boolean;
 }
 
 export default function NavBar(props: Readonly<NavbarProps>) {
@@ -47,6 +49,16 @@ export default function NavBar(props: Readonly<NavbarProps>) {
                 />
             </div>
 
+            <button
+                onClick={() => {
+                    props.toggleSearchBar();
+                    navigate("/");
+                }}
+                className={props.showSearch ? "toggle-search-on" : "toggle-search-off"}
+            >
+                {props.showSearch ? "Hide Search" : "Search"} {/* Dynamischer Text */}
+            </button>
+            {/* Button in der NavBar */}
 
             {props.user !== "anonymousUser" ? (
                 <>
