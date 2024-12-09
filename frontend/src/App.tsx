@@ -49,7 +49,8 @@ export default function App() {
     function getAppUserFavorites(){
         axios.get(`/api/practice-hub/favorites/${user}`)
             .then((response) => {
-                setFavorites(response.data)
+                const favoriteIds = response.data.map((favorite: any) => favorite.id);
+                setFavorites(favoriteIds);
             })
             .catch((error) => {
                 console.error(error);
