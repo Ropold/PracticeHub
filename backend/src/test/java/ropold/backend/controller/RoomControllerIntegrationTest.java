@@ -295,4 +295,31 @@ class RoomControllerIntegrationTest {
         Assertions.assertFalse(updatedRoom.isActive());
         Assertions.assertEquals("https://www.updated-image.com/", updatedRoom.imageUrl());
     }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = {"USER"})
+    void deleteRoom_shouldRemoveRoomFromRepository() throws Exception {
+        // GIVEN
+        RoomModel roomToDelete = new RoomModel("2", "Beethoven-Saal", "Beethovenstraße 1, 53115 Bonn",
+                Category.ORCHESTER_HALL, "Ein moderner Saal für klassische Musik und Veranstaltungen.",
+                "123", "Testuser", "https://avatars-of-test-user.com/",
+                "https://github.com/Testuser", true, "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage2.jpg");
+        roomRepository.save(roomToDelete);
+
+        // Mock the Cloudinary API to simulate the deletion of the image
+        Uploader mockUploader = mock(Uploader.class);
+        when(mockUploader.destroy(any(), anyMap())).thenReturn(Map.of("result", "ok"));
+        when(cloudinary.uploader()).thenReturn(mockUploader);
+
+        // WHEN
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/practice-hub/{roomId}", "2"))
+                .andExpect(status().isNoContent());
+
+        // THEN
+        Assertions.assertFalse(roomRepository.existsById("2"));
+
+        // Verifying that the Cloudinary destroy method was called with the correct image name
+        verify(mockUploader).destroy(eq("testimage2"), anyMap());
+    }
+
 }
