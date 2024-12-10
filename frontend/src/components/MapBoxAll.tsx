@@ -78,11 +78,16 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                     if (coordinates) {
                         const [longitude, latitude] = coordinates;
                         if (mapRef.current) {
-                            // Erstelle ein Popup mit den gewünschten Informationen aus room
+                            // Erstelle ein Popup mit einem Link und einem Bild
                             const popup = new mapboxgl.Popup({ offset: 25 }) // Offset für die Position des Popups
                                 .setHTML(`
-                        <div>
-                            <h4>${room.name}</h4>
+                        <div style="text-align: center; max-width: 200px;">
+                            <h4>
+                                <a href="/room/${room.id}" style="text-decoration: none; color: #007bff;">
+                                    ${room.name}
+                                </a>
+                            </h4>
+                            <img src="${room.imageUrl}" alt="${room.name}" style="width: 100%; height: auto; border-radius: 8px;"/>
                             <p>${room.description}</p>
                             <p><strong>Address:</strong> ${room.address}</p>
                         </div>
@@ -99,6 +104,7 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                     }
                 });
             });
+
 
 
         }
@@ -146,7 +152,7 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
             <div>
                 <h3>MapBoxAll</h3>
                 {geocodeError && <div>{geocodeError}</div>}
-                <div id="map-container" ref={mapContainerRef} style={{width: "100%", height: "800px"}}/>
+                <div id="map-container" ref={mapContainerRef} style={{width: "100%", height: "600px"}}/>
             </div>
         </>
     );
