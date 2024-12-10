@@ -25,6 +25,7 @@
     margin: 0 auto; /* Horizontal zentrieren */
 }
 
+
 /* Textarea */
 .textarea-large {
     width: 100%;
@@ -47,6 +48,7 @@
 
 /* Styling für die Karte */
 .room-card {
+    cursor: pointer;
     height: 400px;
     width: 400px;
     background-color: #fff; /* Heller Hintergrund für die Karte */
