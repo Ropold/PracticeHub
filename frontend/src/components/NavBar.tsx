@@ -7,6 +7,8 @@ type NavbarProps = {
     getUser: () => void;
     getAllActiveRooms: () => void;
     getAllRooms: () => void;
+    toggleSearchBar: () => void;
+    showSearch: boolean;
 }
 
 export default function NavBar(props: Readonly<NavbarProps>) {
@@ -32,12 +34,43 @@ export default function NavBar(props: Readonly<NavbarProps>) {
 
     return (
         <nav className="navbar">
-            <button onClick={() => {props.getAllActiveRooms(); navigate("/")}}>Home</button>
+            <div
+                className="clickable-header"
+                onClick={() => {
+                    props.getAllActiveRooms();
+                    navigate("/");
+                }}
+            >
+                <h2 className="header-title">PracticeHub</h2>
+                <img
+                    src="/PracticeHub-Logo.png"
+                    alt="PracticeHub Logo"
+                    className="logo-image"
+                />
+            </div>
+
+
+            <button
+                onClick={() => {
+                    props.toggleSearchBar();
+                    navigate("/");
+                }}
+                className={props.showSearch ? "toggle-search-on" : "toggle-search-off"}
+            >
+                {props.showSearch ? "Hide Search" : "Search"} {/* Dynamischer Text */}
+            </button>
+
+            <button onClick={()=> navigate(`/mapbox-all`)} >Map</button>
+
             {props.user !== "anonymousUser" ? (
                 <>
-                <button onClick={() => navigate(`/${props.user}/favorites`)}>Favorites</button>
+                    <button onClick={() => navigate(`/${props.user}/favorites`)}>Favorites</button>
                     <button onClick={() => navigate(`/${props.user}/add-room`)}>Add Room</button>
-                    <button onClick={() => {props.getAllRooms(); navigate(`/${props.user}/my-rooms`)}}>My Rooms</button>
+                    <button onClick={() => {
+                        props.getAllRooms();
+                        navigate(`/${props.user}/my-rooms`)
+                    }}>My Rooms
+                    </button>
                     <button onClick={() => navigate(`/${props.user}/profile`)}>Profile</button>
                     <button onClick={logoutFromGithub}>Logout</button>
                 </>

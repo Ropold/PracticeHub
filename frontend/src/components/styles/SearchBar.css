@@ -1,5 +1,5 @@
 .search-bar {
-    margin-bottom: 20px;
+    margin: 0 auto 20px auto;
     padding: 10px;
     background-color: #f0f0f0;
     border-radius: 8px;
@@ -10,6 +10,52 @@
     width: 800px;
     height: 90px;
 }
+
+/* Container für das Suchfeld */
+.mapbox-all-search-field {
+    display: flex;                    /* Flexbox für horizontale Ausrichtung */
+    align-items: center;              /* Vertikale Ausrichtung */
+    justify-content: space-between;   /* Gleichmäßiger Abstand zwischen den Elementen */
+    margin: 10px 0;                   /* Margin oben und unten */
+    padding: 10px;                    /* Innenabstand */
+    background-color: #f9f9f9;        /* Heller Hintergrund */
+    border-radius: 6px;               /* Abgerundete Ecken */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Leichter Schatten für Tiefe */
+}
+
+/* Das Suchfeld selbst */
+.mapbox-all-search-field input {
+    padding: 8px 16px;                /* Innenabstand im Input */
+    font-size: 1rem;                  /* Schriftgröße */
+    width: 80%;                        /* Input-Feld nimmt 70% des Containers ein */
+    border: 1px solid #ccc;           /* Grauer Rand */
+    border-radius: 4px;               /* Abgerundete Ecken */
+    outline: none;                    /* Entfernt den Standard-Fokus-Rahmen */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Übergangseffekte */
+}
+
+/* Fokussierter Zustand des Input-Feldes */
+.mapbox-all-search-field input:focus {
+    border-color: #007bff;            /* Blauer Rand bei Fokus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Leuchtender Fokus-Schatten */
+}
+
+/* Button im Suchfeld */
+.mapbox-all-search-field button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #66b3ff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover-Zustand des Buttons */
+.mapbox-all-search-field button:hover {
+    background-color: #007bff;
+}
+
 
 .search-bar input {
     padding: 10px;
@@ -49,23 +95,7 @@
 .filter-buttons button.active {
     border: 2px solid #007BFF;
     font-weight: bold;
-    background-color: #e6f0ff;
-}
-
-
-.input-small {
-    font-size: 14px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    transition: border 0.3s ease;
-    height: 40px;        /* Feste Höhe, die zu den anderen Eingabefeldern passt */
-}
-
-
-.input-small:focus {
-    border-color: #007BFF;
-    outline: none;
+    background-color: #66b3ff;
 }
 
 

@@ -13,15 +13,22 @@ import axios from "axios";
 import MyRooms from "./components/MyRooms.tsx";
 import {RoomModel} from "./components/model/RoomModel.ts";
 import {useLocation} from "react-router-dom";
+import MapBoxAll from "./components/MapBoxAll.tsx";
 
 export default function App() {
     const [user, setUser] = useState<string>("anonymousUser");
     const [userDetails, setUserDetails] = useState<any>(null);
     const [favorites, setFavorites] = useState<string[]>([]);
     const [rooms, setRooms] = useState<RoomModel[]>([]);
-    const[activeRooms, setActiveRooms] = useState<RoomModel[]>([]);
+    const [activeRooms, setActiveRooms] = useState<RoomModel[]>([]);
+    const [showSearch, setShowSearch] = useState<boolean>(false);
 
     const location = useLocation();
+
+
+    const toggleSearchBar = () => {
+        setShowSearch((prevState) => !prevState); // Toggle die Sichtbarkeit der Suchleiste// Setzt die Suchanfrage zurück
+    };
 
     function getUser() {
         axios.get("/api/users/me")
@@ -49,7 +56,8 @@ export default function App() {
     function getAppUserFavorites(){
         axios.get(`/api/practice-hub/favorites/${user}`)
             .then((response) => {
-                setFavorites(response.data)
+                const favoriteIds = response.data.map((favorite: any) => favorite.id);
+                setFavorites(favoriteIds);
             })
             .catch((error) => {
                 console.error(error);
@@ -105,7 +113,7 @@ export default function App() {
     useEffect(() => {
         getUser()
         getAllActiveRooms()
-    }, []);
+    }, [rooms]);
 
     useEffect(() => {
         if (user !== "anonymousUser") {
@@ -121,10 +129,11 @@ export default function App() {
 
     return (
             <>
-            <NavBar user={user} getUser={getUser} getAllActiveRooms={getAllActiveRooms} getAllRooms={getAllRooms}/>
+            <NavBar user={user} getUser={getUser} getAllActiveRooms={getAllActiveRooms} getAllRooms={getAllRooms} toggleSearchBar={toggleSearchBar} showSearch={showSearch}/>
             <Routes>
-                <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms}/>} />
+                <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms} showSearch={showSearch}/>}/>
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
+                <Route path="/mapbox-all" element={<MapBoxAll favorites={favorites} activeRooms={activeRooms} toggleFavorite={toggleFavorite}/>} />
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
                     <Route path={"/:id/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms} userDetails={userDetails} setRooms={setRooms}/>} />

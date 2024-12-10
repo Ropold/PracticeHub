@@ -20,12 +20,14 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
     const isFavorite = props.favorites.includes(props.room.id);
 
     return (
-
         <div className="room-card" onClick={handleCardClick}>
-            <div className="room-card-content">
+            <div className={`room-card-text ${!props.room.imageUrl ? 'no-image' : ''}`}>
                 <h2>{props.room.name}</h2>
                 <p><strong>Address: </strong>{props.room.address}</p>
                 <p><strong>Category: </strong>{getCategoryDisplayName(props.room.category)}</p>
+            </div>
+
+            <div>
                 {props.room.imageUrl ? (
                     <img
                         src={props.room.imageUrl}
@@ -34,6 +36,7 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
                     />
                 ) : null}
             </div>
+
             {props.user !== "anonymousUser" && (
                 <button
                     id="button-favorite-room-card"
@@ -49,4 +52,3 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
         </div>
     );
 }
-
