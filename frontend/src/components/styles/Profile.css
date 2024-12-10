@@ -2,8 +2,9 @@
 
 /* Stil für das gesamte Profil */
 .profile-container {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+    width: 800px; /* Behalte die Breite bei */
+    margin: 0 auto; /* Horizontal zentrieren */
+    height: 100vh; /* Vollbildhöhe */
 }
 
 /* Überschrift */

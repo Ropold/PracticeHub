@@ -80,7 +80,6 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
     }
 
     return (
-        <div className="details-container">
             <div className="edit-form">
                 <h2>Add New Room</h2>
                 <form onSubmit={handleSubmit}>
@@ -106,6 +105,5 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
                     </div>
                 </form>
             </div>
-        </div>
     );
 }

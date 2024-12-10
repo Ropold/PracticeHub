@@ -1,5 +1,5 @@
-import {RoomModel} from "./model/RoomModel.ts";
-import {useRef, useEffect, useState} from "react";
+import { RoomModel } from "./model/RoomModel.ts";
+import { useRef, useEffect, useState } from "react";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -8,7 +8,7 @@ type MapBoxAllProps = {
     favorites: string[];
     activeRooms: RoomModel[];
     toggleFavorite: (roomId: string) => void;
-}
+};
 
 export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
     const mapRef = useRef<mapboxgl.Map | null>(null); // Referenz für die Karte
@@ -19,7 +19,8 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
 
     // Funktion zum Abrufen des MapBox-Konfigurationstokens
     function fetchMapBoxConfig() {
-        axios.get("/api/mapbox/72c81498-f6b2-4a8a-911c-cd217a65e0da")
+        axios
+            .get("/api/mapbox/72c81498-f6b2-4a8a-911c-cd217a65e0da")
             .then((response) => {
                 const resp = response.data; // Holen des Tokens aus der Antwort
                 setMapboxConfig(resp); // Token speichern
@@ -35,7 +36,9 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
     const geocodeAddress = (address: string): Promise<[number, number] | null> => {
         if (!mapboxConfig) return Promise.resolve(null); // Warten auf das Mapbox-Token
 
-        const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxConfig}`;
+        const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+            address
+        )}.json?access_token=${mapboxConfig}`;
 
         return fetch(geocodeUrl)
             .then((response) => response.json())
@@ -52,12 +55,12 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
             });
     };
 
-
     // Funktion zur Initialisierung der Karte und zum Hinzufügen der Marker
     useEffect(() => {
         fetchMapBoxConfig(); // API-Aufruf beim Laden der Komponente
     }, []);
 
+    // In useEffect, bevor wir die Karte manipulieren
     useEffect(() => {
         if (!mapboxConfig || !props.activeRooms.length) return; // Wenn kein Mapbox-Token oder keine Räume vorhanden sind, nichts tun
 
@@ -73,73 +76,59 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                 });
             }
 
-            // Marker für jedes Zimmer hinzufügen
-            props.activeRooms.forEach((room) => {
-                geocodeAddress(room.address).then((coordinates) => {
-                    if (coordinates) {
-                        const [longitude, latitude] = coordinates;
-                        if (mapRef.current) {
-                            // Prüfe, ob der Raum in den Favoriten ist
+            // Sicherstellen, dass mapRef.current nicht null ist, bevor es verwendet wird
+            if (mapRef.current) {
+                // Marker für jedes Zimmer hinzufügen
+                props.activeRooms.forEach((room) => {
+                    geocodeAddress(room.address).then((coordinates) => {
+                        if (coordinates) {
+                            const [longitude, latitude] = coordinates;
+
                             const isFavorite = props.favorites.includes(room.id);
 
-                            // Erstelle ein Popup mit einem Link, Bild und Herz-Icon
                             const popup = new mapboxgl.Popup({ offset: 25 })
                                 .setHTML(`
-                        <div style="text-align: center; max-width: 200px;">
-                            <h4>
-                                <a href="/room/${room.id}" style="text-decoration: none; color: #007bff;">
-                                    ${room.name}
-                                </a>
-                            </h4>
-                            <img src="${room.imageUrl}" alt="${room.name}" style="width: 100%; height: auto; border-radius: 8px;"/>
-                            <p>${room.description}</p>
-                            <p><strong>Address:</strong> ${room.address}</p>
-                            <button 
-                                id="favorite-${room.id}" 
-                                style="background: none; border: none; cursor: pointer; font-size: 1.5em; color: ${isFavorite ? 'red' : 'gray'};">
-                                ${isFavorite ? '❤️' : '🤍'}
-                            </button>
-                        </div>
-                    `);
+                                <div style="text-align: center; max-width: 200px;">
+                                    <h4>
+                                        <a href="/room/${room.id}" style="text-decoration: none; color: #007bff;">
+                                            ${room.name}
+                                        </a>
+                                    </h4>
+                                    <img src="${room.imageUrl}" alt="${room.name}" style="width: 100%; height: auto; border-radius: 8px;"/>
+                                    <p>${room.description}</p>
+                                    <p><strong>Address:</strong> ${room.address}</p>
+                                </div>
+                            `);
 
-                            // Erstelle den Marker
-                            const marker = new mapboxgl.Marker()
+                            // Markerfarbe basierend auf Favoriten
+                            const markerColor = isFavorite ? '#FF6F61' : '#40b1ce'; // Rot für Favoriten, Blau für Nicht-Favoriten
+
+                            // Erstelle den Marker mit der gewünschten Farbe
+                            const marker = new mapboxgl.Marker({
+                                color: markerColor, // Verwende die benutzerdefinierte Markerfarbe
+                            })
                                 .setLngLat([longitude, latitude])
                                 .setPopup(popup) // Popup mit dem Marker verbinden
                                 .addTo(mapRef.current);
 
                             // Füge ein Klick-Event hinzu, um die Karte auf den Marker zu zentrieren
-                            marker.getElement().addEventListener('click', () => {
-                                mapRef.current?.flyTo({
-                                    center: [longitude, latitude], // Zentriere auf den Marker
-                                    zoom: 15, // Optional: Passe den Zoom-Level an
-                                    offset: [0, -200], // Verschiebe das Zentrum nach oben (Y-Achse)
-                                    speed: 1.5, // Optional: Geschwindigkeit der Animation
-                                    curve: 1, // Optional: Animation-Kurve
-                                });
-                            });
-
-                            // Event-Listener für das Herz-Icon hinzufügen
-                            mapRef.current.on('render', () => {
-                                const favoriteButton = document.getElementById(`favorite-${room.id}`);
-                                if (favoriteButton) {
-                                    favoriteButton.onclick = (e) => {
-                                        e.stopPropagation(); // Verhindere andere Klick-Events
-                                        props.toggleFavorite(room.id); // Favoritenstatus toggeln
-                                    };
+                            marker.getElement().addEventListener("click", () => {
+                                if (mapRef.current) {
+                                    mapRef.current.flyTo({
+                                        center: [longitude, latitude], // Zentriere auf den Marker
+                                        zoom: 15, // Optional: Passe den Zoom-Level an
+                                        offset: [0, -200], // Verschiebe das Zentrum nach oben (Y-Achse)
+                                        speed: 1.5, // Optional: Geschwindigkeit der Animation
+                                        curve: 1, // Optional: Animation-Kurve
+                                    });
                                 }
                             });
+                        } else {
+                            setGeocodeError(`Address not found: ${room.address}`);
                         }
-                    } else {
-                        setGeocodeError(`Address not found: ${room.address}`);
-                    }
+                    });
                 });
-            });
-
-
-
-
-
+            }
         }
 
         // Bereinigung der Karte, wenn das Component unmontiert wird oder die Räume geändert werden
@@ -148,7 +137,8 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                 mapRef.current.remove();
             }
         };
-    }, [props.activeRooms, mapboxConfig]); // Reagiere auf Änderungen von activeRooms und mapboxConfig
+    }, [props.activeRooms, mapboxConfig, props.favorites]);
+
 
     // Funktion zum Suchen eines Ortes und die Karte darauf zu zentrieren
     const handleSearch = () => {
@@ -185,10 +175,8 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
             <div>
                 <h3>MapBoxAll</h3>
                 {geocodeError && <div>{geocodeError}</div>}
-                <div id="map-container" ref={mapContainerRef} style={{width: "100%", height: "600px"}}/>
+                <div id="map-container" ref={mapContainerRef} style={{ width: "100%", height: "600px" }} />
             </div>
         </>
     );
 }
-
-

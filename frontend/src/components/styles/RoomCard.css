@@ -22,7 +22,8 @@
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
-    margin-top: 20px;
+    margin: 0 auto; /* Horizontal zentrieren */
+    height: 100vh; /* Vollbildhöhe */
 }
 
 /* Textarea */
@@ -40,7 +41,9 @@
 
 /* Form */
 .edit-form {
-    width: 800px;
+    width: 800px; /* Behalte die Breite bei */
+    margin: 0 auto; /* Horizontal zentrieren */
+    height: 100vh; /* Vollbildhöhe */
 }
 
 /* Styling für die Karte */
