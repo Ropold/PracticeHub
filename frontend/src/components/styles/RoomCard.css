@@ -78,7 +78,11 @@
 .no-image {
     justify-content: center !important;  /* Diese Regel wird immer angewendet */ /* Beispiel für Hintergrundfarbe */
 }
-
+.room-details{
+    width: 800px; /* Behalte die Breite bei */
+    margin: 0 auto; /* Horizontal zentrieren */
+    height: 100vh; /* Vollbildhöhe */
+}
 
 /* Text in der Karte */
 .room-card-text {

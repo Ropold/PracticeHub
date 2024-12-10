@@ -1,6 +1,6 @@
 
 .navbar {
-    margin: 20px auto;
+    margin-bottom: 30px;
     display: flex;            /* Nutze Flexbox */
     align-items: center;      /* Zentriert die Items vertikal */
     justify-content: center;  /* Zentriert die Items horizontal */
