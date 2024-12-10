@@ -1,5 +1,5 @@
-import { RoomModel } from "./model/RoomModel.ts";
-import { useRef, useEffect, useState } from "react";
+import {RoomModel} from "./model/RoomModel.ts";
+import {useRef, useEffect, useState} from "react";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -68,7 +68,7 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                     container: mapContainerRef.current,
                     style: "mapbox://styles/mapbox/streets-v11", // Stil der Karte
                     center: [6.960279, 50.937531], // Standard-Zentrum (Köln)
-                    zoom: 10, // Zoom-Level
+                    zoom: 12, // Zoom-Level
                 });
             }
 
@@ -105,7 +105,7 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                 const [longitude, latitude] = coordinates;
                 // Karte auf die gefundenen Koordinaten zentrieren
                 mapRef.current.setCenter([longitude, latitude]);
-                mapRef.current.setZoom(10); // Optional: Zoom-Level anpassen
+                mapRef.current.setZoom(12); // Optional: Zoom-Level anpassen
                 // Optional: Marker für den gefundenen Ort hinzufügen
             } else {
                 setGeocodeError("Address not found.");
@@ -114,21 +114,29 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
     };
 
     return (
-        <div>
-            <h1>MapBoxAll</h1>
-            {geocodeError && <div>{geocodeError}</div>} {/* Zeige Fehlernachricht an */}
-            <div>
+        <>
+            <div className="mapbox-all-search-field">
                 {/* Suchfeld */}
                 <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search for a place..."
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            handleSearch(); // Ruft handleSearch auf, wenn Enter gedrückt wird
+                        }
+                    }}
                 />
                 <button onClick={handleSearch}>Search</button>
             </div>
-
-            <div id="map-container" ref={mapContainerRef} style={{ width: "100%", height: "400px" }} />
-        </div>
+            <div>
+                <h3>MapBoxAll</h3>
+                {geocodeError && <div>{geocodeError}</div>}
+                <div id="map-container" ref={mapContainerRef} style={{width: "100%", height: "800px"}}/>
+            </div>
+        </>
     );
 }
+
+
