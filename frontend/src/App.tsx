@@ -113,7 +113,7 @@ export default function App() {
     useEffect(() => {
         getUser()
         getAllActiveRooms()
-    }, []);
+    }, [rooms]);
 
     useEffect(() => {
         if (user !== "anonymousUser") {

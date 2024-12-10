@@ -43,3 +43,10 @@
 .header-title {
     margin: 0; /* Entfernt den Standardabstand */
 }
+
+.toggle-search-on {
+    background-color: #66b3ff;
+}
+.toggle-search-off {
+    background-color: #f0f0f0;
+}

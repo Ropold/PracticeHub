@@ -84,7 +84,7 @@ export default function MapBox(props: Readonly<MapBoxProps>) {
         <>
             <h3>MapBox</h3>
             {geocodeError && <div>{geocodeError}</div>} {/* Zeige Fehlernachricht an, falls es ein Problem gab */}
-            <div id="map-container" ref={mapContainerRef} style={{ width: "100%", height: "400px" }} />
+            <div id="map-container" ref={mapContainerRef} style={{ width: "100%", height: "600px" }} />
         </>
     );
 }

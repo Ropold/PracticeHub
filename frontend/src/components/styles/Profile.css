@@ -4,7 +4,6 @@
 .profile-container {
     width: 800px; /* Behalte die Breite bei */
     margin: 0 auto; /* Horizontal zentrieren */
-    height: 100vh; /* Vollbildhöhe */
 }
 
 /* Überschrift */
@@ -20,6 +19,7 @@
     color: #555;
     margin-bottom: 10px;
 }
+
 
 /* Stil für den Avatar */
 .profile-container img {

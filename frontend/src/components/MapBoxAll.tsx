@@ -175,7 +175,7 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
             <div>
                 <h3>Cologne ist set to Default-City</h3>
                 {geocodeError && <div>{geocodeError}</div>}
-                <div id="map-container" ref={mapContainerRef} style={{ width: "100%", height: "600px" }} />
+                <div id="map-container" ref={mapContainerRef} style={{ width: "100%", height: "500px" }} />
             </div>
         </>
     );

@@ -43,7 +43,6 @@
 .edit-form {
     width: 800px; /* Behalte die Breite bei */
     margin: 0 auto; /* Horizontal zentrieren */
-    height: 100vh; /* Vollbildhöhe */
 }
 
 /* Styling für die Karte */
@@ -83,7 +82,6 @@
 .room-details{
     width: 800px; /* Behalte die Breite bei */
     margin: 0 auto; /* Horizontal zentrieren */
-    height: 100vh; /* Vollbildhöhe */
 }
 
 /* Text in der Karte */
