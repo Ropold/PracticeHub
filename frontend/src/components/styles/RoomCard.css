@@ -75,6 +75,10 @@
     object-fit: cover; /* Bild wird vollständig angezeigt */
     border-bottom: 1px solid #ccc;
 }
+.no-image {
+    justify-content: center !important;  /* Diese Regel wird immer angewendet */ /* Beispiel für Hintergrundfarbe */
+}
+
 
 /* Text in der Karte */
 .room-card-text {
