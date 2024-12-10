@@ -7,6 +7,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 type MapBoxAllProps = {
     favorites: string[];
     activeRooms: RoomModel[];
+    toggleFavorite: (roomId: string) => void;
 }
 
 export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
@@ -78,7 +79,10 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                     if (coordinates) {
                         const [longitude, latitude] = coordinates;
                         if (mapRef.current) {
-                            // Erstelle ein Popup mit einem Link und einem Bild
+                            // Prüfe, ob der Raum in den Favoriten ist
+                            const isFavorite = props.favorites.includes(room.id);
+
+                            // Erstelle ein Popup mit einem Link, Bild und Herz-Icon
                             const popup = new mapboxgl.Popup({ offset: 25 })
                                 .setHTML(`
                         <div style="text-align: center; max-width: 200px;">
@@ -90,6 +94,11 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                             <img src="${room.imageUrl}" alt="${room.name}" style="width: 100%; height: auto; border-radius: 8px;"/>
                             <p>${room.description}</p>
                             <p><strong>Address:</strong> ${room.address}</p>
+                            <button 
+                                id="favorite-${room.id}" 
+                                style="background: none; border: none; cursor: pointer; font-size: 1.5em; color: ${isFavorite ? 'red' : 'gray'};">
+                                ${isFavorite ? '❤️' : '🤍'}
+                            </button>
                         </div>
                     `);
 
@@ -99,7 +108,7 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                                 .setPopup(popup) // Popup mit dem Marker verbinden
                                 .addTo(mapRef.current);
 
-                            // Füge ein Klick-Event hinzu, um die Karte auf den Marker zu zentrieren, mit einer Offset-Einstellung
+                            // Füge ein Klick-Event hinzu, um die Karte auf den Marker zu zentrieren
                             marker.getElement().addEventListener('click', () => {
                                 mapRef.current?.flyTo({
                                     center: [longitude, latitude], // Zentriere auf den Marker
@@ -109,12 +118,24 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                                     curve: 1, // Optional: Animation-Kurve
                                 });
                             });
+
+                            // Event-Listener für das Herz-Icon hinzufügen
+                            mapRef.current.on('render', () => {
+                                const favoriteButton = document.getElementById(`favorite-${room.id}`);
+                                if (favoriteButton) {
+                                    favoriteButton.onclick = (e) => {
+                                        e.stopPropagation(); // Verhindere andere Klick-Events
+                                        props.toggleFavorite(room.id); // Favoritenstatus toggeln
+                                    };
+                                }
+                            });
                         }
                     } else {
                         setGeocodeError(`Address not found: ${room.address}`);
                     }
                 });
             });
+
 
 
 

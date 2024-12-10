@@ -133,7 +133,7 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms} showSearch={showSearch}/>}/>
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
-                <Route path="/mapbox-all" element={<MapBoxAll favorites={favorites} activeRooms={activeRooms} />} />
+                <Route path="/mapbox-all" element={<MapBoxAll favorites={favorites} activeRooms={activeRooms} toggleFavorite={toggleFavorite}/>} />
                 <Route element={<ProtectedRoute user={user} />}>
                     <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
                     <Route path={"/:id/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms} userDetails={userDetails} setRooms={setRooms}/>} />
