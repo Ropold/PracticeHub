@@ -173,7 +173,7 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                 <button onClick={handleSearch}>Search</button>
             </div>
             <div>
-                <h3>MapBoxAll</h3>
+                <h3>Cologne ist set to Default-City</h3>
                 {geocodeError && <div>{geocodeError}</div>}
                 <div id="map-container" ref={mapContainerRef} style={{ width: "100%", height: "600px" }} />
             </div>

@@ -26,6 +26,9 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
                 <h2>{props.room.name}</h2>
                 <p><strong>Address: </strong>{props.room.address}</p>
                 <p><strong>Category: </strong>{getCategoryDisplayName(props.room.category)}</p>
+            </div>
+
+            <div className="room-card-image-container">
                 {props.room.imageUrl ? (
                     <img
                         src={props.room.imageUrl}
@@ -34,6 +37,7 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
                     />
                 ) : null}
             </div>
+
             {props.user !== "anonymousUser" && (
                 <button
                     id="button-favorite-room-card"
@@ -47,6 +51,7 @@ export default function RoomCard(props: Readonly<RoomCardProps>) {
                 </button>
             )}
         </div>
+
     );
 }
 

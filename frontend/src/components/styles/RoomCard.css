@@ -74,7 +74,6 @@
     height: 200px; /* Feste Höhe */
     object-fit: cover; /* Bild wird vollständig angezeigt */
     border-bottom: 1px solid #ccc;
-    margin-bottom: 15px;
 }
 
 /* Text in der Karte */
@@ -82,9 +81,9 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     text-align: center;
-    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 20px;
 }
 
 /* Überschrift (Titel der RoomCard) */
