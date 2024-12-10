@@ -109,7 +109,7 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                             })
                                 .setLngLat([longitude, latitude])
                                 .setPopup(popup) // Popup mit dem Marker verbinden
-                                .addTo(mapRef.current);
+                                .addTo(mapRef.current as mapboxgl.Map); // Marker zur Karte hinzufügen
 
                             // Füge ein Klick-Event hinzu, um die Karte auf den Marker zu zentrieren
                             marker.getElement().addEventListener("click", () => {
