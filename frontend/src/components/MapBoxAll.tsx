@@ -79,7 +79,7 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                         const [longitude, latitude] = coordinates;
                         if (mapRef.current) {
                             // Erstelle ein Popup mit einem Link und einem Bild
-                            const popup = new mapboxgl.Popup({ offset: 25 }) // Offset für die Position des Popups
+                            const popup = new mapboxgl.Popup({ offset: 25 })
                                 .setHTML(`
                         <div style="text-align: center; max-width: 200px;">
                             <h4>
@@ -93,17 +93,29 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                         </div>
                     `);
 
-                            // Erstelle den Marker und füge das Popup hinzu
-                            new mapboxgl.Marker()
+                            // Erstelle den Marker
+                            const marker = new mapboxgl.Marker()
                                 .setLngLat([longitude, latitude])
                                 .setPopup(popup) // Popup mit dem Marker verbinden
                                 .addTo(mapRef.current);
+
+                            // Füge ein Klick-Event hinzu, um die Karte auf den Marker zu zentrieren, mit einer Offset-Einstellung
+                            marker.getElement().addEventListener('click', () => {
+                                mapRef.current?.flyTo({
+                                    center: [longitude, latitude], // Zentriere auf den Marker
+                                    zoom: 15, // Optional: Passe den Zoom-Level an
+                                    offset: [0, -200], // Verschiebe das Zentrum nach oben (Y-Achse)
+                                    speed: 1.5, // Optional: Geschwindigkeit der Animation
+                                    curve: 1, // Optional: Animation-Kurve
+                                });
+                            });
                         }
                     } else {
                         setGeocodeError(`Address not found: ${room.address}`);
                     }
                 });
             });
+
 
 
 
