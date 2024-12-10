@@ -78,8 +78,20 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                     if (coordinates) {
                         const [longitude, latitude] = coordinates;
                         if (mapRef.current) {
+                            // Erstelle ein Popup mit den gewünschten Informationen aus room
+                            const popup = new mapboxgl.Popup({ offset: 25 }) // Offset für die Position des Popups
+                                .setHTML(`
+                        <div>
+                            <h4>${room.name}</h4>
+                            <p>${room.description}</p>
+                            <p><strong>Address:</strong> ${room.address}</p>
+                        </div>
+                    `);
+
+                            // Erstelle den Marker und füge das Popup hinzu
                             new mapboxgl.Marker()
                                 .setLngLat([longitude, latitude])
+                                .setPopup(popup) // Popup mit dem Marker verbinden
                                 .addTo(mapRef.current);
                         }
                     } else {
@@ -87,6 +99,7 @@ export default function MapBoxAll(props: Readonly<MapBoxAllProps>) {
                     }
                 });
             });
+
 
         }
 
