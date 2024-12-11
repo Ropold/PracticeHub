@@ -53,7 +53,8 @@
     background-color: #fff; /* Heller Hintergrund für die Karte */
     border: 1px solid #ddd; /* Dünne graue Grenze */
     border-radius: 12px; /* Abgerundete Ecken */
-    padding: 20px;
+    padding: 20px; /* padding: <oben> <rechts> <unten> <links>; */
+    margin: 20px; /* Abstand zwischen den Karten */
     display: flex;
     flex-direction: column; /* Vertikales Layout für den Inhalt */
     justify-content: flex-start;
