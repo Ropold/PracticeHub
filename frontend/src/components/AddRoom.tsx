@@ -81,8 +81,8 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
     }
 
     const handleClosePopup = () => {
-        setShowPopup(false); // Popup schließen
-        setErrorMessages([]); // Fehlernachrichten zurücksetzen
+        setShowPopup(false);
+        setErrorMessages([]);
     };
 
     return (
