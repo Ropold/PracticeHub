@@ -21,6 +21,8 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
     const [editData, setEditData] = useState<RoomModel | null>(null);  // Daten des Raums, der bearbeitet wird
     const [image, setImage] = useState<File | null>(null);// Für das Bild
     const [category, setCategory] = useState<Category>("SOLO_DUO_ROOM");  // Kategorie des Raums
+    const [showPopup, setShowPopup] = useState(false);
+    const [roomToDelete, setRoomToDelete] = useState<string | null>(null);
 
 
     // Filtere die Räume des aktuellen Benutzers und speichere sie im Zustand
@@ -100,20 +102,20 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
     };
 
 
-    const handleDelete = (id: string) => {
-        const isConfirmed = window.confirm("Are you sure you want to delete this room?");
-
-        if (isConfirmed) {
+    const handleConfirmDelete = () => {
+        if (roomToDelete) {
             axios
-                .delete(`/api/practice-hub/${id}`)
+                .delete(`/api/practice-hub/${roomToDelete}`)
                 .then(() => {
-                    props.setRooms((prevRooms) => prevRooms.filter((room) => room.id !== id));
+                    props.setRooms((prevRooms) => prevRooms.filter((room) => room.id !== roomToDelete));
                 })
                 .catch((error) => {
                     console.error("Error deleting room:", error);
                     alert("An error occurred while deleting the room.");
                 });
         }
+        setShowPopup(false);
+        setRoomToDelete(null);
     };
 
     const handleToggleActiveStatus = (roomId: string) => {
@@ -133,79 +135,87 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
             });
     };
 
+    const handleDeleteClick = (id: string) => {
+        setRoomToDelete(id);
+        setShowPopup(true);
+    };
+
+    const handleCancel = () => {
+        setShowPopup(false);
+        setRoomToDelete(null);
+    };
 
     return (
         <div>
-
             {isEditing ? (
-                    <div className="edit-form">
-                        <h2>Edit Room</h2>
-                        <form onSubmit={handleSaveEdit}>
-                            <label>
-                                Title:
-                                <input
-                                    className="input-small"
-                                    type="text"
-                                    value={editData?.name || ""}
-                                    onChange={(e) => setEditData({...editData!, name: e.target.value})}
-                                />
-                            </label>
+                <div className="edit-form">
+                    <h2>Edit Room</h2>
+                    <form onSubmit={handleSaveEdit}>
+                        <label>
+                            Title:
+                            <input
+                                className="input-small"
+                                type="text"
+                                value={editData?.name || ""}
+                                onChange={(e) => setEditData({...editData!, name: e.target.value})}
+                            />
+                        </label>
 
-                            <label>
-                                Address:
-                                <input
-                                    className="input-small"
-                                    type="text"
-                                    value={editData?.address || ""}
-                                    onChange={(e) => setEditData({...editData!, address: e.target.value})}
-                                />
-                            </label>
+                        <label>
+                            Address:
+                            <input
+                                className="input-small"
+                                type="text"
+                                value={editData?.address || ""}
+                                onChange={(e) => setEditData({...editData!, address: e.target.value})}
+                            />
+                        </label>
 
-                            <label>
-                                Category:
-                                <select
-                                    className="input-small"
-                                    value={category}
-                                    onChange={handleCategoryChange}
-                                >
-                                    <option value="SOLO_DUO_ROOM">Solo/Duo Room</option>
-                                    <option value="BAND_ROOM">Band Room</option>
-                                    <option value="STUDIO_ROOM">Studio Room</option>
-                                    <option value="ORCHESTER_HALL">Orchestra Hall</option>
-                                </select>
-                            </label>
-                            <label>
-                                Description:
-                                <textarea
-                                    className="textarea-large"
-                                    value={editData?.description || ""}
-                                    onChange={(e) => setEditData({...editData!, description: e.target.value})}
-                                />
-                            </label>
-                            <label>
-                                Visibility:
-                                <select
-                                    className="input-small"
-                                    value={editData?.isActive ? "true" : "false"}
-                                    onChange={(e) => setEditData({...editData!, isActive: e.target.value === "true"})}
-                                >
-                                    <option value="true">Active</option>
-                                    <option value="false">Inactive</option>
-                                </select>
-                            </label>
+                        <label>
+                            Category:
+                            <select
+                                className="input-small"
+                                value={category}
+                                onChange={handleCategoryChange}
+                            >
+                                <option value="SOLO_DUO_ROOM">Solo/Duo Room</option>
+                                <option value="BAND_ROOM">Band Room</option>
+                                <option value="STUDIO_ROOM">Studio Room</option>
+                                <option value="ORCHESTER_HALL">Orchestra Hall</option>
+                            </select>
+                        </label>
+                        <label>
+                            Description:
+                            <textarea
+                                className="textarea-large"
+                                value={editData?.description || ""}
+                                onChange={(e) => setEditData({...editData!, description: e.target.value})}
+                            />
+                        </label>
+                        <label>
+                            Visibility:
+                            <select
+                                className="input-small"
+                                value={editData?.isActive ? "true" : "false"}
+                                onChange={(e) => setEditData({...editData!, isActive: e.target.value === "true"})}
+                            >
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                        </label>
 
-                            <label>
-                                Image:
-                                <input type="file" onChange={onFileChange}/>
-                                {image && <img src={URL.createObjectURL(image)} className="room-card-image"/>}
-                            </label>
+                        <label>
+                            Image:
+                            <input type="file" onChange={onFileChange}/>
+                            {image && <img src={URL.createObjectURL(image)} className="room-card-image"/>}
+                        </label>
 
-                            <div className="button-group">
-                                <button type="submit">Save Changes</button>
-                                <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div className="button-group">
+                            <button type="submit">Save Changes</button>
+                            <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+                        </div>
+                    </form>
+                </div>
             ) : (
                 <div className="room-card-container">
                     {userRooms.length > 0 ? (
@@ -225,13 +235,32 @@ export default function MyRooms(props: Readonly<MyRoomsProps>) {
                                         {room.isActive ? "Active" : "Offline"}
                                     </button>
                                     <button onClick={() => handleEditToggle(room.id)}>Edit</button>
-                                    <button id="button-delete" onClick={() => handleDelete(room.id)}>Delete</button>
+                                    <button id="button-delete" onClick={() => handleDeleteClick(room.id)}>Delete
+                                    </button>
                                 </div>
                             </div>
                         ))
                     ) : (
                         <p>No rooms found for this user.</p>
                     )}
+                </div>
+            )}
+
+            {/* Popup für Löschbestätigung */}
+            {showPopup && (
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <h3>Confirm Deletion</h3>
+                        <p>Are you sure you want to delete this room?</p>
+                        <div className="popup-actions">
+                            <button onClick={handleConfirmDelete} className="popup-confirm">
+                                Yes, Delete
+                            </button>
+                            <button onClick={handleCancel} className="popup-cancel">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
