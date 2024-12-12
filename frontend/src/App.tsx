@@ -14,6 +14,7 @@ import MyRooms from "./components/MyRooms.tsx";
 import {RoomModel} from "./components/model/RoomModel.ts";
 import {useLocation} from "react-router-dom";
 import MapBoxAll from "./components/MapBoxAll.tsx";
+import NotFound from "./components/NotFound.tsx";
 
 export default function App() {
     const [user, setUser] = useState<string>("anonymousUser");
@@ -129,8 +130,10 @@ export default function App() {
 
     return (
             <>
+
             <NavBar user={user} getUser={getUser} getAllActiveRooms={getAllActiveRooms} getAllRooms={getAllRooms} toggleSearchBar={toggleSearchBar} showSearch={showSearch}/>
             <Routes>
+                <Route path="*" element={<NotFound />} />
                 <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms} showSearch={showSearch}/>}/>
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
                 <Route path="/mapbox-all" element={<MapBoxAll favorites={favorites} activeRooms={activeRooms} toggleFavorite={toggleFavorite}/>} />
