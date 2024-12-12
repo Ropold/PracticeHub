@@ -10,7 +10,6 @@
     box-sizing: border-box;   /* Verhindert das Überschreiten der angegebenen Breite */
     top: 0;                   /* Setzt die Navbar ganz oben */
     left: 0;                  /* Setzt sie ganz nach links */
-    z-index: 1000;            /* Stellt sicher, dass die Navbar oben bleibt */
     background-color: white;  /* Optionale Hintergrundfarbe */
 }
 
