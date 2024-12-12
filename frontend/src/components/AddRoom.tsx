@@ -16,6 +16,8 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
     const [category, setCategory] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [image, setImage] = useState<File | null>(null);
+    const [showPopup, setShowPopup] = useState(false);
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     const navigate = useNavigate();
 
@@ -59,15 +61,14 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
             .catch((error) => {
                 if (error.response && error.response.status === 400 && error.response.data) {
                     const errorMessages = error.response.data;
-                    let alertMessage = "Please fix the following errors:\n";
-
+                    const errors: string[] = [];
                     Object.keys(errorMessages).forEach((field) => {
-                        alertMessage += `${field}: ${errorMessages[field]}\n`;
+                        errors.push(`${field}: ${errorMessages[field]}`);
                     });
 
-                    alert(alertMessage);
+                    setErrorMessages(errors);
+                    setShowPopup(true);
                 } else {
-                    console.error("Error adding room:", error);
                     alert("An unexpected error occurred. Please try again.");
                 }
             });
@@ -79,31 +80,52 @@ export default function AddRoom(props: Readonly<AddRoomProps>) {
         }
     }
 
+    const handleClosePopup = () => {
+        setShowPopup(false); // Popup schließen
+        setErrorMessages([]); // Fehlernachrichten zurücksetzen
+    };
+
     return (
-            <div className="edit-form">
-                <h2>Add New Room</h2>
-                <form onSubmit={handleSubmit}>
-                    <label>Title: <input className="input-small" type="text" value={name}
-                                         onChange={(e) => setName(e.target.value)}/></label>
-                    <label>Address: <input className="input-small" type="text" value={address}
-                                           onChange={(e) => setAddress(e.target.value)}/></label>
-                    <label>Category: <select className="input-small" value={category}
-                                             onChange={(e) => setCategory(e.target.value)} required>
-                        <option value="" disabled>*Choose a category*</option>
-                        <option value="SOLO_DUO_ROOM">Solo/Duo Room</option>
-                        <option value="BAND_ROOM">Band Room</option>
-                        <option value="STUDIO_ROOM">Studio Room</option>
-                        <option value="ORCHESTER_HALL">Orchestra Hall</option>
-                    </select>
-                    </label>
-                    <label>Description: <textarea className="textarea-large" value={description}
-                                                  onChange={(e) => setDescription(e.target.value)}/></label>
-                    <input type={"file"} onChange={onFileChange}/>
-                    {image && <img src={URL.createObjectURL(image)} className={"room-card-image"}/>}
-                    <div className="button-group">
-                        <button type="submit">Add Room</button>
+        <div className="edit-form">
+            <h2>Add New Room</h2>
+            <form onSubmit={handleSubmit}>
+                <label>Title: <input className="input-small" type="text" value={name}
+                                     onChange={(e) => setName(e.target.value)}/></label>
+                <label>Address: <input className="input-small" type="text" value={address}
+                                       onChange={(e) => setAddress(e.target.value)}/></label>
+                <label>Category: <select className="input-small" value={category}
+                                         onChange={(e) => setCategory(e.target.value)} required>
+                    <option value="" disabled>*Choose a category*</option>
+                    <option value="SOLO_DUO_ROOM">Solo/Duo Room</option>
+                    <option value="BAND_ROOM">Band Room</option>
+                    <option value="STUDIO_ROOM">Studio Room</option>
+                    <option value="ORCHESTER_HALL">Orchestra Hall</option>
+                </select>
+                </label>
+                <label>Description: <textarea className="textarea-large" value={description}
+                                              onChange={(e) => setDescription(e.target.value)}/></label>
+                <input type={"file"} onChange={onFileChange}/>
+                {image && <img src={URL.createObjectURL(image)} className={"room-card-image"}/>}
+                <div className="button-group">
+                    <button type="submit">Add Room</button>
+                </div>
+            </form>
+
+            {showPopup && (
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <h3>Validation Errors</h3>
+                        <ul>
+                            {errorMessages.map((msg, index) => (
+                                <li key={index}>{msg}</li>
+                            ))}
+                        </ul>
+                        <div className="popup-actions">
+                            <button className="popup-cancel" onClick={handleClosePopup}>Close</button>
+                        </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            )}
+        </div>
     );
 }

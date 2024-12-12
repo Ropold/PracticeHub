@@ -202,7 +202,7 @@
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center
 }
 
 .popup-content {
@@ -219,11 +219,9 @@
     justify-content: space-around;
 }
 
-/* Popup-Button Styling anpassen, um mit bestehenden Buttons übereinzustimmen */
 
-/* Bestätigung-Button (Ja, Löschen) */
 .popup-confirm {
-    background-color: #ff9999; /* Gleiche Hintergrundfarbe wie bei den Buttons */
+    background-color: #ff9999;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -233,12 +231,12 @@
 }
 
 .popup-confirm:hover {
-    background-color: #d32f2f; /* Gleiche Hover-Farbe wie bei den normalen Buttons */
+    background-color: #d32f2f;
 }
 
 /* Abbrechen-Button */
 .popup-cancel {
-    background-color: #999; /* Gleiche Farbe wie bei den inaktiven Buttons */
+    background-color: #999;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -248,5 +246,5 @@
 }
 
 .popup-cancel:hover {
-    background-color: #555; /* Gleiche Hover-Farbe wie bei den inaktiven Buttons */
+    background-color: #555;
 }
