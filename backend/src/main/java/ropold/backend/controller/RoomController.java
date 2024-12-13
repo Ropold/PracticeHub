@@ -2,13 +2,12 @@ package ropold.backend.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
+import ropold.backend.exception.AccessDeniedException;
 import ropold.backend.model.RoomModel;
 import ropold.backend.model.RoomModelDto;
 import ropold.backend.service.AppUserService;
@@ -38,9 +37,8 @@ public class RoomController {
     public void addRoomToFavorites(@PathVariable String userId, @PathVariable String roomId , @AuthenticationPrincipal OAuth2User authentication) {
         String authenticatedUserId = authentication.getName();
 
-        if(!authenticatedUserId.equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
-            // hier andere exception werfen
+        if (!authenticatedUserId.equals(userId)) {
+            throw new AccessDeniedException("Access denied: User is not authorized to add this room to favorites.");
         }
         appUserService.addRoomToFavorites(userId, roomId);
     }
@@ -50,12 +48,10 @@ public class RoomController {
     public void removeRoomFromFavorites(@PathVariable String userId, @PathVariable String roomId, @AuthenticationPrincipal OAuth2User authentication) {
         String authenticatedUserId = authentication.getName();
 
-        if(!authenticatedUserId.equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
-            // hier andere exception werfen
+        if (!authenticatedUserId.equals(userId)) {
+            throw new AccessDeniedException("Access denied: User is not authorized to delete this room from favorites.");
         }
-
-        appUserService.removeRoomFromFavorites(userId, roomId);
+        appUserService.addRoomToFavorites(userId, roomId);
     }
 
     @GetMapping()
@@ -104,9 +100,15 @@ public class RoomController {
     @PutMapping("/{id}")
     public RoomModel putRoom(@PathVariable String id,
                              @RequestPart("roomModelDto") RoomModelDto roomModelDto,
-                             @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+                             @RequestPart(value = "image", required = false) MultipartFile image,
+                             @AuthenticationPrincipal OAuth2User authentication) throws IOException {
 
+        String authenticatedUserId = authentication.getName();
         RoomModel existingRoom = roomService.getRoomById(id);
+
+        if (!authenticatedUserId.equals(existingRoom.appUserGithubId())) {
+            throw new AccessDeniedException("Access denied: User is not authorized to update this room.");
+        }
 
         String newImageUrl;
         if (image != null && !image.isEmpty()) {
@@ -131,8 +133,10 @@ public class RoomController {
                 roomModelDto.isActive(),
                 newImageUrl
         );
+
         return roomService.updateRoomWithPut(id, updatedRoom);
     }
+
 
     @PutMapping("/{id}/toggle-active")
     public RoomModel toggleActiveStatus(@PathVariable String id) {
@@ -141,7 +145,16 @@ public class RoomController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void deleteRoom(@PathVariable String id) {
+    public void deleteRoom(@PathVariable String id, @AuthenticationPrincipal OAuth2User authentication) {
+        String authenticatedUserId = authentication.getName();
+
+        RoomModel room = roomService.getRoomById(id);
+
+        if (!authenticatedUserId.equals(room.appUserGithubId())) {
+            throw new AccessDeniedException("Access denied: User is not authorized to delete this room.");
+        }
+
         roomService.deleteRoom(id);
     }
+
 }
