@@ -73,7 +73,13 @@ public class RoomController {
     @PostMapping
     public RoomModel postRoom(
             @RequestPart("roomModelDto") @Valid RoomModelDto roomModelDto,
-            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @AuthenticationPrincipal OAuth2User authentication) throws IOException {
+
+        String authenticatedUserId = authentication.getName();
+        if (!authenticatedUserId.equals(roomModelDto.appUserGithubId())) {
+            throw new AccessDeniedException("Access denied: User is not authorized to create a room on behalf of another user.");
+        }
 
         String imageUrl = null;
         if (image != null && !image.isEmpty()) {

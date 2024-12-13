@@ -213,9 +213,18 @@ class RoomControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "123")
     void postRoom_shouldReturnSavedRoom() throws Exception {
         // GIVEN
+
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("123");  // The name of the authenticated user
+
+        // Set the Mock OAuth2User in the SecurityContext and mark it as authenticated
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
         roomRepository.deleteAll();
         Uploader mockUploader = mock(Uploader.class);
         when(mockUploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://www.test.de/"));
