@@ -10,6 +10,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -19,6 +23,7 @@ import ropold.backend.model.RoomModel;
 import ropold.backend.repository.AppUserRepository;
 import ropold.backend.repository.RoomRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -100,21 +105,38 @@ class RoomControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "123")
     void addRoomToFavorites_shouldAddRoomToFavoritesAndReturnCreated() throws Exception {
-        // GIVEN Room with ID "2" exists // WHEN:
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub/favorites/123/2"))
-                .andExpect(status().isCreated());
+        // Mock OAuth2User
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("123");  // The name of the authenticated user
 
-        // THEN:
+        // Set the Mock OAuth2User in the SecurityContext and mark it as authenticated
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub/favorites/123/2"))
+                .andExpect(status().isCreated());  // Expecting the "201 Created" status
+
         AppUser updatedUser = appUserRepository.findById("123").orElseThrow();
         Assertions.assertTrue(updatedUser.favorites().contains("2"));
     }
 
+
     @Test
-    @WithMockUser(username = "123")
     void removeRoomFromFavorites_expectNoContent_whenRoomRemoved() throws Exception {
         // GIVEN
+
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("123");  // The name of the authenticated user
+
+        // Set the Mock OAuth2User in the SecurityContext and mark it as authenticated
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
         AppUser user = appUserRepository.findById("123").orElseThrow();
         List<String> favoritesBefore = user.favorites();
         Assertions.assertTrue(favoritesBefore.contains("1"));
@@ -240,9 +262,18 @@ class RoomControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "123")
     void updateRoomWithPut_shouldUpdateRoomDetails() throws Exception {
         // GIVEN
+
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("123");  // The name of the authenticated user
+
+        // Set the Mock OAuth2User in the SecurityContext and mark it as authenticated
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
         RoomModel existingRoom = new RoomModel("1", "Gürzenich Saal", "Martinstr. 29 50667 Köln",
                 Category.ORCHESTER_HALL, "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
                 "123", "TestUser", "https://avatars-of-test-user.com/",
@@ -297,9 +328,18 @@ class RoomControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = {"USER"})
     void deleteRoom_shouldRemoveRoomFromRepository() throws Exception {
         // GIVEN
+
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("123");  // The name of the authenticated user
+
+        // Set the Mock OAuth2User in the SecurityContext and mark it as authenticated
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
         RoomModel roomToDelete = new RoomModel("2", "Beethoven-Saal", "Beethovenstraße 1, 53115 Bonn",
                 Category.ORCHESTER_HALL, "Ein moderner Saal für klassische Musik und Veranstaltungen.",
                 "123", "Testuser", "https://avatars-of-test-user.com/",

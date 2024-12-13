@@ -51,7 +51,7 @@ public class RoomController {
         if (!authenticatedUserId.equals(userId)) {
             throw new AccessDeniedException("Access denied: User is not authorized to delete this room from favorites.");
         }
-        appUserService.addRoomToFavorites(userId, roomId);
+        appUserService.removeRoomFromFavorites(userId, roomId);
     }
 
     @GetMapping()
@@ -139,7 +139,13 @@ public class RoomController {
 
 
     @PutMapping("/{id}/toggle-active")
-    public RoomModel toggleActiveStatus(@PathVariable String id) {
+    public RoomModel toggleActiveStatus(@PathVariable String id,@AuthenticationPrincipal OAuth2User authentication) {
+        String authenticatedUserId = authentication.getName();
+        RoomModel room = roomService.getRoomById(id);
+
+        if (!authenticatedUserId.equals(room.appUserGithubId())) {
+            throw new AccessDeniedException("Access denied: User is not authorized to toggle the active status of this room.");
+        }
        return roomService.toggleActiveStatus(id);
     }
 
