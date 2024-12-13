@@ -16,8 +16,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ropold.backend.model.Category;
-import ropold.backend.model.RoomModelDto;
 import ropold.backend.repository.RoomRepository;
 import ropold.backend.service.AppUserService;
 import static org.hamcrest.Matchers.is;
@@ -117,11 +115,6 @@ class ExceptionHandlerTest {
     @WithMockUser(username = "user123") // Simuliert einen authentifizierten Benutzer mit einer bestimmten ID
     void postRoom_shouldReturnAccessDenied_whenUserIsNotAuthorized() throws Exception {
         // GIVEN: Ein Raum, der von einem anderen Benutzer erstellt werden soll
-        RoomModelDto roomModelDto = new RoomModelDto(
-                "Room Name", "Room Address", Category.BAND_ROOM, "Room Description",
-                "otherUserGithubId", "Other User", "https://avatars.githubusercontent.com/u/otherUser?v=4",
-                "https://github.com/otherUser", true, "https://res.cloudinary.com/otherUser/image.jpg"
-        );
 
         // Simuliere, dass der authentifizierte Benutzer nicht mit dem GitHub-Id im roomModelDto übereinstimmt
         OAuth2User mockOAuth2User = mock(OAuth2User.class);
