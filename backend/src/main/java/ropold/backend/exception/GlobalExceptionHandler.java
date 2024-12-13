@@ -25,6 +25,13 @@ public class GlobalExceptionHandler {
         return new RoomError(e.getMessage());
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public AccessDeniedError handleAccessDeniedException(AccessDeniedException e) {
+        return new AccessDeniedError(e.getMessage()); // Fehlermeldung aus der Exception
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {

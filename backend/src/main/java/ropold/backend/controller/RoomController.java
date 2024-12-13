@@ -2,9 +2,13 @@ package ropold.backend.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import ropold.backend.model.RoomModel;
 import ropold.backend.model.RoomModelDto;
 import ropold.backend.service.AppUserService;
@@ -31,13 +35,26 @@ public class RoomController {
 
     @PostMapping("/favorites/{userId}/{roomId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addRoomToFavorites(@PathVariable String userId, @PathVariable String roomId) {
+    public void addRoomToFavorites(@PathVariable String userId, @PathVariable String roomId , @AuthenticationPrincipal OAuth2User authentication) {
+        String authenticatedUserId = authentication.getName();
+
+        if(!authenticatedUserId.equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+            // hier andere exception werfen
+        }
         appUserService.addRoomToFavorites(userId, roomId);
     }
 
     @DeleteMapping("/favorites/{userId}/{roomId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeRoomFromFavorites(@PathVariable String userId, @PathVariable String roomId) {
+    public void removeRoomFromFavorites(@PathVariable String userId, @PathVariable String roomId, @AuthenticationPrincipal OAuth2User authentication) {
+        String authenticatedUserId = authentication.getName();
+
+        if(!authenticatedUserId.equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+            // hier andere exception werfen
+        }
+
         appUserService.removeRoomFromFavorites(userId, roomId);
     }
 
