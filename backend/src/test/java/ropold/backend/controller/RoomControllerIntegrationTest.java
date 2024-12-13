@@ -371,4 +371,119 @@ class RoomControllerIntegrationTest {
         verify(mockUploader).destroy(eq("testimage2"), anyMap());
     }
 
+    @Test
+    void getActiveRooms_shouldReturnActiveRooms() throws Exception {
+        // GIVEN: Zwei Räume, ein aktiver und ein inaktiver
+        RoomModel activeRoom = new RoomModel(
+                "1", "Gürzenich Saal", "Martinstr. 29 50667 Köln", Category.ORCHESTER_HALL,
+                "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                "123", "Testuser", "https://avatars-of-test-user.com/", "https://github.com/Testuser",
+                true, "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage1.jpg"
+        );
+
+        RoomModel inactiveRoom = new RoomModel(
+                "2", "Beethoven-Saal", "Beethovenstraße 1, 53115 Bonn", Category.ORCHESTER_HALL,
+                "Ein moderner Saal für klassische Musik.", "123", "Testuser",
+                "https://avatars-of-test-user.com/", "https://github.com/Testuser", false,
+                "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage2.jpg"
+        );
+
+        roomRepository.saveAll(List.of(activeRoom, inactiveRoom));
+
+        // WHEN: Die Methode getActiveRooms wird aufgerufen
+        mockMvc.perform(get("/api/practice-hub/active"))
+                // THEN: Nur der aktive Raum wird zurückgegeben
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                [
+                    {
+                        "id": "1",
+                        "name": "Gürzenich Saal",
+                        "address": "Martinstr. 29 50667 Köln",
+                        "category": "ORCHESTER_HALL",
+                        "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                        "appUserGithubId": "123",
+                        "appUserUsername": "Testuser",
+                        "appUserAvatarUrl": "https://avatars-of-test-user.com/",
+                        "appUserGithubUrl": "https://github.com/Testuser",
+                        "isActive": true,
+                        "imageUrl": "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage1.jpg"
+                    }
+                ]
+            """));
+    }
+
+    @Test
+    void toggleActiveStatus_shouldToggleActiveStatus_whenAuthorized() throws Exception {
+        // GIVEN: Ein Raum, der aktiv ist, und der authentifizierte Benutzer ist der Eigentümer des Raums
+        RoomModel room = new RoomModel(
+                "1", "Gürzenich Saal", "Martinstr. 29 50667 Köln", Category.ORCHESTER_HALL,
+                "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                "123", "Testuser", "https://avatars-of-test-user.com/", "https://github.com/Testuser",
+                true, "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage1.jpg"
+        );
+        roomRepository.save(room);
+
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("123");  // Authentifizierter Benutzer ist der Eigentümer des Raums
+
+        // Setzen des Mock OAuth2Users in den SecurityContext
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
+        // WHEN: Der Status des Raums wird umgeschaltet
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/practice-hub/{id}/toggle-active", "1"))
+                // THEN: Der Raum sollte nun inaktiv sein und der Status sollte sich ändern
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                {
+                    "id": "1",
+                    "name": "Gürzenich Saal",
+                    "address": "Martinstr. 29 50667 Köln",
+                    "category": "ORCHESTER_HALL",
+                    "description": "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                    "appUserGithubId": "123",
+                    "appUserUsername": "Testuser",
+                    "appUserAvatarUrl": "https://avatars-of-test-user.com/",
+                    "appUserGithubUrl": "https://github.com/Testuser",
+                    "isActive": false,
+                    "imageUrl": "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage1.jpg"
+                }
+            """));
+
+        // Überprüfen, ob der Status des Raums tatsächlich umgeschaltet wurde
+        RoomModel updatedRoom = roomRepository.findById("1").orElseThrow();
+        Assertions.assertFalse(updatedRoom.isActive());
+    }
+
+    @Test
+    void toggleActiveStatus_shouldReturnAccessDenied_whenUserNotOwner() throws Exception {
+        // GIVEN: Ein Raum, der aktiv ist, aber der authentifizierte Benutzer ist nicht der Eigentümer des Raums
+        RoomModel room = new RoomModel(
+                "1", "Gürzenich Saal", "Martinstr. 29 50667 Köln", Category.ORCHESTER_HALL,
+                "Ein traditionsreicher Saal für Konzerte und Veranstaltungen.",
+                "123", "Testuser", "https://avatars-of-test-user.com/", "https://github.com/Testuser",
+                true, "https://res.cloudinary.com/Testuser/image/upload/Testuser/testimage1.jpg"
+        );
+        roomRepository.save(room);
+
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("456");  // Authentifizierter Benutzer ist NICHT der Eigentümer des Raums
+
+        // Setzen des Mock OAuth2Users in den SecurityContext
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
+        // WHEN: Der Status des Raums wird umgeschaltet
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/practice-hub/{id}/toggle-active", "1"))
+                // THEN: Es sollte ein AccessDeniedException ausgelöst werden
+                .andExpect(status().isForbidden())
+                .andExpect(content().json("{\"message\": \"Access denied: User is not authorized to toggle the active status of this room.\"}"));
+    }
+
+
 }
