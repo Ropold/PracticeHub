@@ -153,8 +153,6 @@ public class RoomController {
         if (!authenticatedUserId.equals(room.appUserGithubId())) {
             throw new AccessDeniedException("Access denied: User is not authorized to delete this room.");
         }
-
         roomService.deleteRoom(id);
     }
-
 }
