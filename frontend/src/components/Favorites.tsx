@@ -14,7 +14,7 @@ export default function Favorites(props: Readonly<FavoritesProps>) {
 
     useEffect(() => {
         axios
-            .get(`/api/practice-hub/favorites/${props.user}`)
+            .get(`/api/practice-hub/favorites`)
             .then((response) => {
                 setFavoritesRooms(response.data);
             })

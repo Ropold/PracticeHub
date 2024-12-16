@@ -45,7 +45,7 @@ export default function App() {
     function getUserDetails() {
         axios.get("/api/users/me/details")
             .then((response) => {
-                console.log("User details:", response.data);
+                //console.log("User details:", response.data);
                 setUserDetails(response.data);
             })
             .catch((error) => {
@@ -55,7 +55,7 @@ export default function App() {
     }
 
     function getAppUserFavorites(){
-        axios.get(`/api/practice-hub/favorites/${user}`)
+        axios.get(`/api/practice-hub/favorites`)
             .then((response) => {
                 const favoriteIds = response.data.map((favorite: any) => favorite.id);
                 setFavorites(favoriteIds);
@@ -91,7 +91,7 @@ export default function App() {
         const isFavorite = favorites.includes(roomId);
 
         if (isFavorite) {
-            axios.delete(`/api/practice-hub/favorites/${user}/${roomId}`)
+            axios.delete(`/api/practice-hub/favorites/${roomId}`)
                 .then(() => {
                     setFavorites((prevFavorites) =>
                         prevFavorites.filter((id) => id !== roomId)
@@ -99,7 +99,7 @@ export default function App() {
                 })
                 .catch((error) => console.error(error));
         } else {
-            axios.post(`/api/practice-hub/favorites/${user}/${roomId}`)
+            axios.post(`/api/practice-hub/favorites/${roomId}`)
                 .then(() => {
                     setFavorites((prevFavorites) => [...prevFavorites, roomId]);
                 })
@@ -138,10 +138,10 @@ export default function App() {
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
                 <Route path="/mapbox-all" element={<MapBoxAll favorites={favorites} activeRooms={activeRooms} toggleFavorite={toggleFavorite}/>} />
                 <Route element={<ProtectedRoute user={user} />}>
-                    <Route path="/:id/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
-                    <Route path={"/:id/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms} userDetails={userDetails} setRooms={setRooms}/>} />
-                    <Route path={"/:id/add-room/"} element={<AddRoom user={user} handleSubmit={handleNewRoomSubmit} userDetails={userDetails}/>} />
-                    <Route path={"/:id/profile"} element={<Profile userDetails={userDetails}/>} />
+                    <Route path="/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
+                    <Route path={"/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms} userDetails={userDetails} setRooms={setRooms}/>} />
+                    <Route path={"/add-room/"} element={<AddRoom user={user} handleSubmit={handleNewRoomSubmit} userDetails={userDetails}/>} />
+                    <Route path={"/profile"} element={<Profile userDetails={userDetails}/>} />
                 </Route>
             </Routes>
             <Footer/>

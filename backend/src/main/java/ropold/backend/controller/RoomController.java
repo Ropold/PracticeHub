@@ -26,33 +26,27 @@ public class RoomController {
     private final CloudinaryService cloudinaryService;
     private final AppUserService appUserService;
 
-    @GetMapping("/favorites/{userId}")
-    public List<RoomModel> getUserFavorites(@PathVariable String userId) {
-        List<String> favoriteRoomIds = appUserService.getUserFavorites(userId);
+    @GetMapping("/favorites")
+    public List<RoomModel> getUserFavorites(@AuthenticationPrincipal OAuth2User authentication) {
+        List<String> favoriteRoomIds = appUserService.getUserFavorites(authentication.getName());
         return roomService.getRoomsByIds(favoriteRoomIds);
     }
 
-    @PostMapping("/favorites/{userId}/{roomId}")
+    @PostMapping("/favorites/{roomId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addRoomToFavorites(@PathVariable String userId, @PathVariable String roomId , @AuthenticationPrincipal OAuth2User authentication) {
+    public void addRoomToFavorites(@PathVariable String roomId , @AuthenticationPrincipal OAuth2User authentication) {
         String authenticatedUserId = authentication.getName();
-
-        if (!authenticatedUserId.equals(userId)) {
-            throw new AccessDeniedException("Access denied: User" + userId + "is not authorized to add this room to favorites.");
-        }
-        appUserService.addRoomToFavorites(userId, roomId);
+        appUserService.addRoomToFavorites(authenticatedUserId, roomId);
     }
 
-    @DeleteMapping("/favorites/{userId}/{roomId}")
+    @DeleteMapping("/favorites/{roomId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeRoomFromFavorites(@PathVariable String userId, @PathVariable String roomId, @AuthenticationPrincipal OAuth2User authentication) {
+    public void removeRoomFromFavorites(@PathVariable String roomId, @AuthenticationPrincipal OAuth2User authentication) {
         String authenticatedUserId = authentication.getName();
 
-        if (!authenticatedUserId.equals(userId)) {
-            throw new AccessDeniedException("Access denied: User is not authorized to delete this room from favorites.");
-        }
-        appUserService.removeRoomFromFavorites(userId, roomId);
+        appUserService.removeRoomFromFavorites(authenticatedUserId, roomId);
     }
+
 
     @GetMapping()
     public List<RoomModel> getAllRooms() {
@@ -142,7 +136,6 @@ public class RoomController {
 
         return roomService.updateRoomWithPut(id, updatedRoom);
     }
-
 
     @PutMapping("/{id}/toggle-active")
     public RoomModel toggleActiveStatus(@PathVariable String id,@AuthenticationPrincipal OAuth2User authentication) {
