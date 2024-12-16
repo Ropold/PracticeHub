@@ -137,7 +137,6 @@ class RoomControllerIntegrationTest {
         Assertions.assertTrue(updatedUser.favorites().contains("2"));
     }
 
-
     @Test
     void removeRoomFromFavorites_expectNoContent_whenRoomRemoved() throws Exception {
         // GIVEN
