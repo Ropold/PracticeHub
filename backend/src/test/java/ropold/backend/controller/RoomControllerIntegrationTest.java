@@ -30,6 +30,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -119,6 +120,22 @@ class RoomControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub/favorites/123/2"))
                 .andExpect(status().isCreated());  // Expecting the "201 Created" status
 
+        AppUser updatedUser = appUserRepository.findById("123").orElseThrow();
+        Assertions.assertTrue(updatedUser.favorites().contains("2"));
+    }
+
+    @Test
+    void addRoomToFavorites2_shouldAddRoomToFavoritesAndReturnCreated() throws Exception {
+        // Verwenden von .with(oidcLogin()) anstelle von Mocking
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub/favorites/123/2")
+                        .with(oidcLogin().userInfoToken(token -> token
+                                .claim("sub", "123")  // User-ID im Token
+                                .claim("login", "testUser")
+                                .claim("avatar_url", "testAvatarUrl")
+                        )))
+                .andExpect(status().isCreated());  // Erwartet den Status "201 Created"
+
+        // Überprüfung, dass der Raum in die Favoritenliste des Benutzers hinzugefügt wurde
         AppUser updatedUser = appUserRepository.findById("123").orElseThrow();
         Assertions.assertTrue(updatedUser.favorites().contains("2"));
     }
