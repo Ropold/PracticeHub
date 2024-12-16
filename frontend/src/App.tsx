@@ -45,7 +45,7 @@ export default function App() {
     function getUserDetails() {
         axios.get("/api/users/me/details")
             .then((response) => {
-                //console.log("User details:", response.data);
+                console.log("User details:", response.data);
                 setUserDetails(response.data);
             })
             .catch((error) => {

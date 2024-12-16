@@ -128,11 +128,8 @@ class RoomControllerIntegrationTest {
     void addRoomToFavorites2_shouldAddRoomToFavoritesAndReturnCreated() throws Exception {
         // Verwenden von .with(oidcLogin()) anstelle von Mocking
         mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub/favorites/123/2")
-                        .with(oidcLogin().userInfoToken(token -> token
-                                .claim("sub", "123")  // User-ID im Token
-                                .claim("login", "testUser")
-                                .claim("avatar_url", "testAvatarUrl")
-                        )))
+                        .with(oidcLogin().idToken(i -> i.claim("sub", "123")))
+                                )
                 .andExpect(status().isCreated());  // Erwartet den Status "201 Created"
 
         // Überprüfung, dass der Raum in die Favoritenliste des Benutzers hinzugefügt wurde

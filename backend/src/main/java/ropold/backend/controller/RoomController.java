@@ -38,7 +38,7 @@ public class RoomController {
         String authenticatedUserId = authentication.getName();
 
         if (!authenticatedUserId.equals(userId)) {
-            throw new AccessDeniedException("Access denied: User is not authorized to add this room to favorites.");
+            throw new AccessDeniedException("Access denied: User" + userId + "is not authorized to add this room to favorites.");
         }
         appUserService.addRoomToFavorites(userId, roomId);
     }
