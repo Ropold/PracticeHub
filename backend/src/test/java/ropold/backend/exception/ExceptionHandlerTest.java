@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ropold.backend.repository.RoomRepository;
 import static org.hamcrest.Matchers.is;
 
-
 import java.util.Collections;
 import java.util.Map;
 
