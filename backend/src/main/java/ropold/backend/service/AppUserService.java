@@ -40,5 +40,4 @@ public class AppUserService {
             appUserRepository.save(user);
         }
     }
-
 }

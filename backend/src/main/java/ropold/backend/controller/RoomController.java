@@ -43,10 +43,8 @@ public class RoomController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeRoomFromFavorites(@PathVariable String roomId, @AuthenticationPrincipal OAuth2User authentication) {
         String authenticatedUserId = authentication.getName();
-
         appUserService.removeRoomFromFavorites(authenticatedUserId, roomId);
     }
-
 
     @GetMapping()
     public List<RoomModel> getAllRooms() {

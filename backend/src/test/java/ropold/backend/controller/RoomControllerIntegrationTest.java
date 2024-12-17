@@ -84,7 +84,9 @@ class RoomControllerIntegrationTest {
     @Test
     @WithMockUser(username = "123")
     void getUserFavorites_shouldReturnFavoriteRooms() throws Exception {
-        mockMvc.perform(get("/api/practice-hub/favorites/123"))
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/practice-hub/favorites")
+                .with(oidcLogin().idToken(i -> i.claim("sub", "123"))))
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
                 [
@@ -105,29 +107,11 @@ class RoomControllerIntegrationTest {
                 """));
     }
 
-    @Test
-    void addRoomToFavorites_shouldAddRoomToFavoritesAndReturnCreated() throws Exception {
-        // Mock OAuth2User
-        OAuth2User mockOAuth2User = mock(OAuth2User.class);
-        when(mockOAuth2User.getName()).thenReturn("123");  // The name of the authenticated user
-
-        // Set the Mock OAuth2User in the SecurityContext and mark it as authenticated
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
-        );
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub/favorites/123/2"))
-                .andExpect(status().isCreated());  // Expecting the "201 Created" status
-
-        AppUser updatedUser = appUserRepository.findById("123").orElseThrow();
-        Assertions.assertTrue(updatedUser.favorites().contains("2"));
-    }
 
     @Test
     void addRoomToFavorites2_shouldAddRoomToFavoritesAndReturnCreated() throws Exception {
         // Verwenden von .with(oidcLogin()) anstelle von Mocking
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub/favorites/123/2")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/practice-hub/favorites/2")
                         .with(oidcLogin().idToken(i -> i.claim("sub", "123")))
                                 )
                 .andExpect(status().isCreated());  // Erwartet den Status "201 Created"
@@ -140,29 +124,21 @@ class RoomControllerIntegrationTest {
     @Test
     void removeRoomFromFavorites_expectNoContent_whenRoomRemoved() throws Exception {
         // GIVEN
-
-        OAuth2User mockOAuth2User = mock(OAuth2User.class);
-        when(mockOAuth2User.getName()).thenReturn("123");  // The name of the authenticated user
-
-        // Set the Mock OAuth2User in the SecurityContext and mark it as authenticated
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
-        );
-
         AppUser user = appUserRepository.findById("123").orElseThrow();
         List<String> favoritesBefore = user.favorites();
-        Assertions.assertTrue(favoritesBefore.contains("1"));
+        Assertions.assertTrue(favoritesBefore.contains("1")); // Überprüfe, dass der Raum mit ID "1" in den Favoriten ist
 
         // WHEN:
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/practice-hub/favorites/{userId}/{roomId}", "123", "1"))
-                .andExpect(status().isNoContent());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/practice-hub/favorites/{roomId}", "1")
+                        .with(oidcLogin().idToken(i -> i.claim("sub", "123")))) // Verwende die richtige roomId
+                .andExpect(status().isNoContent());  // Erwartet Status 204
 
         // THEN:
         AppUser updatedUser = appUserRepository.findById("123").orElseThrow();
         List<String> favoritesAfter = updatedUser.favorites();
-        Assertions.assertFalse(favoritesAfter.contains("1"));
+        Assertions.assertFalse(favoritesAfter.contains("1")); // Überprüfe, dass der Raum aus den Favoriten entfernt wurde
     }
+
 
     @Test
     void getAllRooms_expectListWithTwoRooms_whenTwoRoomsSaved() throws Exception {

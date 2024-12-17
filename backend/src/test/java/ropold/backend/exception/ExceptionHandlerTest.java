@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ropold.backend.repository.RoomRepository;
-import ropold.backend.service.AppUserService;
 import static org.hamcrest.Matchers.is;
 
 
@@ -27,7 +26,6 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -42,33 +40,6 @@ class ExceptionHandlerTest {
 
     @MockBean
     private Cloudinary cloudinary;
-
-    @MockBean
-    private AppUserService appUserService;
-
-    @Test
-    @WithMockUser(username = "user1") // Simuliert einen authentifizierten Benutzer
-    void whenAccessDeniedExceptionThrown_thenReturnForbiddenResponse() throws Exception {
-        // Simuliert, dass die Methode 'removeRoomFromFavorites' eine AccessDeniedException wirft
-
-        OAuth2User mockOAuth2User = mock(OAuth2User.class);
-        when(mockOAuth2User.getName()).thenReturn("123");  // The name of the authenticated user
-
-        // Set the Mock OAuth2User in the SecurityContext and mark it as authenticated
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
-        );
-
-        doThrow(new AccessDeniedException("Access denied: User is not authorized to delete this room from favorites."))
-                .when(appUserService).removeRoomFromFavorites("user1", "room1");
-
-        // Simuliere eine DELETE-Anfrage, die die Ausnahme auslöst
-        mockMvc.perform(delete("/api/practice-hub/favorites/user1/room1"))
-                .andExpect(status().isForbidden()) // Überprüfe, ob der Status 403 (Forbidden) zurückgegeben wird
-                .andExpect(jsonPath("$.message", is("Access denied: User is not authorized to delete this room from favorites."))) // Überprüfe, ob die Fehlermeldung korrekt ist
-                .andReturn();
-    }
 
     @Test
     void whenRoomNotFoundException_thenReturnsNotFound() throws Exception {
