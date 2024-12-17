@@ -7,7 +7,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ropold.backend.repository.AppUserRepository;
 
 import java.util.Map;
 
@@ -15,8 +14,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
-    private final AppUserRepository appUserRepository;
 
     @GetMapping(value = "/me", produces = "text/plain")
     public String getMe() {

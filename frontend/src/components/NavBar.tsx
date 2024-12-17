@@ -64,14 +64,14 @@ export default function NavBar(props: Readonly<NavbarProps>) {
 
             {props.user !== "anonymousUser" ? (
                 <>
-                    <button onClick={() => navigate(`/${props.user}/favorites`)}>Favorites</button>
-                    <button onClick={() => navigate(`/${props.user}/add-room`)}>Add Room</button>
+                    <button onClick={() => navigate(`/favorites`)}>Favorites</button>
+                    <button onClick={() => navigate(`/add-room`)}>Add Room</button>
                     <button onClick={() => {
                         props.getAllRooms();
-                        navigate(`/${props.user}/my-rooms`)
+                        navigate(`/my-rooms`)
                     }}>My Rooms
                     </button>
-                    <button onClick={() => navigate(`/${props.user}/profile`)}>Profile</button>
+                    <button onClick={() => navigate(`/profile`)}>Profile</button>
                     <button onClick={logoutFromGithub}>Logout</button>
                 </>
             ) : (
