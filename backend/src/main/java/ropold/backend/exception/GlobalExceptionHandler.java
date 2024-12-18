@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ImageDeletionException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // HTTP 500 für Serverfehler
     public RoomError handleImageDeletionException(ImageDeletionException e) {
-        return new RoomError(e.getMessage()); // Fehlermeldung aus der Exception
+        return new RoomError(e.getMessage());
     }
 
 }
