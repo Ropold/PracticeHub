@@ -26,7 +26,12 @@ export default function Home(props: Readonly<HomeProps>) {
 
     useEffect(() => {
         const filtered = props.activeRooms.filter((room) => {
-            return room.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const lowerQuery = searchQuery.toLowerCase();
+            return (
+                room.name.toLowerCase().includes(lowerQuery) ||
+                room.address.toLowerCase().includes(lowerQuery) ||
+                room.description.toLowerCase().includes(lowerQuery)
+            );
         });
         setFilteredRooms(filtered);
     }, [props.activeRooms, searchQuery]);
