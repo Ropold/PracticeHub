@@ -16,25 +16,30 @@ export default function Home(props: Readonly<HomeProps>) {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredRooms, setFilteredRooms] = useState<RoomModel[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [filterType, setFilterType] = useState<"name" | "address" | "category" | "all">("name"); // Neuer Filtertyp-Zustand
-    const [selectedCategory, setSelectedCategory] = useState<RoomModel["category"] | "">(""); // Neue Kategorie-Auswahl
-    const roomsPerPage = 9; // Anzahl der Karten pro Seite
+    const [filterType, setFilterType] = useState<"name" | "address" | "category" | "all">("name"); // Filtertyp
+    const [selectedCategory, setSelectedCategory] = useState<RoomModel["category"] | "">(""); // Kategorie
+    const roomsPerPage = 9;
 
     useEffect(() => {
         if (!props.showSearch) {
-            setSearchQuery("");  // Setzt den searchQuery auf einen leeren String
+            setSearchQuery("");  // Setzt den searchQuery zurück
         }
     }, [props.showSearch]);
 
-    // Filterlogik, die alle relevanten Filtertypen berücksichtigt
     useEffect(() => {
-        const filtered = props.activeRooms.filter((room) => {
-            const lowerQuery = searchQuery.toLowerCase();
+        const filtered = filterRooms(props.activeRooms, searchQuery, filterType, selectedCategory);
+        setFilteredRooms(filtered);
+    }, [props.activeRooms, searchQuery, filterType, selectedCategory]);
 
-            // Prüfen, ob die Kategorie passt, falls eine ausgewählt wurde
-            const matchesCategory = selectedCategory ? room.category === selectedCategory : true;
+    // Funktion zur Filterung der Räume
+    const filterRooms = (rooms: RoomModel[], query: string, filterType: string, category: string | "") => {
+        const lowerQuery = query.toLowerCase();
 
-            // Filterlogik basierend auf dem Filtertyp
+        return rooms.filter((room) => {
+            // Kategorie-Filter
+            const matchesCategory = category ? room.category === category : true;
+
+            // Filter für Name, Adresse oder alles
             const matchesName = filterType === "name" && room.name.toLowerCase().includes(lowerQuery);
             const matchesAddress = filterType === "address" && room.address.toLowerCase().includes(lowerQuery);
             const matchesAll =
@@ -45,19 +50,21 @@ export default function Home(props: Readonly<HomeProps>) {
 
             return matchesCategory && (matchesName || matchesAddress || matchesAll);
         });
-        setFilteredRooms(filtered);
-    }, [props.activeRooms, searchQuery, filterType, selectedCategory]);
+    };
 
     // Berechne die Karten für die aktuelle Seite
-    const indexOfLastRoom = currentPage * roomsPerPage;
-    const indexOfFirstRoom = indexOfLastRoom - roomsPerPage;
-    const currentRooms = filteredRooms.slice(indexOfFirstRoom, indexOfLastRoom);
-
-    // Berechne die Gesamtzahl der Seiten
-    const totalPages = Math.ceil(filteredRooms.length / roomsPerPage);
-
-    // Funktion für die Seitenumstellung
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    // Berechne die Gesamtzahl der Seiten und den aktuellen Raum-Schnitt
+    const getPaginationData = (rooms: RoomModel[]) => {
+        const indexOfLastRoom = currentPage * roomsPerPage;
+        const indexOfFirstRoom = indexOfLastRoom - roomsPerPage;
+        const currentRooms = rooms.slice(indexOfFirstRoom, indexOfLastRoom);
+        const totalPages = Math.ceil(rooms.length / roomsPerPage);
+        return { currentRooms, totalPages };
+    };
+
+    const { currentRooms, totalPages } = getPaginationData(filteredRooms);
 
     return (
         <>
