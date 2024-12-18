@@ -1,19 +1,28 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import "../styles/SearchBar.css";
 import { RoomModel } from "../model/RoomModel.ts";
-import "../styles/SearchBar.css";
 
 type SearchBarProps = {
     value: string;
     onChange: (value: string) => void;
     rooms: RoomModel[];
     setFilteredRooms: (rooms: RoomModel[]) => void;
+    filterType: "name" | "address" | "category" | "all";
+    setFilterType: (filterType: "name" | "address" | "category" | "all") => void;
+    selectedCategory: RoomModel["category"] | "";
+    setSelectedCategory: (category: RoomModel["category"] | "") => void;
 };
 
-const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, rooms, setFilteredRooms }) => {
-    const [filterType, setFilterType] = useState<"name" | "address" | "category" | "all">("name");
-    const [selectedCategory, setSelectedCategory] = useState<RoomModel["category"] | "">("");
-
+const SearchBar: React.FC<SearchBarProps> = ({
+                                                 value,
+                                                 onChange,
+                                                 rooms,
+                                                 setFilteredRooms,
+                                                 filterType,
+                                                 setFilterType,
+                                                 selectedCategory,
+                                                 setSelectedCategory
+                                             }) => {
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         onChange(event.target.value);
     };
@@ -45,7 +54,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, rooms, setFilter
             return matchesCategory && (matchesName || matchesAddress || matchesAll);
         });
 
-
         setFilteredRooms(filtered);
     }, [value, filterType, rooms, selectedCategory, setFilteredRooms]);
 
@@ -63,23 +71,26 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, rooms, setFilter
                         setFilterType("name");
                     }}
                     className={filterType === "name" ? "active" : ""}
-                >Name
+                >
+                    Name
                 </button>
                 <button
                     onClick={() => {
                         setFilterType("address");
                     }}
                     className={filterType === "address" ? "active" : ""}
-                >Address
+                >
+                    Address
                 </button>
                 <button
                     onClick={() => {
                         setFilterType("all");
-                        setSelectedCategory("");
+                        setSelectedCategory(""); // Setzt die Kategorie zurück, wenn "No Filter" gewählt wird
                         onChange('');
                     }}
                     className={filterType === "all" && selectedCategory === "" ? "active" : ""}
-                >No Filter
+                >
+                    No Filter
                 </button>
                 <label>
                     <select
