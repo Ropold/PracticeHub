@@ -23,6 +23,11 @@ export default function App() {
     const [rooms, setRooms] = useState<RoomModel[]>([]);
     const [activeRooms, setActiveRooms] = useState<RoomModel[]>([]);
     const [showSearch, setShowSearch] = useState<boolean>(false);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+
+    const resetCurrentPage = () => {
+        setCurrentPage(1);
+    };
 
     const location = useLocation();
 
@@ -129,22 +134,42 @@ export default function App() {
     }, [location]);
 
     return (
-            <>
-
-            <NavBar user={user} getUser={getUser} getAllActiveRooms={getAllActiveRooms} getAllRooms={getAllRooms} toggleSearchBar={toggleSearchBar} showSearch={showSearch}/>
+        <>
+            <NavBar
+                user={user}
+                getUser={getUser}
+                getAllActiveRooms={getAllActiveRooms}
+                getAllRooms={getAllRooms}
+                toggleSearchBar={toggleSearchBar}
+                showSearch={showSearch}
+                resetCurrentPage={resetCurrentPage}
+            />
             <Routes>
                 <Route path="*" element={<NotFound />} />
-                <Route path="/" element={<Home favorites={favorites} user={user} toggleFavorite={toggleFavorite} activeRooms={activeRooms} showSearch={showSearch}/>}/>
+                <Route
+                    path="/"
+                    element={
+                        <Home
+                            favorites={favorites}
+                            user={user}
+                            toggleFavorite={toggleFavorite}
+                            activeRooms={activeRooms}
+                            showSearch={showSearch}
+                            currentPage={currentPage}
+                            paginate={setCurrentPage}
+                        />
+                    }
+                />
                 <Route path="/room/:id" element={<Details favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
-                <Route path="/mapbox-all" element={<MapBoxAll favorites={favorites} activeRooms={activeRooms} toggleFavorite={toggleFavorite}/>} />
+                <Route path="/mapbox-all" element={<MapBoxAll favorites={favorites} activeRooms={activeRooms} toggleFavorite={toggleFavorite} />} />
                 <Route element={<ProtectedRoute user={user} />}>
-                    <Route path="/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
-                    <Route path={"/my-rooms/"} element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms} userDetails={userDetails} setRooms={setRooms}/>} />
-                    <Route path={"/add-room/"} element={<AddRoom user={user} handleSubmit={handleNewRoomSubmit} userDetails={userDetails}/>} />
-                    <Route path={"/profile"} element={<Profile userDetails={userDetails}/>} />
+                    <Route path="/favorites/" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite} />} />
+                    <Route path="/my-rooms/" element={<MyRooms favorites={favorites} user={user} toggleFavorite={toggleFavorite} rooms={rooms} userDetails={userDetails} setRooms={setRooms} />} />
+                    <Route path="/add-room/" element={<AddRoom user={user} handleSubmit={handleNewRoomSubmit} userDetails={userDetails} />} />
+                    <Route path="/profile" element={<Profile userDetails={userDetails} />} />
                 </Route>
             </Routes>
-            <Footer/>
-            </>
-  )
+            <Footer />
+        </>
+    );
 }
