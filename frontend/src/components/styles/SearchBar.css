@@ -98,4 +98,61 @@
     background-color: #66b3ff;
 }
 
+/* Dark Mode für die Searchbar */
+@media (prefers-color-scheme: dark) {
+    .search-bar {
+        background-color: #333333; /* Dunkler Hintergrund für die Searchbar */
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1); /* Hellerer Schatten */
+    }
+
+    .mapbox-all-search-field {
+        background-color: #444444; /* Dunklerer Hintergrund für das Suchfeld */
+        border: 1px solid #555555;  /* Dunklerer Rand */
+    }
+
+    .mapbox-all-search-field input {
+        color: #fff; /* Weißer Text im Input-Feld */
+        background-color: #555555; /* Dunkler Hintergrund im Eingabefeld */
+        border: 1px solid #666666; /* Dunklerer Rand */
+    }
+
+    .mapbox-all-search-field input:focus {
+        border-color: #66b3ff; /* Heller blauer Rand bei Fokus */
+        box-shadow: 0 0 5px rgba(102, 179, 255, 0.5); /* Leuchtender blauer Fokus-Schatten */
+    }
+
+    .mapbox-all-search-field button {
+        background-color: #66b3ff; /* Gleiche Button-Farbe wie im Light Mode */
+    }
+
+    .mapbox-all-search-field button:hover {
+        background-color: #5599e5; /* Etwas dunkler bei Hover */
+    }
+
+    .search-bar input {
+        background-color: #444444; /* Dunkler Hintergrund im Input-Feld */
+        color: #fff; /* Weißer Text */
+        border: 1px solid #666666; /* Dunkler Rand */
+    }
+
+    .search-bar input:focus {
+        border-color: #66b3ff; /* Heller blauer Rand bei Fokus */
+    }
+
+    .filter-buttons button {
+        background-color: #555555; /* Dunkler Hintergrund für Filter-Buttons */
+        color: #fff; /* Weißer Text */
+        border: 1px solid #666666; /* Dunkler Rand */
+    }
+
+    .filter-buttons button:hover {
+        background-color: #444444; /* Noch dunkler bei Hover */
+    }
+
+    .filter-buttons button.active {
+        border: 2px solid #66b3ff; /* Heller blauer Rand für aktive Filter */
+        font-weight: bold;
+        background-color: #5599e5; /* Etwas dunklerer blauer Hintergrund */
+    }
+}
 

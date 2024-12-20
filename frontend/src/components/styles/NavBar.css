@@ -1,51 +1,149 @@
-
+/* Standardwerte für die Navbar */
 .navbar {
     margin-bottom: 30px;
-    display: flex;            /* Nutze Flexbox */
-    align-items: center;      /* Zentriert die Items vertikal */
-    justify-content: center;  /* Zentriert die Items horizontal */
-    gap: 20px;                /* Abstand zwischen den Items */
-    padding: 10px 20px;       /* Padding für die Navbar */
-    width: 100%;              /* Breite der Navbar */
-    box-sizing: border-box;   /* Verhindert das Überschreiten der angegebenen Breite */
-    top: 0;                   /* Setzt die Navbar ganz oben */
-    left: 0;                  /* Setzt sie ganz nach links */
-    background-color: white;  /* Optionale Hintergrundfarbe */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
 }
-
 
 /* Stil für das Logo */
 .logo-image {
-    height: 40px; /* Passe die Größe des Logos an */
+    height: 40px;
     width: auto;
-    margin-left: 10px; /* Abstand zwischen Text und Bild */
-    border: 1px solid #ccc; /* Normaler Rand wie bei den Buttons */
-    border-radius: 4px; /* Gleicher abgerundeter Rand wie bei den Buttons */
-    transition: all 0.3s ease; /* Weiche Übergänge für den Rand und Hintergrund */
-    cursor: pointer; /* Zeigt an, dass das Bild klickbar ist */
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
+/* Stil für den klickbaren Header */
 .clickable-header {
     display: flex;
     align-items: center;
-    cursor: pointer; /* Zeigt an, dass der Bereich klickbar ist */
+    cursor: pointer;
     background-color: #f9f9f9;
-    border-radius: 1px; /* Optionale Abrundung für den Hover-Hintergrund */
+    border-radius: 1px;
     border: 1px solid transparent;
 }
 
 .clickable-header:hover {
-    border-color: #007BFF; /* Blauer Rand beim Hover */
-    background-color: #f0f0f0; /* Optional: heller Hintergrund beim Hover */
+    border-color: #007BFF;
+    background-color: #f0f0f0;
 }
 
 .header-title {
-    margin: 0; /* Entfernt den Standardabstand */
+    margin: 0;
 }
 
 .toggle-search-on {
     background-color: #66b3ff;
 }
+
 .toggle-search-off {
-    background-color: #f0f0f0;
+    background-color: #f9f9f9;
+}
+
+/* Dark Mode (über prefers-color-scheme) */
+@media (prefers-color-scheme: dark) {
+    .navbar {
+        background-color: #242424; /* Darker background for navbar */
+    }
+
+    .logo-image {
+        border: 1px solid #444444; /* Darker border for the logo */
+    }
+
+    .clickable-header {
+        background-color: #333333; /* Darker background for clickable header */
+    }
+
+    .clickable-header:hover {
+        background-color: #444444; /* Darker hover background */
+        border-color: #555555; /* Darker border color on hover */
+    }
+
+    .toggle-search-on {
+        background-color: #66b3ff; /* Keep the same button style for the "Search On" */
+    }
+
+    .toggle-search-off {
+        background-color: #444444; /* Darker background for "Search Off" */
+    }
+
+    .header-title {
+        color: #ffffff; /* Make text in the header white in dark mode */
+    }
+
+    /* Buttons im Dark Mode */
+    button {
+        background-color: #333333; /* Darker background for buttons */
+        color: #ffffff; /* Weißer Text für den Button im Dark Mode */
+        border: 1px solid #444444; /* Dunklerer Rand */
+    }
+
+    button:hover {
+        background-color: #444444; /* Etwas helleres Hintergrund bei Hover */
+        border-color: #666666; /* Hellerer Rand bei Hover */
+    }
+
+    button:focus,
+    button:focus-visible {
+        outline: 4px auto -webkit-focus-ring-color;
+    }
+}
+
+/* Light Mode */
+@media (prefers-color-scheme: light) {
+    .navbar {
+        background-color: #ffffff; /* White background for navbar */
+    }
+
+    .logo-image {
+        border: 1px solid #ccc; /* Lighter border for the logo */
+    }
+
+    .clickable-header {
+        background-color: #f9f9f9; /* Light background for clickable header */
+    }
+
+    .clickable-header:hover {
+        background-color: #f0f0f0; /* Lighter hover background */
+        border-color: #007BFF; /* Blue border on hover */
+    }
+
+    .toggle-search-on {
+        background-color: #66b3ff; /* Blue background for the "Search On" */
+    }
+
+    .toggle-search-off {
+        background-color: #f9f9f9; /* Lighter background for "Search Off" */
+    }
+
+    .header-title {
+        color: #213547; /* Dark text in light mode */
+    }
+
+    /* Buttons im Light Mode */
+    button {
+        background-color: #f9f9f9; /* Helles Grau für den Button */
+        color: #333333; /* Dunkler Text im Light Mode */
+        border: 1px solid #ccc; /* Heller Rand für die Buttons */
+    }
+
+    button:hover {
+        background-color: #e0e0e0; /* Etwas dunkleres Grau bei Hover */
+        border-color: #999999; /* Hellerer Rand bei Hover */
+    }
+
+    button:focus,
+    button:focus-visible {
+        outline: 4px auto -webkit-focus-ring-color;
+    }
 }

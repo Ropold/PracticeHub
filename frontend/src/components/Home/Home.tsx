@@ -1,4 +1,3 @@
-import "../styles/Home.css";
 import { RoomModel } from "../model/RoomModel.ts";
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar.tsx";
@@ -10,19 +9,20 @@ type HomeProps = {
     toggleFavorite: (roomId: string) => void;
     activeRooms: RoomModel[];
     showSearch: boolean;
+    currentPage: number;
+    paginate: (pageNumber: number) => void;
 };
 
 export default function Home(props: Readonly<HomeProps>) {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredRooms, setFilteredRooms] = useState<RoomModel[]>([]);
-    const [currentPage, setCurrentPage] = useState<number>(1);
     const [filterType, setFilterType] = useState<"name" | "address" | "category" | "all">("name"); // Filtertyp
     const [selectedCategory, setSelectedCategory] = useState<RoomModel["category"] | "">(""); // Kategorie
     const roomsPerPage = 9;
 
     useEffect(() => {
         if (!props.showSearch) {
-            setSearchQuery("");  // Setzt den searchQuery zurück
+            setSearchQuery("");
         }
     }, [props.showSearch]);
 
@@ -31,15 +31,11 @@ export default function Home(props: Readonly<HomeProps>) {
         setFilteredRooms(filtered);
     }, [props.activeRooms, searchQuery, filterType, selectedCategory]);
 
-    // Funktion zur Filterung der Räume
     const filterRooms = (rooms: RoomModel[], query: string, filterType: string, category: string | "") => {
         const lowerQuery = query.toLowerCase();
 
         return rooms.filter((room) => {
-            // Kategorie-Filter
             const matchesCategory = category ? room.category === category : true;
-
-            // Filter für Name, Adresse oder alles
             const matchesName = filterType === "name" && room.name.toLowerCase().includes(lowerQuery);
             const matchesAddress = filterType === "address" && room.address.toLowerCase().includes(lowerQuery);
             const matchesAll =
@@ -52,12 +48,8 @@ export default function Home(props: Readonly<HomeProps>) {
         });
     };
 
-    // Berechne die Karten für die aktuelle Seite
-    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-    // Berechne die Gesamtzahl der Seiten und den aktuellen Raum-Schnitt
     const getPaginationData = (rooms: RoomModel[]) => {
-        const indexOfLastRoom = currentPage * roomsPerPage;
+        const indexOfLastRoom = props.currentPage * roomsPerPage;
         const indexOfFirstRoom = indexOfLastRoom - roomsPerPage;
         const currentRooms = rooms.slice(indexOfFirstRoom, indexOfLastRoom);
         const totalPages = Math.ceil(rooms.length / roomsPerPage);
@@ -97,8 +89,8 @@ export default function Home(props: Readonly<HomeProps>) {
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button
                         key={index + 1}
-                        onClick={() => paginate(index + 1)}
-                        className={index + 1 === currentPage ? "active" : ""}
+                        onClick={() => props.paginate(index + 1)}
+                        className={index + 1 === props.currentPage ? "active" : ""}
                     >
                         {index + 1}
                     </button>
