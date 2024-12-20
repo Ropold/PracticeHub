@@ -1,4 +1,3 @@
-import "../styles/Home.css";
 import { RoomModel } from "../model/RoomModel.ts";
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar.tsx";
